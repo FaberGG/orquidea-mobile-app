@@ -1,9 +1,11 @@
 # src/features/admins/schemas/
 
-**Responsabilidad:** validación del formulario de administrador.
+**Responsabilidad:** validación de los formularios de administrador, alineada con el contrato.
 
 | Archivo | Reglas | HU |
 |---|---|---|
-| `admin.schema.ts` | Datos completos (nombre, apellido, correo) y formato de correo válido | HU-4, HU-5 |
+| `create-admin.schema.ts` | Nombre y apellido (mínimo 2 caracteres), correo válido y contraseña, todos obligatorios (`RegisterRequest`) | HU-4 |
+| `update-admin.schema.ts` | Nombre y apellido (máximo 100), correo válido (máximo 254) y `isEnabled` obligatorios (`AdministratorUpdateRequest`) | HU-5 |
 
-Los campos exactos (¿contraseña inicial?, ¿permisos editables?) se confirman con el backend antes de implementar.
+Mensajes: `Debes completar todos los campos obligatorios.` e `Ingresa un correo electrónico válido.`
+(importados de `../constants.ts`).

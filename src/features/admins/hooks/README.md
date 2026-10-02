@@ -5,8 +5,8 @@
 
 | Hook | Descripción |
 |---|---|
-| `useAdmins` | Listado (query) |
-| `useAdmin(id)` | Detalle (query) |
+| `useAdmins` | Listado (query) — ⛔ pendiente de endpoint (docs/api B2) |
+| `useAdmin(id)` | Detalle (query) — ⛔ pendiente de endpoint (docs/api B2) |
 | `useCreateAdmin` | Crea; al éxito invalida el listado |
-| `useUpdateAdmin` | Edita; muestra `Los cambios se guardaron correctamente.` |
+| `useUpdateAdmin` | Edita o inhabilita (`isEnabled`); muestra `Los cambios se guardaron correctamente.` |
 | `useRevokeAdmin` | Revoca; si el revocado es el usuario actual, refresca la sesión |

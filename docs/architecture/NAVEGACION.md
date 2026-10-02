@@ -24,7 +24,8 @@ src/app/
 │   ├── _layout.tsx
 │   ├── login.tsx                   /login            HU-1
 │   ├── register.tsx                /register         HU-2
-│   └── forgot-password.tsx         /forgot-password  HU-1.1
+│   ├── forgot-password.tsx         /forgot-password  HU-1.1 paso 1: solicitar código
+│   └── reset-password.tsx          /reset-password   HU-1.1 paso 2: código + nueva contraseña
 │
 └── (admin)/                        guard: can('species:create') → admin y superadmin
     ├── _layout.tsx                 Stack; anida guard de superadmin para admins/
@@ -32,7 +33,7 @@ src/app/
     │   ├── new.tsx                 /species/new         HU-7
     │   └── [id]/edit.tsx           /species/:id/edit    HU-8
     └── admins/                     guard: can('admins:read') → solo superadmin
-        ├── index.tsx               /admins              Listado (HU-5)
+        ├── index.tsx               /admins              Listado (HU-5) — bloqueado: falta endpoint (docs/api B2)
         ├── new.tsx                 /admins/new          HU-4
         └── [id].tsx                /admins/:id          Editar / revocar (HU-5)
 ```
@@ -58,7 +59,7 @@ src/app/
 </Stack>
 ```
 
-Mientras se restaura la sesión guardada (lectura de SecureStore + `GET /me`), la splash screen
+Mientras se restaura la sesión guardada (lectura de SecureStore + `GET /api/autenticacion/yo`), la splash screen
 permanece visible para evitar parpadeos entre estados de visitante y logueado.
 
 ## 3. Comportamiento esperado
@@ -67,6 +68,9 @@ permanece visible para evitar parpadeos entre estados de visitante y logueado.
 |---|---|
 | Login exitoso (HU-1 CA1) | Se reemplaza la pila y se va a `/` con las opciones del rol |
 | Registro exitoso (HU-2 CA1) | Redirige a `/login` |
+| Código de recuperación solicitado (HU-1.1) | Va a `/reset-password` con el correo como parámetro |
+| Contraseña restablecida (HU-1.1) | Redirige a `/login` |
+| Token vencido (`401` en una petición autenticada) | Se borra el token y la sesión pasa a visitante; los guards redirigen |
 | Cerrar sesión (HU-3) | Se limpia sesión y caché; se va a `/` como visitante |
 | Visitante abre `/species/new` por deep link | El guard lo impide y redirige a la ruta disponible |
 | Rol revocado mientras navega (HU-5 CA2) | Al recibir `403` o refrescar `/me`, los guards se reevalúan |

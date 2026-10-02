@@ -13,3 +13,6 @@ expo-env.d.ts
 
 # IDE
 .idea/
+
+# Contrato generado por el backend (Springdoc); se reemplaza tal cual en cada exportación
+docs/api/openapi.json

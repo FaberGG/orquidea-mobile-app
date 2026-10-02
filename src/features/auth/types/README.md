@@ -5,8 +5,8 @@
 | Tipo | Descripción |
 |---|---|
 | `User` | `id`, `firstName`, `lastName`, `email`, `role` |
-| `AuthTokens` | `accessToken`, `refreshToken` (según contrato de la API) |
+| `AuthToken` | `token` (JWT) y `expiresAt`; la API no entrega token de renovación |
 | `SessionStatus` | `'loading' \| 'authenticated' \| 'guest'` |
-| `UserDto`, `LoginResponseDto` | Forma exacta del JSON de la API; solo se usan en `../api` |
+| `AuthenticatedUserDto`, `LoginResponseDto`, `RegisterRequestDto`… | Forma exacta del JSON de la API (campos en español); solo se usan en `../api` |
 
 El tipo `Role` no se define aquí: vive en `@/permissions`.

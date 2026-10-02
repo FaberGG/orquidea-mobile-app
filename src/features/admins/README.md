@@ -10,13 +10,17 @@
 | HU | Descripción | Pantalla |
 |---|---|---|
 | HU-4 | Crear administrador | `CreateAdminScreen` |
-| HU-5 | Editar o revocar administrador | `AdminListScreen`, `EditAdminScreen` |
+| HU-5 | Editar, inhabilitar o revocar administrador | `AdminListScreen` ⛔, `EditAdminScreen` |
+
+⛔ **Bloqueado en parte:** la API no tiene endpoints para listar ni consultar administradores
+([docs/api B2](../../../docs/api/README.md#5-brechas-con-las-historias-de-usuario)). Editar y revocar existen, pero no
+hay de dónde obtener el listado ni los datos actuales del administrador.
 
 ## Contenido previsto
 
 | Carpeta | Contenido |
 |---|---|
-| [`api/`](api/README.md) | `admins.api.ts`: `listAdmins`, `getAdmin`, `createAdmin`, `updateAdmin`, `revokeAdmin` |
+| [`api/`](api/README.md) | `admins.api.ts`: `createAdmin`, `updateAdmin`, `revokeAdmin` (+ `listAdmins`, `getAdmin` cuando existan) |
 | [`components/`](components/README.md) | Pantallas, `AdminForm`, `AdminListItem`, diálogo de confirmación de revocación |
 | [`hooks/`](hooks/README.md) | `useAdmins`, `useAdmin`, `useCreateAdmin`, `useUpdateAdmin`, `useRevokeAdmin` |
 | [`schemas/`](schemas/README.md) | `admin.schema.ts` |
@@ -27,11 +31,15 @@
 ## Reglas de negocio (las decide la API)
 
 - Límite configurable de administradores (actualmente 3). La app **no** cuenta administradores para bloquear;
-  muestra el mensaje cuando la API rechaza.
+  muestra el `mensaje` cuando la API rechaza. El contrato aún no documenta este error ([docs/api B3](../../../docs/api/README.md#5-brechas-con-las-historias-de-usuario)).
 - No se puede revocar al único superadministrador.
 - Revocar degrada la cuenta a usuario registrado; la notificación por correo la envía el backend.
+- **Inhabilitar ≠ revocar:** `habilitado: false` (en `PUT`) impide iniciar sesión sin cambiar el rol; revocar cambia el rol.
 
 ## Mensajes (textuales)
+
+Se guardan en `constants.ts` para las validaciones del cliente y como respaldo; los errores de la API se
+muestran con su `mensaje`, que coincide con estos textos (ver [CODIGO §10](../../../docs/conventions/CODIGO.md#10-errores)).
 
 | Caso | Mensaje |
 |---|---|

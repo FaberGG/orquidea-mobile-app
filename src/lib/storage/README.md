@@ -7,7 +7,7 @@
 | Archivo | Contenido |
 |---|---|
 | `secure-storage.ts` | `getItem/setItem/deleteItem` sobre `expo-secure-store`; fallback a `localStorage` en web (ADR-0006) |
-| `token-storage.ts` | `getTokens`, `saveTokens`, `clearTokens`: usado por `lib/api` y `features/auth` |
+| `token-storage.ts` | `getToken`, `saveToken`, `clearToken` (un único JWT y su vencimiento): usado por `lib/api` y `features/auth` |
 | `index.ts` | API pública |
 
 ## Reglas

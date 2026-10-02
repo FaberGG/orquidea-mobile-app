@@ -6,7 +6,7 @@ de la app usa estas abstracciones en vez de las librerías directamente, para po
 | Carpeta | Contenido |
 |---|---|
 | [`api/`](api/README.md) | Cliente HTTP hacia la API REST |
-| [`storage/`](storage/README.md) | Almacenamiento seguro (tokens) y almacenamiento general |
+| [`storage/`](storage/README.md) | Almacenamiento seguro (token de sesión) y almacenamiento general |
 | [`query/`](query/README.md) | Configuración del cliente de caché de servidor (TanStack Query) |
 
 ## Reglas

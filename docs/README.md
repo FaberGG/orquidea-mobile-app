@@ -5,6 +5,7 @@ Documentación del proyecto. Todo lo que no es código pero define **qué** se c
 | Carpeta | Responsabilidad |
 |---|---|
 | [`requirements/`](requirements/README.md) | Requisitos funcionales: épicas, historias de usuario y criterios de aceptación |
+| [`api/`](api/README.md) | Contrato OpenAPI del backend, traducción de campos y brechas con las historias |
 | [`architecture/`](architecture/README.md) | Cómo está organizada la app: capas, navegación, roles y permisos, integración con la API |
 | [`conventions/`](conventions/README.md) | Reglas obligatorias de código y de Git |
 | [`decisions/`](decisions/README.md) | Registro de decisiones de arquitectura (ADR) |

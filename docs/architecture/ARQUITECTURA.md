@@ -80,7 +80,7 @@ Hook de datos (features/x/hooks/use-x.ts)  ── query / mutation con caché
 Función de API (features/x/api/x.api.ts)  ── construye la petición, mapea DTO → modelo
    │  usa
    ▼
-Cliente HTTP (lib/api)  ── baseURL, token Bearer, timeout, normalización de errores, refresh
+Cliente HTTP (lib/api)  ── baseURL, token Bearer, timeout, normalización de errores, cierre de sesión ante 401
    │
    ▼
 API REST
@@ -89,27 +89,30 @@ API REST
 - Los componentes **nunca** llaman `fetch` ni al cliente HTTP directamente.
 - Los DTO (forma del JSON de la API) se mapean a modelos de dominio en `api/`; el resto de la app solo
   ve modelos. Así un cambio de contrato del backend se corrige en un solo lugar.
-- Los errores HTTP se normalizan en `lib/api` a un tipo `ApiError` (status, código, mensaje). Cada
-  feature traduce los códigos conocidos a los mensajes exactos de los criterios de aceptación.
+- Los errores HTTP se normalizan en `lib/api` a un tipo `ApiError` (`status`, `message`, `path`) a partir del
+  `ApiErrorResponse` de la API. La app muestra el `mensaje` del servidor y usa mensajes locales solo como
+  respaldo (ver [CODIGO §10](../conventions/CODIGO.md#10-errores)).
 
 ## 5. Integración con la API
 
 - URL base desde `EXPO_PUBLIC_API_URL` (leída y validada en `src/config/`).
-- Autenticación por token (se espera JWT de acceso + refresh, a confirmar con el equipo backend).
-  - Tokens en **`expo-secure-store`** (Keychain/Keystore). En web, fallback a `localStorage`
+- **Contrato:** [`docs/api/openapi.json`](../api/openapi.json), con su interpretación, la traducción de
+  campos y las brechas conocidas en [`docs/api/README.md`](../api/README.md).
+- Autenticación con **un único JWT** (sin token de renovación), con vigencia `expiraEnSegundos`.
+  - El token se guarda en **`expo-secure-store`** (Keychain/Keystore). En web, fallback a `localStorage`
     (la versión web no es objetivo principal).
-  - El cliente adjunta `Authorization: Bearer <token>`; ante `401` intenta refresh una vez y, si falla,
-    cierra la sesión.
-- El **rol** del usuario lo entrega la API (en el login o en `GET /me`); la app no lo infiere.
-- El contrato de endpoints se documentará en `docs/architecture/API.md` cuando el backend lo publique
-  (idealmente generando tipos desde OpenAPI).
+  - El cliente adjunta `Authorization: Bearer <token>`. Ante un `401` en una petición autenticada, el token
+    venció o es inválido: se borra y la sesión pasa a visitante.
+  - No hay endpoint de cierre de sesión: cerrar sesión es borrar el token localmente.
+- El **rol** del usuario lo entrega la API (en el login y en `GET /api/autenticacion/yo`); la app no lo infiere.
+- Las fichas se envían como `multipart/form-data` (foto jpg/png, máximo 10 MB).
 
 ## 6. Estado
 
 | Tipo | Dónde | Herramienta |
 |---|---|---|
 | Datos de la API (fichas, admins…) | Caché de servidor | TanStack Query (ver ADR-0003) |
-| Sesión (usuario, rol, tokens) | `features/auth` + `providers/` | React Context + SecureStore |
+| Sesión (usuario, rol, token) | `features/auth` + `providers/` | React Context + SecureStore |
 | Estado de formulario | Componente | React Hook Form + Zod (ver ADR-0004) |
 | Estado de UI efímero | Componente | `useState` |
 

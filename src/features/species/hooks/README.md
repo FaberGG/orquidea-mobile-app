@@ -9,4 +9,4 @@
 | `useSpecies(id)` | Detalle |
 | `useCreateSpecies` | Crea; invalida el listado de su categoría |
 | `useUpdateSpecies` | Edita; invalida detalle y listado; muestra `La ficha se actualizó correctamente.` |
-| `useDeleteSpecies` | Elimina tras confirmar; invalida el listado y vuelve atrás |
+| `useDeleteSpecies` | Elimina tras confirmar; invalida el listado y vuelve atrás — ⛔ pendiente de endpoint (docs/api B1) |

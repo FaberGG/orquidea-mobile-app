@@ -9,6 +9,9 @@
 | Administrador | `admin` | Creado por un superadministrador (HU-4) | `user` |
 | Superadministrador | `superadmin` | Asignado por el equipo de desarrollo | `admin` (HU-6) |
 
+El rol lo entrega la API en `rol` y se traduce en `features/auth/api`: `USUARIO_REGISTRADO` → `user`,
+`ADMINISTRADOR` → `admin`, `SUPERADMINISTRADOR` → `superadmin`. Sin sesión, el rol es `visitor`.
+
 Los roles son **jerárquicos**: cada rol tiene todos los permisos del anterior más los suyos.
 
 ## 2. Principio: misma interfaz, distintas capacidades

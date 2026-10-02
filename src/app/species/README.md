@@ -12,7 +12,7 @@ pantalla completa sobre el shell.
 La pantalla es la misma para todos los roles. Los administradores ven además:
 
 - **Editar** → `/species/:id/edit` (`<Can permission="species:update">`, HU-8).
-- **Eliminar** con confirmación (`<Can permission="species:delete">`, HU-9).
+- **Eliminar** con confirmación (`<Can permission="species:delete">`, HU-9) — ⛔ pendiente: la API no tiene endpoint (docs/api B1).
 
 En HE-04 esta ruta también será el destino del escaneo de códigos QR, por eso debe funcionar con
 deep links (`orquideamobileapp://species/<id>`).

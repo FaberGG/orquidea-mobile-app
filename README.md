@@ -116,6 +116,7 @@ La explicación completa de capas y reglas de dependencia está en
 | Documento | Contenido |
 |---|---|
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Flujo de trabajo, ramas, commits, PRs, Definition of Done |
+| [docs/api/](docs/api/README.md) | Contrato de la API (OpenAPI) y brechas con las historias |
 | [docs/architecture/ARQUITECTURA.md](docs/architecture/ARQUITECTURA.md) | Capas, flujo de datos, integración con la API |
 | [docs/architecture/ROLES-Y-PERMISOS.md](docs/architecture/ROLES-Y-PERMISOS.md) | Modelo de roles y cómo una misma pantalla varía según el rol |
 | [docs/architecture/NAVEGACION.md](docs/architecture/NAVEGACION.md) | Mapa de rutas y rutas protegidas |

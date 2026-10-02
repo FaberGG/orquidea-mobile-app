@@ -74,8 +74,8 @@ Ejemplo completo:
 ```
 feat(admins): impide crear administradores sobre el límite configurado
 
-La API responde 409 con código ADMIN_LIMIT_REACHED; se muestra el mensaje
-exacto del criterio de aceptación 2 de HU-4.
+La API responde 409 con el mensaje del criterio de aceptación 2 de HU-4;
+se muestra el campo mensaje de la respuesta.
 
 Refs: HU-4
 ```

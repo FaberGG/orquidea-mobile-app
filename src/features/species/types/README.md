@@ -4,9 +4,9 @@
 
 | Tipo | Descripción |
 |---|---|
-| `SpeciesCategory` | `'bird' \| 'plant' \| 'insect'` |
-| `ConservationStatus` | Valores según la escala que defina el comité (p. ej. categorías UICN) |
+| `SpeciesCategory` | `'bird' \| 'plant' \| 'insect'` (API: `AVE`, `PLANTA`, `INSECTO`) |
+| `ConservationStatus` | Códigos UICN: `'EX' \| 'EW' \| 'CR' \| 'EN' \| 'VU' \| 'NT' \| 'LC' \| 'DD' \| 'NE'`; las etiquetas en español van en `../constants.ts` |
 | `Species` | Modelo completo de la ficha |
-| `SpeciesSummary` | Datos mínimos para el listado (`id`, `commonName`, `photoUrl`) |
+| `SpeciesSummary` | Datos mínimos para el listado (`id`, `vernacularName`, `photoUrl`) |
 | `SpeciesInput` | Datos del formulario (inferidos del esquema) |
-| `SpeciesDto` | Forma del JSON de la API; solo se usa en `../api` |
+| `TaxonDto`, `TaxonRequestDto` | Forma del JSON de la API; solo se usan en `../api` |

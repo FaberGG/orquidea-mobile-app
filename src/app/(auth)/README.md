@@ -10,9 +10,10 @@ un usuario con sesión no puede volver a estas pantallas.
 | `_layout.tsx` | — | Stack sin pestañas | — |
 | `login.tsx` | `/login` | `LoginScreen` | HU-1 |
 | `register.tsx` | `/register` | `RegisterScreen` | HU-2 |
-| `forgot-password.tsx` | `/forgot-password` | `ForgotPasswordScreen` | HU-1.1 |
+| `forgot-password.tsx` | `/forgot-password` | `ForgotPasswordScreen`: solicita el código | HU-1.1 |
+| `reset-password.tsx` | `/reset-password?email=` | `ResetPasswordScreen`: código de 6 dígitos y nueva contraseña | HU-1.1 |
 
 Flujos:
 - Login exitoso → `router.replace('/')`.
 - Registro exitoso → `router.replace('/login')`.
-- "¿Olvidaste tu contraseña?" en login → `/forgot-password`.
+- "¿Olvidaste tu contraseña?" en login → `/forgot-password` → (código enviado) `/reset-password` → (éxito) `/login`.

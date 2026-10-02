@@ -114,11 +114,21 @@ que explique por qué**. Desactivar reglas para un archivo completo requiere apr
   } as const;
   ```
 - Las validaciones del cliente mejoran la UX; las del servidor son las definitivas.
+- Los esquemas reflejan las restricciones del contrato (`minLength`, `maxLength`, `pattern`, `enum`) de
+  [`docs/api/openapi.json`](../api/openapi.json).
 
 ## 10. Errores
 
-- Todo error de red se normaliza en `lib/api` a `ApiError`. Las features traducen códigos a mensajes.
-- Nunca mostrar al usuario mensajes técnicos, stack traces ni respuestas crudas del servidor.
+- Todo error HTTP o de red se normaliza en `lib/api` a `ApiError` (`status`, `message`, `path`).
+- **Qué mensaje mostrar** (la API no envía códigos de error de negocio, ver [docs/api §4](../api/README.md#4-errores)):
+  1. Errores de validación del formulario detectados en el cliente → mensaje local de `constants.ts`.
+  2. Respuesta `4xx` con `ApiErrorResponse` → el campo `mensaje` del servidor, que está redactado para el
+     usuario y coincide con los criterios de aceptación.
+  3. `4xx` sin `mensaje`, `5xx`, timeout o sin conexión → mensaje local genérico de respaldo según el estado.
+  4. Casos de seguridad (HU-1.1 CA2) → siempre el mensaje local, sin importar la respuesta.
+- `401` en una petición autenticada → cerrar la sesión (token vencido). `403` → mensaje "no tienes permisos" y
+  revalidar la sesión con `GET /api/autenticacion/yo`.
+- Nunca mostrar al usuario mensajes técnicos, stack traces, `error` (nombre HTTP) ni el JSON crudo.
 - Prohibido el `catch` vacío. Si un error se ignora a propósito, comentar por qué.
 - Usar *error boundaries* de Expo Router (`ErrorBoundary` exportado desde el layout/ruta) para errores de render.
 
