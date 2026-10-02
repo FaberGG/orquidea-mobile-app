@@ -32,8 +32,7 @@ develop ──┬─────────────────────
    git switch -c feat/hu-1-login
    ```
 3. **Trabaja en commits pequeños** siguiendo [Conventional Commits](docs/conventions/GIT.md#2-commits).
-   Los hooks de Git lo hacen cumplir: `pre-commit` corrige y formatea los archivos en *staging* y
-   `commit-msg` rechaza mensajes que no cumplan el formato. **No uses `--no-verify`.**
+   No hay validaciones al hacer commit: commitea con libertad. La calidad se verifica en el PR.
 4. **Antes de publicar**, verifica localmente (es lo mismo que ejecuta la CI):
    ```bash
    npm run lint

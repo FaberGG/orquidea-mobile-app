@@ -13,9 +13,9 @@ Deben terminarse primero, en este orden. Son las únicas que tocan configuració
 | # | Tarea | Rama sugerida | Dónde |
 |---|---|---|---|
 | T0.1 | Eliminar el código de demostración de la plantilla (`explore.tsx`, `hint-row`, `web-badge`, `animated-icon`, script `reset-project`, imágenes de ejemplo) y ajustar `name`/`slug` en `app.json` | `chore/issue-1-limpiar-plantilla` | `src/`, `assets/`, `scripts/` |
-| T0.2 | ✅ **Hecho.** Tooling: ESLint, Prettier, reglas de import y de capas, husky + lint-staged + commitlint (ADR-0007) | — | raíz |
-| T0.3 | ✅ **Hecho** (salvo protección de ramas). CI en GitHub Actions: lint + formato + typecheck + commitlint. **Pendiente:** proteger `main` y `develop` al crear el repositorio remoto | — | `.github/workflows/` |
-| T0.4 | Pruebas: `jest-expo` + Testing Library (ADR-0005). Al terminar, agregar el paso `npm test` a la CI y a `lint-staged` si aplica | `chore/issue-4-configurar-pruebas` | raíz, `.github/workflows/ci.yml` |
+| T0.2 | ✅ **Hecho.** Tooling: ESLint, Prettier, reglas de import y de capas (ADR-0007, ADR-0008) | — | raíz |
+| T0.3 | ✅ **Hecho** (salvo protección de ramas). CI en GitHub Actions: lint + formato + typecheck. **Pendiente:** proteger `main` y `develop` al crear el repositorio remoto | — | `.github/workflows/` |
+| T0.4 | Pruebas: `jest-expo` + Testing Library (ADR-0005). Al terminar, agregar el paso `npm test` a la CI | `chore/issue-4-configurar-pruebas` | raíz, `.github/workflows/ci.yml` |
 | T0.5 | Configuración: lectura y validación de `EXPO_PUBLIC_API_URL` | `feat/issue-5-config-entorno` | `src/config/` |
 | T0.6 | Cliente HTTP: base URL, token, timeout, `ApiError`, refresh ante 401 | `feat/issue-6-cliente-http` | `src/lib/api/` |
 | T0.7 | Almacenamiento seguro (ADR-0006) y query client (ADR-0003) | `feat/issue-7-storage-y-query` | `src/lib/storage/`, `src/lib/query/` |

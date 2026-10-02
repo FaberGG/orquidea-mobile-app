@@ -38,7 +38,7 @@ y el porqué de cada una están en [`docs/decisions/`](docs/decisions/README.md)
 ```bash
 git clone <url-del-repo>
 cd orquidea-mobile-app
-npm install                    # también activa los hooks de Git (husky)
+npm install
 cp .env.example .env.local     # y ajusta EXPO_PUBLIC_API_URL
 npx expo start                 # la primera ejecución genera expo-env.d.ts (necesario para typecheck)
 ```
@@ -51,9 +51,7 @@ npx expo start                 # la primera ejecución genera expo-env.d.ts (nec
 | Cuándo | Qué se ejecuta | Configuración |
 |---|---|---|
 | Al guardar (VS Code) | Prettier + correcciones de ESLint | `.vscode/settings.json` |
-| `git commit` (pre-commit) | ESLint `--fix` y Prettier sobre los archivos en *staging* | `.husky/pre-commit`, `lint-staged` en `package.json` |
-| `git commit` (commit-msg) | commitlint: valida Conventional Commits | `.husky/commit-msg`, `commitlint.config.js` |
-| Pull Request / push a `main` o `develop` | Lint, formato, tipos y commits del PR | `.github/workflows/ci.yml` |
+| Pull Request / push a `main` o `develop` | Lint, formato y tipos | `.github/workflows/ci.yml` |
 
 En la terminal de Expo: `a` abre Android, `i` abre iOS, `w` abre web, o escanea el QR con Expo Go.
 
@@ -105,7 +103,6 @@ nunca colocar secretos ahí. Detalle en [`src/config/README.md`](src/config/READ
 │   ├── types/              # Tipos globales compartidos
 │   └── utils/              # Funciones puras reutilizables
 ├── .github/                # CI (workflows) y plantillas de PR e issues
-├── .husky/                 # Hooks de Git (pre-commit, commit-msg)
 ├── AGENTS.md               # Instrucciones para agentes de IA
 └── CONTRIBUTING.md         # Cómo colaborar: ramas, commits, PRs
 ```

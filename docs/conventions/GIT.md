@@ -104,19 +104,18 @@ Refs: HU-4
 
 ## 5. Automatización
 
+**No hay validaciones al hacer commit** (sin hooks de Git): cada integrante commitea libremente en su rama
+(ver [ADR-0008](../decisions/0008-sin-validaciones-al-hacer-commit.md)). La convención de commits de §2 es
+una guía del equipo y se revisa en el PR.
+
 | Herramienta | Qué valida | Archivo |
 |---|---|---|
-| **commitlint** (`@commitlint/config-conventional`) | Formato del mensaje: tipo válido, asunto no vacío y sin punto final, cabecera ≤ 100 caracteres. Alcances fuera de la lista de §2 generan **advertencia** | `commitlint.config.js` |
-| **husky** `commit-msg` | Ejecuta commitlint en cada commit local | `.husky/commit-msg` |
-| **husky** `pre-commit` + **lint-staged** | ESLint `--fix` (sin advertencias) y Prettier sobre los archivos en *staging* | `.husky/pre-commit`, `package.json` → `lint-staged` |
-| **GitHub Actions** | En PR y push a `main`/`develop`: lint, formato, tipos y commitlint sobre todos los commits del PR | `.github/workflows/ci.yml` |
+| **GitHub Actions** | En PR y push a `main`/`develop`: lint, formato y tipos | `.github/workflows/ci.yml` |
 
-Los hooks se instalan solos con `npm install` (script `prepare`). Saltarlos con `--no-verify` no está
-permitido: la CI rechazará el PR de todos modos.
-
-Al agregar un alcance nuevo (p. ej. una feature `map`), súmalo a `scope-enum` en `commitlint.config.js`.
+Como el merge es *squash*, lo que queda en el historial de `develop` es el **título del PR**: ese sí debe
+cumplir Conventional Commits y lo verifica quien revisa.
 
 ### Pendiente (requiere el repositorio en GitHub)
 
 Configurar en *Settings → Branches* la protección de `main` y `develop`: PR obligatorio, 1 aprobación,
-*status checks* `Lint, formato y tipos` y `Mensajes de commit` requeridos, rama actualizada antes del merge.
+*status check* `Lint, formato y tipos` requerido, rama actualizada antes del merge.

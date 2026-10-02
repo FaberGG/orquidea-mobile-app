@@ -53,4 +53,4 @@ Read these before writing code; they override generic habits:
 - `src/app/` holds routes only — screens live in `src/features/<feature>/components` and are re-exported as default from the route file.
 - User-facing messages from acceptance criteria are copied verbatim into `src/features/<feature>/constants.ts`.
 - This project uses npm (`package-lock.json`): use `npx`, not `bunx`. Never run `npm run reset-project`.
-- Quality gates (same as CI): `npm run lint`, `npm run format:check`, `npm run typecheck`. Git hooks (husky) run lint-staged and commitlint — never bypass with `--no-verify`.
+- Quality gates (same as CI): `npm run lint`, `npm run format:check`, `npm run typecheck`. There are no Git hooks: commits are not validated locally; quality is enforced by CI on PRs.

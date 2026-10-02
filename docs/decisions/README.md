@@ -25,6 +25,7 @@ se reemplazan con uno nuevo.
 | [0004](0004-formularios-rhf-zod.md) | React Hook Form + Zod para formularios y validación | Propuesto |
 | [0005](0005-pruebas-jest-expo.md) | jest-expo + React Native Testing Library | Propuesto |
 | [0006](0006-almacenamiento-seguro-de-sesion.md) | Sesión en expo-secure-store | Propuesto |
-| [0007](0007-herramientas-de-calidad.md) | ESLint, Prettier, husky, commitlint y GitHub Actions | Aceptado |
+| [0007](0007-herramientas-de-calidad.md) | ESLint, Prettier, husky, commitlint y GitHub Actions | Reemplazado parcialmente por 0008 |
+| [0008](0008-sin-validaciones-al-hacer-commit.md) | Sin validaciones al hacer commit; la calidad se verifica en el PR | Aceptado |
 
 Los ADR *Propuestos* se aceptan (o se modifican) al ejecutar la tarea del Sprint 1 que instala la dependencia.

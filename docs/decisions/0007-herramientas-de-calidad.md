@@ -1,6 +1,6 @@
 # 0007 — Herramientas de calidad: ESLint, Prettier, husky, commitlint y GitHub Actions
 
-**Estado:** Aceptado
+**Estado:** Reemplazado parcialmente por [0008](0008-sin-validaciones-al-hacer-commit.md) (husky, lint-staged y commitlint retirados)
 
 ## Contexto
 
