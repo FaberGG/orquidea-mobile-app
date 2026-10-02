@@ -1,0 +1,15 @@
+# Generados / dependencias
+node_modules/
+.expo/
+dist/
+web-build/
+android/
+ios/
+package-lock.json
+expo-env.d.ts
+
+# Markdown: tablas largas; se formatean a mano
+*.md
+
+# IDE
+.idea/

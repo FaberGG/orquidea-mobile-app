@@ -1,56 +1,132 @@
-# Welcome to your Expo app 👋
+# Orquídea — App móvil del Humedal
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicación móvil (Android / iOS / Web) del **Humedal La Orquídea**. Permite a los visitantes
+conocer la biodiversidad del humedal mediante fichas taxonómicas, mapa del sendero, contenido
+educativo y reportes ciudadanos de avistamientos; y a los administradores gestionar ese contenido.
 
-## Get started
+La app es un **cliente de una API REST**: no contiene lógica de negocio autoritativa. Toda regla
+de seguridad (roles, límites, validaciones finales) la aplica el backend; la app la refleja en la UI.
 
-1. Install dependencies
+> Requisitos funcionales: [`docs/requirements/Historias-Usuario.md`](docs/requirements/Historias-Usuario.md)
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## Stack
 
-   ```bash
-   npx expo start
-   ```
+| Área | Tecnología |
+|---|---|
+| Framework | [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/) + React Native 0.86 + React 19 |
+| Lenguaje | TypeScript (modo `strict`) |
+| Navegación | [Expo Router](https://docs.expo.dev/router/introduction/) (rutas por archivos en `src/app/`) |
+| Compilador | React Compiler activado (`experiments.reactCompiler` en `app.json`) |
+| Builds / OTA | [EAS](https://docs.expo.dev/eas/) (Continuous Native Generation: **no** se versionan `ios/` ni `android/`) |
 
-In the output, you'll find options to open the app in a
+Las librerías planeadas (estado de servidor, formularios, almacenamiento seguro, pruebas, etc.)
+y el porqué de cada una están en [`docs/decisions/`](docs/decisions/README.md).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Requisitos previos
 
-## Get a fresh project
+- **Node.js 22 LTS** (versión fijada en `.nvmrc`) y **npm** (el proyecto usa `package-lock.json`; no mezclar con yarn/pnpm/bun).
+- **Git**.
+- Para probar en dispositivo: app **Expo Go** o un *development build* (ver abajo).
+- Opcional: Android Studio (emulador) o Xcode (simulador, solo macOS).
 
-When you're ready, run:
+## Puesta en marcha
 
 ```bash
-npm run reset-project
+git clone <url-del-repo>
+cd orquidea-mobile-app
+npm install                    # también activa los hooks de Git (husky)
+cp .env.example .env.local     # y ajusta EXPO_PUBLIC_API_URL
+npx expo start                 # la primera ejecución genera expo-env.d.ts (necesario para typecheck)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+> Usa la versión de Node indicada en `.nvmrc` (`nvm use`). En VS Code instala las extensiones
+> recomendadas (ESLint, Prettier, EditorConfig): el formato se aplica al guardar.
 
-### Other setup steps
+### Calidad automática
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+| Cuándo | Qué se ejecuta | Configuración |
+|---|---|---|
+| Al guardar (VS Code) | Prettier + correcciones de ESLint | `.vscode/settings.json` |
+| `git commit` (pre-commit) | ESLint `--fix` y Prettier sobre los archivos en *staging* | `.husky/pre-commit`, `lint-staged` en `package.json` |
+| `git commit` (commit-msg) | commitlint: valida Conventional Commits | `.husky/commit-msg`, `commitlint.config.js` |
+| Pull Request / push a `main` o `develop` | Lint, formato, tipos y commits del PR | `.github/workflows/ci.yml` |
 
-## Learn more
+En la terminal de Expo: `a` abre Android, `i` abre iOS, `w` abre web, o escanea el QR con Expo Go.
 
-To learn more about developing your project with Expo, look at the following resources:
+> **Expo Go vs development build:** Expo Go solo incluye los módulos nativos del SDK. Si se agrega
+> una librería con código nativo que no esté en Expo Go, hay que usar un development build:
+> `npx expo run:android` / `npx expo run:ios` o `npx eas-cli@latest build --profile development`.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Scripts
 
-## Join the community
+| Comando | Qué hace |
+|---|---|
+| `npm start` | Inicia el servidor de desarrollo (Metro) |
+| `npm run android` / `ios` / `web` | Inicia y abre en la plataforma indicada |
+| `npm run lint` / `lint:fix` | ESLint (`expo lint`): reglas de Expo, orden de imports y fronteras entre capas |
+| `npm run format` / `format:check` | Prettier: formatea / verifica el formato |
+| `npm run typecheck` | Verificación de tipos (`tsc --noEmit`) |
+| `npx expo install <paquete>` | **Única forma permitida** de agregar dependencias (resuelve versiones compatibles con el SDK) |
+| `npx expo install --fix` | Corrige versiones incompatibles |
+| `npx expo-doctor` | Diagnóstico de configuración y dependencias |
 
-Join our community of developers creating universal apps.
+> ⚠️ No ejecutar `npm run reset-project`: es un script de la plantilla que mueve `src/` a `example/`
+> y destruiría la estructura del proyecto. Se elimina en la tarea de limpieza del Sprint 1.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Variables de entorno
+
+Se definen en `.env.local` (no versionado) a partir de [`.env.example`](.env.example).
+Solo las variables con prefijo `EXPO_PUBLIC_` llegan a la app y **quedan visibles en el binario**:
+nunca colocar secretos ahí. Detalle en [`src/config/README.md`](src/config/README.md).
+
+---
+
+## Estructura del proyecto
+
+```
+.
+├── assets/                 # Imágenes, íconos y fuentes estáticas
+├── docs/                   # Requisitos, arquitectura, convenciones, decisiones y sprints
+├── scripts/                # Scripts de mantenimiento (Node)
+├── src/
+│   ├── app/                # SOLO rutas (Expo Router). Pantallas delgadas
+│   ├── features/           # Módulos de dominio: auth, admins, species, ...
+│   ├── components/         # UI compartida y agnóstica del dominio
+│   ├── permissions/        # Roles, matriz de permisos, <Can/> y usePermission
+│   ├── providers/          # Composición de providers globales
+│   ├── lib/                # Infraestructura: cliente HTTP, almacenamiento seguro, query client
+│   ├── hooks/              # Hooks globales no ligados a un dominio
+│   ├── config/             # Lectura y validación de configuración/entorno
+│   ├── constants/          # Tema (colores, espaciado, fuentes) y constantes globales
+│   ├── types/              # Tipos globales compartidos
+│   └── utils/              # Funciones puras reutilizables
+├── .github/                # CI (workflows) y plantillas de PR e issues
+├── .husky/                 # Hooks de Git (pre-commit, commit-msg)
+├── AGENTS.md               # Instrucciones para agentes de IA
+└── CONTRIBUTING.md         # Cómo colaborar: ramas, commits, PRs
+```
+
+Cada directorio tiene su propio `README.md` que explica su responsabilidad y qué se implementa ahí.
+La explicación completa de capas y reglas de dependencia está en
+[`docs/architecture/ARQUITECTURA.md`](docs/architecture/ARQUITECTURA.md).
+
+## Documentación
+
+| Documento | Contenido |
+|---|---|
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Flujo de trabajo, ramas, commits, PRs, Definition of Done |
+| [docs/architecture/ARQUITECTURA.md](docs/architecture/ARQUITECTURA.md) | Capas, flujo de datos, integración con la API |
+| [docs/architecture/ROLES-Y-PERMISOS.md](docs/architecture/ROLES-Y-PERMISOS.md) | Modelo de roles y cómo una misma pantalla varía según el rol |
+| [docs/architecture/NAVEGACION.md](docs/architecture/NAVEGACION.md) | Mapa de rutas y rutas protegidas |
+| [docs/conventions/CODIGO.md](docs/conventions/CODIGO.md) | Reglas de codificación y buenas prácticas |
+| [docs/conventions/GIT.md](docs/conventions/GIT.md) | Convención de ramas y commits |
+| [docs/decisions/](docs/decisions/README.md) | Registro de decisiones de arquitectura (ADR) |
+| [docs/sprints/sprint-01.md](docs/sprints/sprint-01.md) | Alcance y plan del Sprint 1 (HE-01 a HE-03) |
+
+## Licencia
+
+Ver [LICENSE](LICENSE).

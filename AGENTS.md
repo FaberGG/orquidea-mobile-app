@@ -39,3 +39,18 @@ Docs: https://docs.expo.dev/eas/index.md
 - If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
 - Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
 - Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
+
+## Project rules (Orquídea)
+
+Read these before writing code; they override generic habits:
+
+- Architecture, layers and import rules: `docs/architecture/ARQUITECTURA.md`
+- Roles & permissions (same UI for every role, gate with `<Can>` / `usePermission`, never `role ===`): `docs/architecture/ROLES-Y-PERMISOS.md`
+- Route map and protected routes (`Stack.Protected`): `docs/architecture/NAVEGACION.md`
+- Coding rules: `docs/conventions/CODIGO.md` · Branches/commits (Conventional Commits, Spanish descriptions): `docs/conventions/GIT.md`
+- Current sprint scope: `docs/sprints/sprint-01.md` (HE-01..HE-03 only)
+- Every directory has a `README.md` describing its responsibility; keep it updated when you change that directory.
+- `src/app/` holds routes only — screens live in `src/features/<feature>/components` and are re-exported as default from the route file.
+- User-facing messages from acceptance criteria are copied verbatim into `src/features/<feature>/constants.ts`.
+- This project uses npm (`package-lock.json`): use `npx`, not `bunx`. Never run `npm run reset-project`.
+- Quality gates (same as CI): `npm run lint`, `npm run format:check`, `npm run typecheck`. Git hooks (husky) run lint-staged and commitlint — never bypass with `--no-verify`.
