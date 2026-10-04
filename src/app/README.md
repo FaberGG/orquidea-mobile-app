@@ -31,5 +31,6 @@
 
 Mapa completo y reglas de navegación: [`docs/architecture/NAVEGACION.md`](../../docs/architecture/NAVEGACION.md).
 
-> Los archivos actuales (`index.tsx`, `explore.tsx`, `_layout.tsx`) son la demo de la plantilla de Expo
-> y se reemplazan en la tarea T0.1 / T0.10 del [Sprint 1](../../docs/sprints/sprint-01.md).
+> Implementado en HU-1: `_layout.tsx` (providers, splash y guard de `(auth)`), `(tabs)/index.tsx` (inicio) y
+> `(auth)/login.tsx`. `(tabs)/explore.tsx` y las pestañas de `components/app-tabs` siguen siendo la demo de la
+> plantilla hasta T0.1 / T0.10 del [Sprint 1](../../docs/sprints/sprint-01.md).

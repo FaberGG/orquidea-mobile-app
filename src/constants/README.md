@@ -4,12 +4,11 @@
 
 | Archivo | Estado | Contenido |
 |---|---|---|
-| `theme.ts` | Existente | `Colors` (claro/oscuro), `Fonts`, `Spacing`, `BottomTabInset`, `MaxContentWidth` |
+| `theme.ts` | Existente | `Colors` (claro/oscuro) con la paleta del Figma (`neutro/*`, `green-*`), `FontFamily` (Nunito), `Fonts`, `Spacing`, `Radius`, `MinTouchSize`, `BottomTabInset`, `MaxContentWidth` |
 
-Previsto:
-- Ajustar `Colors` y tipografías a la identidad visual del humedal cuando esté el diseño en Figma
-  (agregar colores semánticos: `primary`, `danger`, `success`, `border`).
-- `Radius` y escala tipográfica si el diseño las define.
+Notas:
+- El Figma no define tema oscuro: `Colors.dark` se deriva de las mismas escalas manteniendo contraste AA.
+- `danger` / `dangerBackground` no están en el Figma (provisionales).
 
 ## Reglas
 
