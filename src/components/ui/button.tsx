@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, type PressableProps } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { MinTouchSize, Radius, Spacing } from '@/constants/theme';
+import { FontFamily, MinTouchSize, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type ButtonVariant = 'primary' | 'link';
@@ -40,8 +40,11 @@ export function Button({
         <ActivityIndicator color={isPrimary ? theme.onPrimary : theme.primary} />
       ) : (
         <ThemedText
-          type={isPrimary ? 'smallBold' : 'small'}
-          style={[styles.label, { color: isPrimary ? theme.onPrimary : theme.primary }]}>
+          type={isPrimary ? 'default' : 'small'}
+          style={[
+            isPrimary && styles.primaryLabel,
+            { color: isPrimary ? theme.onPrimary : theme.primary },
+          ]}>
           {label}
         </ThemedText>
       )}
@@ -54,14 +57,17 @@ const styles = StyleSheet.create({
     minHeight: MinTouchSize,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: Spacing.three,
   },
   primary: {
-    borderRadius: Radius.small,
-    paddingVertical: Spacing.two,
+    borderRadius: Radius.pill,
+    paddingVertical: 14,
+    paddingHorizontal: Spacing.three,
   },
-  label: {
+  primaryLabel: {
     textAlign: 'center',
+    fontFamily: FontFamily.bold,
+    // El diseño usa interlineado 1 (16 px): el botón mide 44 px con el padding de 14.
+    lineHeight: 16,
   },
   disabled: {
     opacity: 0.6,

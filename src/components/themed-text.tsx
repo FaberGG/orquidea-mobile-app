@@ -1,10 +1,20 @@
 import { Platform, StyleSheet, Text, type TextProps } from 'react-native';
 
-import { Fonts, type ThemeColor } from '@/constants/theme';
+import { FontFamily, Fonts, type ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'link' | 'linkPrimary' | 'code';
+  type?:
+    | 'default'
+    | 'title'
+    | 'small'
+    | 'smallSemiBold'
+    | 'smallBold'
+    | 'label'
+    | 'subtitle'
+    | 'link'
+    | 'linkPrimary'
+    | 'code';
   themeColor?: ThemeColor;
 };
 
@@ -18,10 +28,12 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
         type === 'default' && styles.default,
         type === 'title' && styles.title,
         type === 'small' && styles.small,
+        type === 'smallSemiBold' && styles.smallSemiBold,
         type === 'smallBold' && styles.smallBold,
+        type === 'label' && styles.label,
         type === 'subtitle' && styles.subtitle,
         type === 'link' && styles.link,
-        type === 'linkPrimary' && styles.linkPrimary,
+        type === 'linkPrimary' && [styles.link, { color: theme.primary }],
         type === 'code' && styles.code,
         style,
       ]}
@@ -30,43 +42,51 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
   );
 }
 
+// Con fuentes personalizadas el grosor se elige con la familia (Nunito_700Bold…), no con
+// fontWeight: en Android, combinar ambos puede hacer que se ignore la fuente.
 const styles = StyleSheet.create({
   small: {
+    fontFamily: FontFamily.regular,
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: 500,
+  },
+  smallSemiBold: {
+    fontFamily: FontFamily.semiBold,
+    fontSize: 14,
+    lineHeight: 20,
   },
   smallBold: {
+    fontFamily: FontFamily.bold,
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: 700,
+  },
+  label: {
+    fontFamily: FontFamily.bold,
+    fontSize: 13,
+    lineHeight: 18,
   },
   default: {
+    fontFamily: FontFamily.regular,
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: 500,
   },
   title: {
+    fontFamily: FontFamily.bold,
     fontSize: 48,
-    fontWeight: 600,
     lineHeight: 52,
   },
   subtitle: {
+    fontFamily: FontFamily.bold,
     fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
+    lineHeight: 40,
   },
   link: {
+    fontFamily: FontFamily.regular,
     lineHeight: 30,
     fontSize: 14,
-  },
-  linkPrimary: {
-    lineHeight: 30,
-    fontSize: 14,
-    color: '#3c87f7',
   },
   code: {
-    fontFamily: Fonts.mono,
+    fontFamily: Fonts?.mono,
     fontWeight: Platform.select({ android: 700 }) ?? 500,
     fontSize: 12,
   },
