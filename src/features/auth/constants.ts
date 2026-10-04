@@ -19,6 +19,18 @@ export const AUTH_MESSAGES = {
   termsNotAccepted: 'Debes aceptar los términos y condiciones y la política de privacidad.',
   // HU-2 CA1: confirmación al volver al login (el backend envía el correo de confirmación).
   registerSuccess: 'Tu cuenta fue creada. Revisa tu correo e inicia sesión.',
+  // HU-1.1 CA1 y CA2: el mismo mensaje exista o no la cuenta. Texto de la HU; la API envía un
+  // código de 6 dígitos (docs/api B5): ajustarlo si el PO alinea la historia.
+  passwordResetRequested:
+    'Se ha enviado un correo con las instrucciones para restablecer tu contraseña.',
+  // HU-1.1 CA3
+  emailRequired: 'Debes ingresar tu correo electrónico.',
+  // HU-1.1 paso 2 (reglas del contrato, sin criterio de aceptación: mensajes locales)
+  resetRequiredFields: 'Todos los campos son obligatorios.',
+  invalidCode: 'El código debe tener 6 dígitos.',
+  wrongOrExpiredCode: 'Código incorrecto o vencido.',
+  missingResetEmail: 'Vuelve a solicitar el código desde "¿Olvidaste tu contraseña?".',
+  passwordResetSuccess: 'Tu contraseña fue actualizada. Inicia sesión con tu nueva contraseña.',
   // Respaldo local (CODIGO §10): sin respuesta del servidor o error no previsto.
   networkError: 'No pudimos conectarnos con el servidor. Revisa tu conexión e inténtalo de nuevo.',
   unexpectedError: 'Ocurrió un error inesperado. Inténtalo de nuevo.',
@@ -54,6 +66,22 @@ export const AUTH_LABELS = {
   // HU-2 CA1–CA4: "Clic en el botón REGISTRARME."
   registerButton: 'REGISTRARME',
   hasAccount: '¿Ya tienes una cuenta?',
+  forgotPasswordTitle: 'Recuperar contraseña',
+  forgotPasswordSubtitle:
+    'Ingresa tu correo y te enviaremos un código de 6 dígitos para restablecer tu contraseña',
+  // HU-1.1 CA1–CA3: "Clic en el botón ENVIAR."
+  sendButton: 'ENVIAR',
+  resetPasswordTitle: 'Nueva contraseña',
+  resetPasswordSubtitle: 'Escribe el código que enviamos a',
+  codeLabel: 'Código de verificación',
+  codePlaceholder: '000000',
+  newPasswordLabel: 'Nueva contraseña',
+  confirmNewPasswordLabel: 'Confirmar nueva contraseña',
+  resetButton: 'CAMBIAR CONTRASEÑA',
+  noCode: '¿No recibiste el código?',
+  resendCode: 'Reenviar',
+  rememberedPassword: '¿Recordaste tu contraseña?',
+  requestCodeAgain: 'SOLICITAR CÓDIGO',
   loginLink: 'Iniciar sesión',
 } as const;
 

@@ -1,1 +1,1 @@
-export { getMe, login, register } from './auth.api';
+export { getMe, login, register, requestPasswordReset, resetPassword } from './auth.api';

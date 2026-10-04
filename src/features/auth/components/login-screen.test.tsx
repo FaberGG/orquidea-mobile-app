@@ -65,6 +65,9 @@ describe('LoginScreen (HU-1)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Sin parámetros de ruta por defecto: algunas pruebas simulan volver del registro o del cambio
+    // de contraseña.
+    jest.mocked(useLocalSearchParams).mockReturnValue({});
     // gcTime infinito: evita timers pendientes que impiden que Jest termine al desmontar.
     queryClient = new QueryClient({
       defaultOptions: {
@@ -145,6 +148,13 @@ describe('LoginScreen (HU-1)', () => {
     await renderLogin();
 
     expect(screen.getByText(AUTH_MESSAGES.registerSuccess)).toBeTruthy();
+  });
+
+  it('HU-1.1: al volver de restablecer la contraseña muestra la confirmación', async () => {
+    jest.mocked(useLocalSearchParams).mockReturnValue({ passwordReset: 'true' });
+    await renderLogin();
+
+    expect(screen.getByText(AUTH_MESSAGES.passwordResetSuccess)).toBeTruthy();
   });
 
   it('sin conexión muestra el mensaje de respaldo', async () => {
