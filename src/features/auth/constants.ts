@@ -82,7 +82,22 @@ export const AUTH_LABELS = {
   resendCode: 'Reenviar',
   rememberedPassword: '¿Recordaste tu contraseña?',
   requestCodeAgain: 'SOLICITAR CÓDIGO',
+  accountTitle: 'Mi cuenta',
+  accountGuestSubtitle: 'Inicia sesión o crea una cuenta para reportar avistamientos.',
+  loginButtonGuest: 'INICIAR SESIÓN',
+  roleLabel: 'Rol',
+  manageAdmins: 'Gestionar administradores',
+  manageAdminsDescription: 'Crea, edita y revoca cuentas de administrador.',
+  // HU-3 CA1: "Clic en el botón CERRAR SESIÓN."
+  logoutButton: 'CERRAR SESIÓN',
   loginLink: 'Iniciar sesión',
+} as const;
+
+/** Nombre visible de cada rol con sesión (solo para mostrar; la UI decide con permisos). */
+export const ROLE_LABELS = {
+  user: 'Usuario registrado',
+  admin: 'Administrador',
+  superadmin: 'Superadministrador',
 } as const;
 
 /** Claves de caché de la feature. */

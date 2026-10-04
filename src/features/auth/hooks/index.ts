@@ -5,6 +5,7 @@ export {
   getResetPasswordErrorMessage,
 } from './get-auth-error-message';
 export { useLogin } from './use-login';
+export { useLogout } from './use-logout';
 export { useRegister } from './use-register';
 export { useRequestPasswordReset } from './use-request-password-reset';
 export { useResetPassword } from './use-reset-password';

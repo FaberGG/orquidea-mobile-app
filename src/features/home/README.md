@@ -7,7 +7,6 @@ para el rol del usuario (HU-1 CA1) usando `<Can>`, nunca comparando roles.
 |---|---|
 | `components/home-screen.tsx` | `HomeScreen`: saludo, invitación a iniciar sesión (visitante) y opciones por permiso |
 | `components/home-option.tsx` | Tarjeta de una opción |
-| `constants.ts` | `ROLE_LABELS`: nombre visible de cada rol |
 | `index.ts` | Exporta `HomeScreen` |
 
 Las opciones aún no navegan: cada una se enlaza a su ruta cuando se implemente su HU
