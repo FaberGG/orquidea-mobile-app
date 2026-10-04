@@ -2,14 +2,16 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { useSession } from '@/features/auth';
+import { useAppFonts } from '@/hooks/use-app-fonts';
 import { AppProviders } from '@/providers';
 
-// La splash sigue visible mientras se restaura la sesión guardada (evita parpadeos visitante → logueado).
+// La splash sigue visible mientras cargan las fuentes y se restaura la sesión guardada
+// (evita parpadeos de tipografía y de visitante → logueado).
 SplashScreen.preventAutoHideAsync();
 
-function SplashScreenController() {
+function SplashScreenController({ areFontsReady }: { areFontsReady: boolean }) {
   const { status } = useSession();
-  if (status !== 'loading') {
+  if (areFontsReady && status !== 'loading') {
     SplashScreen.hide();
   }
   return null;
@@ -31,9 +33,11 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
+  const areFontsReady = useAppFonts();
+
   return (
     <AppProviders>
-      <SplashScreenController />
+      <SplashScreenController areFontsReady={areFontsReady} />
       <RootNavigator />
     </AppProviders>
   );

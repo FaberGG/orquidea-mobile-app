@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { FormMessage } from '@/components/feedback/form-message';
 import { FormScreen } from '@/components/layout/form-screen';
@@ -10,10 +11,13 @@ import { Button } from '@/components/ui/button';
 import { TextField } from '@/components/ui/text-field';
 import { Spacing } from '@/constants/theme';
 
+import { AUTH_LABELS } from '../constants';
 import { getLoginErrorMessage, useLogin } from '../hooks';
 import { loginSchema, type LoginFormValues } from '../schemas';
 
-/** HU-1: inicio de sesión con correo y contraseña. */
+const OPOSSUM = require('@/assets/images/illustrations/opossum.png');
+
+/** HU-1: inicio de sesión con correo y contraseña (diseño Figma "Inicio de sesion", nodo 43:229). */
 export function LoginScreen() {
   const {
     control,
@@ -35,69 +39,133 @@ export function LoginScreen() {
 
   return (
     <FormScreen>
-      <View style={styles.header}>
-        <ThemedText type="subtitle" accessibilityRole="header">
-          Humedal La Orquídea
-        </ThemedText>
-        <ThemedText themeColor="textSecondary">Ingresa con tu correo y contraseña.</ThemedText>
+      <View style={styles.illustration}>
+        <Image source={OPOSSUM} style={styles.opossum} contentFit="contain" accessible={false} />
       </View>
 
-      <Controller
-        control={control}
-        name="email"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextField
-            label="Correo electrónico"
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            hasError={Boolean(errors.email)}
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoComplete="email"
-            keyboardType="email-address"
-            textContentType="username"
-            returnKeyType="next"
-          />
-        )}
-      />
+      <View style={styles.header}>
+        <ThemedText type="subtitle" accessibilityRole="header" style={styles.centered}>
+          {AUTH_LABELS.loginTitle}
+        </ThemedText>
+        <ThemedText
+          type="small"
+          themeColor="textSecondary"
+          style={[styles.centered, styles.subtitle]}>
+          {AUTH_LABELS.loginSubtitle}
+        </ThemedText>
+      </View>
 
-      <Controller
-        control={control}
-        name="password"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextField
-            label="Contraseña"
-            isPassword
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            hasError={Boolean(errors.password)}
-            autoCapitalize="none"
-            autoComplete="current-password"
-            textContentType="password"
-            returnKeyType="go"
-            onSubmitEditing={onSubmit}
+      <View style={styles.fields}>
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              label={AUTH_LABELS.emailLabel}
+              icon="email"
+              placeholder={AUTH_LABELS.emailPlaceholder}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              hasError={Boolean(errors.email)}
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="email"
+              keyboardType="email-address"
+              textContentType="username"
+              returnKeyType="next"
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="password"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              label={AUTH_LABELS.passwordLabel}
+              icon="password"
+              placeholder={AUTH_LABELS.passwordPlaceholder}
+              isPassword
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              hasError={Boolean(errors.password)}
+              autoCapitalize="none"
+              autoComplete="current-password"
+              textContentType="password"
+              returnKeyType="go"
+              onSubmitEditing={onSubmit}
+            />
+          )}
+        />
+
+        <View style={styles.forgotPassword}>
+          <Button
+            variant="link"
+            label={AUTH_LABELS.forgotPasswordLink}
+            onPress={() => router.push('/forgot-password')}
           />
-        )}
-      />
+        </View>
+      </View>
 
       {errorMessage !== undefined && <FormMessage message={errorMessage} />}
 
-      <Button label="INGRESAR" onPress={onSubmit} isLoading={loginMutation.isPending} />
-
       <Button
-        variant="link"
-        label="¿Olvidaste tu contraseña?"
-        onPress={() => router.push('/forgot-password')}
+        label={AUTH_LABELS.loginButton}
+        onPress={onSubmit}
+        isLoading={loginMutation.isPending}
       />
+
+      <View style={styles.footer}>
+        <ThemedText type="smallSemiBold" themeColor="textMuted">
+          {AUTH_LABELS.noAccount}
+        </ThemedText>
+        <Pressable
+          accessibilityRole="link"
+          hitSlop={Spacing.three}
+          onPress={() => router.push('/register')}>
+          <ThemedText type="smallBold" themeColor="primary">
+            {AUTH_LABELS.registerLink}
+          </ThemedText>
+        </Pressable>
+      </View>
     </FormScreen>
   );
 }
 
 const styles = StyleSheet.create({
+  illustration: {
+    alignItems: 'center',
+    padding: 10,
+  },
+  opossum: {
+    width: 90,
+    height: 175,
+  },
   header: {
-    gap: Spacing.two,
-    marginBottom: Spacing.two,
+    alignItems: 'center',
+    gap: 14,
+    padding: 10,
+  },
+  centered: {
+    textAlign: 'center',
+  },
+  subtitle: {
+    maxWidth: 224,
+  },
+  fields: {
+    gap: Spacing.three,
+  },
+  forgotPassword: {
+    alignItems: 'flex-end',
+  },
+  footer: {
+    flexGrow: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    gap: 10,
+    padding: 10,
   },
 });

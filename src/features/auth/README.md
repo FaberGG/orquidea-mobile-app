@@ -8,7 +8,11 @@
 |---|---|
 | HU-1 | ✅ Implementada (`feature/inicio-de-sesion`) |
 | HU-1.1 | Pendiente: hoy `/forgot-password` es solo el destino del enlace de HU-1 CA4 |
-| HU-2, HU-3 | Pendientes |
+| HU-2, HU-3 | Pendientes (`/register` es solo el destino del enlace "Registrarse" del login) |
+
+Diseño: Figma "Humedal Orquidea", sección **HE-1 Registro y Autenticacion** (login: nodo `43:229`). Donde el
+Figma y los criterios de aceptación difieren, mandan los criterios: botón **INGRESAR** (Figma: "Iniciar Sesion") y
+enlace **¿Olvidaste tu contraseña?** (Figma: "Olvido su contraseña?"). Los textos están en `AUTH_LABELS`.
 
 ## Historias
 
