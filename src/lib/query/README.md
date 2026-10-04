@@ -3,12 +3,12 @@
 **Responsabilidad:** crear y configurar el `QueryClient` de TanStack Query (ADR-0003) que usan los hooks de todas
 las features.
 
-## Contenido previsto
+## Contenido
 
 | Archivo | Contenido |
 |---|---|
 | `query-client.ts` | Instancia con valores por defecto: `staleTime`, reintentos (sin reintentar `4xx`), manejo de errores global |
-| `focus-manager.ts` | Integración con `AppState` y conectividad para refrescar al volver a la app |
+| `focus-manager.ts` | _Pendiente:_ integración con `AppState` y conectividad para refrescar al volver a la app |
 | `index.ts` | API pública |
 
 ## Reglas

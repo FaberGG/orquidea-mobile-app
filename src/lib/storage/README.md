@@ -2,12 +2,12 @@
 
 **Responsabilidad:** persistir datos en el dispositivo con la herramienta adecuada según su sensibilidad.
 
-## Contenido previsto
+## Contenido
 
 | Archivo | Contenido |
 |---|---|
-| `secure-storage.ts` | `getItem/setItem/deleteItem` sobre `expo-secure-store`; fallback a `localStorage` en web (ADR-0006) |
-| `token-storage.ts` | `getToken`, `saveToken`, `clearToken` (un único JWT y su vencimiento): usado por `lib/api` y `features/auth` |
+| `secure-storage.ts` / `secure-storage.web.ts` | `getSecureItem/setSecureItem/deleteSecureItem` sobre `expo-secure-store`; en web, `localStorage` (ADR-0006) |
+| `token-storage.ts` | `getToken`, `saveToken`, `clearToken` (un único JWT y su vencimiento `expiresAt`): usado por `lib/api` y `features/auth`. `getToken` borra y descarta tokens vencidos |
 | `index.ts` | API pública |
 
 ## Reglas

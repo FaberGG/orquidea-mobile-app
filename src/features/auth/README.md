@@ -6,7 +6,7 @@
 
 | HU | Estado |
 |---|---|
-| HU-1 | ✅ Implementada (`feat/hu-1-login`) |
+| HU-1 | ✅ Implementada (`feature/inicio-de-sesion`) |
 | HU-1.1 | Pendiente: hoy `/forgot-password` es solo el destino del enlace de HU-1 CA4 |
 | HU-2, HU-3 | Pendientes |
 

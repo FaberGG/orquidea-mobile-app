@@ -15,13 +15,13 @@ Deben terminarse primero, en este orden. Son las únicas que tocan configuració
 | T0.1 | Eliminar el código de demostración de la plantilla (`explore.tsx`, `hint-row`, `web-badge`, `animated-icon`, script `reset-project`, imágenes de ejemplo) y ajustar `name`/`slug` en `app.json` | `chore/issue-1-limpiar-plantilla` | `src/`, `assets/`, `scripts/` |
 | T0.2 | ✅ **Hecho.** Tooling: ESLint, Prettier, reglas de import y de capas (ADR-0007, ADR-0008) | — | raíz |
 | T0.3 | ✅ **Hecho** (salvo protección de ramas). CI en GitHub Actions: lint + formato + typecheck. **Pendiente:** proteger `main` y `develop` al crear el repositorio remoto | — | `.github/workflows/` |
-| T0.4 | Pruebas: `jest-expo` + Testing Library (ADR-0005). Al terminar, agregar el paso `npm test` a la CI | `chore/issue-4-configurar-pruebas` | raíz, `.github/workflows/ci.yml` |
-| T0.5 | Configuración: lectura y validación de `EXPO_PUBLIC_API_URL` | `feat/issue-5-config-entorno` | `src/config/` |
-| T0.6 | Cliente HTTP: base URL, token, timeout, `ApiError` desde `ApiErrorResponse`, JSON y `multipart/form-data`, cierre de sesión ante 401 (sin renovación de token) | `feat/issue-6-cliente-http` | `src/lib/api/` |
-| T0.7 | Almacenamiento seguro (ADR-0006) y query client (ADR-0003) | `feat/issue-7-storage-y-query` | `src/lib/storage/`, `src/lib/query/` |
-| T0.8 | Permisos: roles, matriz, `can`, `usePermission`, `<Can>` + pruebas | `feat/issue-8-permisos` | `src/permissions/` |
-| T0.9 | Componentes base: botón, input, mensaje de error, estado vacío, cargando | `feat/issue-9-componentes-base` | `src/components/` |
-| T0.10 | Shell de navegación: layout raíz con guards, tabs (`index`, `species`, `account`), grupos `(auth)` y `(admin)` vacíos | `feat/issue-10-shell-navegacion` | `src/app/`, `src/providers/` |
+| T0.4 | ✅ **Hecho** (en `feature/inicio-de-sesion`). Pruebas: `jest-expo` + Testing Library (ADR-0005). Al terminar, agregar el paso `npm test` a la CI | `chore/issue-4-configurar-pruebas` | raíz, `.github/workflows/ci.yml` |
+| T0.5 | ✅ **Hecho** (en `feature/inicio-de-sesion`). Configuración: lectura y validación de `EXPO_PUBLIC_API_URL` | `feat/issue-5-config-entorno` | `src/config/` |
+| T0.6 | ✅ **Hecho** (en `feature/inicio-de-sesion`). Cliente HTTP: base URL, token, timeout, `ApiError` desde `ApiErrorResponse`, JSON y `multipart/form-data`, cierre de sesión ante 401 (sin renovación de token) | `feat/issue-6-cliente-http` | `src/lib/api/` |
+| T0.7 | ✅ **Hecho** (en `feature/inicio-de-sesion`; falta `focus-manager`). Almacenamiento seguro (ADR-0006) y query client (ADR-0003) | `feat/issue-7-storage-y-query` | `src/lib/storage/`, `src/lib/query/` |
+| T0.8 | ✅ **Hecho** (en `feature/inicio-de-sesion`). Permisos: roles, matriz, `can`, `usePermission`, `<Can>` + pruebas | `feat/issue-8-permisos` | `src/permissions/` |
+| T0.9 | 🟡 **Parcial** (`Button`, `TextField`, `FormMessage`, `FormScreen`). Componentes base: botón, input, mensaje de error, estado vacío, cargando | `feat/issue-9-componentes-base` | `src/components/` |
+| T0.10 | 🟡 **Parcial** (layout raíz con providers, splash y guard de `(auth)`; grupo `(tabs)` con la demo). Shell de navegación: layout raíz con guards, tabs (`index`, `species`, `account`), grupos `(auth)` y `(admin)` vacíos | `feat/issue-10-shell-navegacion` | `src/app/`, `src/providers/` |
 
 > T0.5 a T0.9 pueden avanzar en paralelo una vez cerradas T0.1 y T0.2.
 
