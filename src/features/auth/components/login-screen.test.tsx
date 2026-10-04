@@ -129,6 +129,14 @@ describe('LoginScreen (HU-1)', () => {
     expect(router.push).toHaveBeenCalledWith('/forgot-password');
   });
 
+  it('el enlace "Registrarse" lleva al registro', async () => {
+    await renderLogin();
+
+    await fireEvent.press(screen.getByText('Registrarse'));
+
+    expect(router.push).toHaveBeenCalledWith('/register');
+  });
+
   it('sin conexión muestra el mensaje de respaldo', async () => {
     mockedLogin.mockRejectedValue(
       new ApiError({ status: 0, kind: 'network', path: '/api/autenticacion/iniciar-sesion' }),
