@@ -5,15 +5,16 @@ las pantallas sean compartidas y que cada elemento se muestre u oculte según el
 
 Modelo completo y matriz: [`docs/architecture/ROLES-Y-PERMISOS.md`](../../docs/architecture/ROLES-Y-PERMISOS.md).
 
-## Contenido previsto
+## Contenido
 
 | Archivo | Contenido |
 |---|---|
-| `roles.ts` | `type Role = 'visitor' \| 'user' \| 'admin' \| 'superadmin'` y su jerarquía |
-| `permissions.ts` | `type Permission` (p. ej. `'species:update'`) y la matriz `ROLE_PERMISSIONS` |
+| `roles.ts` | `type Role = 'visitor' \| 'user' \| 'admin' \| 'superadmin'` y su jerarquía (`ROLE_PARENT`) |
+| `permissions.ts` | `type Permission` (p. ej. `'species:update'`) y la matriz `ROLE_PERMISSIONS` con la herencia aplicada (`auth:login` no se hereda: es solo del visitante) |
 | `can.ts` | `can(role, permission): boolean`: función pura |
+| `role-context.tsx` | `RoleProvider` y `useCurrentRole()`: `@/providers` inyecta el rol de la sesión (sin proveedor, `visitor`) |
 | `use-permission.ts` | `usePermission(permission)`: usa el rol de la sesión actual |
-| `can.tsx` (componente) | `<Can permission="..." fallback={...}>` |
+| `can-component.tsx` | `<Can permission="..." fallback={...}>` (no se llama `can.tsx` para no chocar con `can.ts`) |
 | `__tests__/` | Pruebas de la matriz para cada rol (obligatorias) |
 | `index.ts` | API pública |
 
