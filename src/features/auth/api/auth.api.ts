@@ -4,6 +4,9 @@ import {
   type LoginCredentials,
   type LoginRequestDto,
   type LoginResult,
+  type PasswordRecoveryRequestDto,
+  type PasswordResetData,
+  type PasswordResetRequestDto,
   type RegisterData,
   type RegisterRequestDto,
   type User,
@@ -37,6 +40,31 @@ export async function register({
     contrasena: password,
   };
   await apiClient.post<unknown>('/api/autenticacion/registro', { body, authenticated: false });
+}
+
+/**
+ * HU-1.1 paso 1: `POST /api/autenticacion/recuperar-contrasena`. La API envía un código de
+ * 6 dígitos y responde igual exista o no la cuenta (204).
+ */
+export async function requestPasswordReset({ email }: { email: string }): Promise<void> {
+  const body: PasswordRecoveryRequestDto = { correo: email.trim() };
+  await apiClient.post<unknown>('/api/autenticacion/recuperar-contrasena', {
+    body,
+    authenticated: false,
+  });
+}
+
+/** HU-1.1 paso 2: `POST /api/autenticacion/restablecer-contrasena`. `400` = código incorrecto o vencido. */
+export async function resetPassword({ email, code, password }: PasswordResetData): Promise<void> {
+  const body: PasswordResetRequestDto = {
+    correo: email.trim(),
+    codigo: code,
+    contrasena: password,
+  };
+  await apiClient.post<unknown>('/api/autenticacion/restablecer-contrasena', {
+    body,
+    authenticated: false,
+  });
 }
 
 /** HU-1 (restaurar sesión): `GET /api/autenticacion/yo` con el token guardado. */

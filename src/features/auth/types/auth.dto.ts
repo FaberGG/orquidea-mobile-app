@@ -22,6 +22,16 @@ export type RegisterRequestDto = {
   contrasena: string;
 };
 
+export type PasswordRecoveryRequestDto = {
+  correo: string;
+};
+
+export type PasswordResetRequestDto = {
+  correo: string;
+  codigo: string;
+  contrasena: string;
+};
+
 export type LoginResponseDto = {
   token: string;
   tipo?: string;

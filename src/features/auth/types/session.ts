@@ -23,6 +23,13 @@ export type RegisterData = {
   password: string;
 };
 
+/** HU-1.1 paso 2: código recibido por correo y nueva contraseña. */
+export type PasswordResetData = {
+  email: string;
+  code: string;
+  password: string;
+};
+
 export type LoginCredentials = {
   email: string;
   password: string;
