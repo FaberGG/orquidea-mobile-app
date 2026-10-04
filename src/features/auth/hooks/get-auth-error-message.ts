@@ -17,3 +17,17 @@ export function getLoginErrorMessage(error: unknown): string {
   }
   return AUTH_MESSAGES.unexpectedError;
 }
+
+/**
+ * Mensaje a mostrar cuando falla el registro. `409` siempre muestra el texto del criterio de
+ * aceptación (HU-2 CA2): el contrato documenta otro texto ("El correo electrónico ya está registrado.").
+ */
+export function getRegisterErrorMessage(error: unknown): string {
+  if (!isApiError(error)) return AUTH_MESSAGES.unexpectedError;
+  if (error.kind !== 'http') return AUTH_MESSAGES.networkError;
+  if (error.status === 409) return AUTH_MESSAGES.emailAlreadyRegistered;
+  if (error.status >= 400 && error.status < 500) {
+    return error.serverMessage ?? AUTH_MESSAGES.registerRequiredFields;
+  }
+  return AUTH_MESSAGES.unexpectedError;
+}

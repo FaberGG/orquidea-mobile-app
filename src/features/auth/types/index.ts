@@ -3,6 +3,13 @@ export type {
   AuthenticatedUserDto,
   LoginRequestDto,
   LoginResponseDto,
+  RegisterRequestDto,
 } from './auth.dto';
-export type { AuthToken, LoginCredentials, LoginResult, SessionStatus } from './session';
+export type {
+  AuthToken,
+  LoginCredentials,
+  LoginResult,
+  RegisterData,
+  SessionStatus,
+} from './session';
 export type { User } from './user';

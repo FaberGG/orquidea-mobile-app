@@ -1,7 +1,7 @@
 import { ApiError } from '@/lib/api';
 
 import { AUTH_MESSAGES } from '../constants';
-import { getLoginErrorMessage } from './get-auth-error-message';
+import { getLoginErrorMessage, getRegisterErrorMessage } from './get-auth-error-message';
 
 const path = '/api/autenticacion/iniciar-sesion';
 
@@ -36,5 +36,34 @@ describe('getLoginErrorMessage', () => {
 
   it('usa el mensaje genérico ante errores que no son de la API', () => {
     expect(getLoginErrorMessage(new Error('zod'))).toBe(AUTH_MESSAGES.unexpectedError);
+  });
+});
+
+describe('getRegisterErrorMessage', () => {
+  const registerPath = '/api/autenticacion/registro';
+
+  it('CA2: un 409 muestra "Este correo ya está registrado." aunque el servidor diga otra cosa', () => {
+    const error = new ApiError({
+      status: 409,
+      kind: 'http',
+      path: registerPath,
+      serverMessage: 'El correo electrónico ya está registrado.',
+    });
+    expect(getRegisterErrorMessage(error)).toBe(AUTH_MESSAGES.emailAlreadyRegistered);
+  });
+
+  it('muestra el mensaje del servidor en un 400', () => {
+    const error = new ApiError({
+      status: 400,
+      kind: 'http',
+      path: registerPath,
+      serverMessage: 'X',
+    });
+    expect(getRegisterErrorMessage(error)).toBe('X');
+  });
+
+  it('usa el mensaje de conexión sin red', () => {
+    const error = new ApiError({ status: 0, kind: 'network', path: registerPath });
+    expect(getRegisterErrorMessage(error)).toBe(AUTH_MESSAGES.networkError);
   });
 });

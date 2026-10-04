@@ -6,6 +6,7 @@
 |---|---|
 | `Button` ✅ (`button.tsx`) | Variantes `primary` y `link` implementadas (`secondary`, `danger` pendientes); estado `isLoading` y `disabled` |
 | `TextField` ✅ (`text-field.tsx`) | Campo redondeado con etiqueta, ícono opcional (`icon`), borde de error (`hasError`) y variante de contraseña con ojo para mostrar/ocultar (`isPassword`) |
+| `Checkbox` ✅ (`checkbox.tsx`) | Casilla de 14 px con texto; toda la fila es presionable (44 px) |
 | `Icon` ✅ (`icon.tsx`) | Íconos con `expo-symbols` (SF Symbols en iOS, Material Symbols en Android/web); nombres de la app en `ICONS` (ADR-0009) |
 | `ThemedText` / `ThemedView` | Texto y contenedores con colores del tema |
 | `Card` | Contenedor de tarjeta (base de `SpeciesCard`) |

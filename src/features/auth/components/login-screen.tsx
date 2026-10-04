@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { TextField } from '@/components/ui/text-field';
 import { Spacing } from '@/constants/theme';
 
-import { AUTH_LABELS } from '../constants';
+import { AUTH_LABELS, AUTH_MESSAGES } from '../constants';
 import { getLoginErrorMessage, useLogin } from '../hooks';
 import { loginSchema, type LoginFormValues } from '../schemas';
 
@@ -28,6 +28,9 @@ export function LoginScreen() {
     defaultValues: { email: '', password: '' },
   });
   const loginMutation = useLogin();
+  // HU-2 CA1: tras registrarse se vuelve aquí con `?registered=true`.
+  const { registered } = useLocalSearchParams<{ registered?: string }>();
+  const hasJustRegistered = registered === 'true';
 
   const onSubmit = handleSubmit((values) => loginMutation.mutate(values));
 
@@ -109,7 +112,13 @@ export function LoginScreen() {
         </View>
       </View>
 
-      {errorMessage !== undefined && <FormMessage message={errorMessage} />}
+      {errorMessage !== undefined ? (
+        <FormMessage message={errorMessage} />
+      ) : (
+        hasJustRegistered && (
+          <FormMessage variant="success" message={AUTH_MESSAGES.registerSuccess} />
+        )
+      )}
 
       <Button
         label={AUTH_LABELS.loginButton}
