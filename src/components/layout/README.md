@@ -6,6 +6,6 @@
 | Componente previsto | Uso |
 |---|---|
 | `Screen` | Contenedor base: área segura, fondo del tema, ancho máximo en web/tablet |
-| `FormScreen` | `Screen` con scroll y manejo del teclado para formularios |
+| `FormScreen` ✅ (`form-screen.tsx`) | Área segura, scroll y manejo del teclado para formularios |
 | `ScreenHeader` | Título y acciones opcionales cuando no se usa el header del navegador |
 | `Section` | Agrupación con título dentro de una pantalla |

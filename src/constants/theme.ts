@@ -14,6 +14,12 @@ export const Colors = {
     backgroundElement: '#F0F0F3',
     backgroundSelected: '#E0E1E6',
     textSecondary: '#60646C',
+    // Paleta provisional (placeholder de los prototipos de Figma) hasta confirmar la del comité.
+    primary: '#2F6B4F',
+    onPrimary: '#ffffff',
+    danger: '#B3261E',
+    dangerBackground: '#FCEEEE',
+    border: '#C9CCD1',
   },
   dark: {
     text: '#ffffff',
@@ -21,6 +27,11 @@ export const Colors = {
     backgroundElement: '#212225',
     backgroundSelected: '#2E3135',
     textSecondary: '#B0B4BA',
+    primary: '#7BC29A',
+    onPrimary: '#0B2117',
+    danger: '#F2B8B5',
+    dangerBackground: '#3A1614',
+    border: '#3A3D42',
   },
 } as const;
 
@@ -60,6 +71,15 @@ export const Spacing = {
   five: 32,
   six: 64,
 } as const;
+
+/** Radios de borde de los componentes base. */
+export const Radius = {
+  small: 8,
+  medium: 12,
+} as const;
+
+/** Tamaño mínimo de un área táctil (CODIGO §7). */
+export const MinTouchSize = 44;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
 export const MaxContentWidth = 800;
