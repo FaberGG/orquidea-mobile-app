@@ -15,6 +15,14 @@ export type LoginResult = {
   user: User;
 };
 
+/** Datos de registro de un visitante (HU-2). */
+export type RegisterData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
 export type LoginCredentials = {
   email: string;
   password: string;

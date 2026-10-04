@@ -15,6 +15,13 @@ export type LoginRequestDto = {
   contrasena: string;
 };
 
+export type RegisterRequestDto = {
+  nombre: string;
+  apellido: string;
+  correo: string;
+  contrasena: string;
+};
+
 export type LoginResponseDto = {
   token: string;
   tipo?: string;

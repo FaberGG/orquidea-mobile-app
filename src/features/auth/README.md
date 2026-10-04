@@ -8,7 +8,8 @@
 |---|---|
 | HU-1 | ✅ Implementada (`feature/inicio-de-sesion`) |
 | HU-1.1 | Pendiente: hoy `/forgot-password` es solo el destino del enlace de HU-1 CA4 |
-| HU-2, HU-3 | Pendientes (`/register` es solo el destino del enlace "Registrarse" del login) |
+| HU-2 | ✅ Implementada (`feature/registro`), diseño Figma nodo `44:468` |
+| HU-3 | Pendiente |
 
 Diseño: Figma "Humedal Orquidea", sección **HE-1 Registro y Autenticacion** (login: nodo `43:229`). Donde el
 Figma y los criterios de aceptación difieren, mandan los criterios: botón **INGRESAR** (Figma: "Iniciar Sesion") y
@@ -63,3 +64,9 @@ muestran con su `mensaje`, que coincide con estos textos (ver [CODIGO §10](../.
 | HU-2 correo registrado | `Este correo ya está registrado.` |
 | HU-2 campos incompletos | `Todos los campos son obligatorios.` |
 | HU-2 correo inválido | `Ingresa un correo electrónico válido.` |
+| HU-2 éxito (en el login) | `Tu cuenta fue creada. Revisa tu correo e inicia sesión.` (local) |
+| HU-2 reglas sin CA | `El nombre y el apellido deben tener al menos 2 caracteres.` (contrato) · `Las contraseñas no coinciden.` · `Debes aceptar los términos y condiciones y la política de privacidad.` (diseño) |
+
+HU-2: el `409` siempre muestra el texto del criterio (el contrato documenta "El correo electrónico ya está registrado.").
+El Figma agrega **Confirmar contraseña** (solo se valida en la app; la API recibe una contraseña) y la casilla de
+**términos y política de privacidad** (consentimiento de la Ley 1581; aún no existen esos documentos, por eso no enlazan).

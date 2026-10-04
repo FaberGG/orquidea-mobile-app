@@ -15,6 +15,7 @@ const ICONS = {
   password: { ios: 'asterisk', android: 'asterisk', web: 'asterisk' },
   visibility: { ios: 'eye', android: 'visibility', web: 'visibility' },
   visibilityOff: { ios: 'eye.slash', android: 'visibility_off', web: 'visibility_off' },
+  check: { ios: 'checkmark', android: 'check', web: 'check' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
