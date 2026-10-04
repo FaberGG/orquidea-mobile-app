@@ -3,12 +3,12 @@
 **Responsabilidad:** leer las variables de entorno **una sola vez**, validarlas y exponerlas tipadas. Ningún otro
 archivo lee `process.env` directamente.
 
-## Contenido previsto
+## Contenido
 
 | Archivo | Contenido |
 |---|---|
-| `env.ts` | Lee `process.env.EXPO_PUBLIC_API_URL` y `process.env.EXPO_PUBLIC_APP_ENV`, valida (Zod) y exporta `env` |
-| `app-config.ts` | Configuración no secreta derivada (timeouts, tamaño máximo de imagen, etc.) |
+| `env.ts` | `getEnv()`: lee `process.env.EXPO_PUBLIC_API_URL` y `process.env.EXPO_PUBLIC_APP_ENV` la primera vez que se llama, valida (Zod) y devuelve `{ apiUrl, appEnv }`. Es perezoso para que las pruebas puedan importar módulos sin variables definidas |
+| `app-config.ts` | `APP_CONFIG`: configuración no secreta derivada (timeout de peticiones; luego tamaño máximo de imagen, etc.) |
 | `index.ts` | API pública |
 
 ## Reglas
