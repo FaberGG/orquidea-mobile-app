@@ -2,6 +2,18 @@
 
 **Responsabilidad:** identificar al usuario, mantener su sesión y exponer su rol al resto de la app.
 
+## Estado
+
+| HU | Estado |
+|---|---|
+| HU-1 | ✅ Implementada (`feature/inicio-de-sesion`) |
+| HU-1.1 | Pendiente: hoy `/forgot-password` es solo el destino del enlace de HU-1 CA4 |
+| HU-2, HU-3 | Pendientes (`/register` es solo el destino del enlace "Registrarse" del login) |
+
+Diseño: Figma "Humedal Orquidea", sección **HE-1 Registro y Autenticacion** (login: nodo `43:229`). Donde el
+Figma y los criterios de aceptación difieren, mandan los criterios: botón **INGRESAR** (Figma: "Iniciar Sesion") y
+enlace **¿Olvidaste tu contraseña?** (Figma: "Olvido su contraseña?"). Los textos están en `AUTH_LABELS`.
+
 ## Historias
 
 | HU | Descripción | Pantalla |
@@ -25,8 +37,12 @@
 
 ## Sesión
 
-- `SessionProvider` guarda `{ status: 'loading' | 'authenticated' | 'guest', user, role }`.
+- `SessionProvider` expone `{ status: 'loading' | 'authenticated' | 'guest', user, signIn, signOut }`; `useSession()` agrega
+  `isAuthenticated` y `role`.
+- El usuario vive en la caché de servidor bajo `authKeys.me()`: iniciar o cerrar sesión es actualizar esa entrada.
 - Al iniciar la app: lee el token de `@/lib/storage` → `getMe()` → resuelve el rol. Mientras tanto la splash sigue visible.
+  Si no hay red o la API falla con algo distinto de `401`, la sesión arranca como visitante pero el token se conserva
+  para reintentar en el siguiente arranque.
 - La API entrega **un único JWT** sin renovación. Si vence (`401`), se borra y la sesión pasa a `guest`.
 - Si no hay sesión, el rol efectivo es `visitor`.
 - `useLogout` borra el token, limpia la caché de servidor y deja la sesión como `guest` (no hay endpoint de logout).
@@ -41,6 +57,7 @@ muestran con su `mensaje`, que coincide con estos textos (ver [CODIGO §10](../.
 |---|---|
 | HU-1 credenciales incorrectas | `Correo o contraseña incorrectos.` |
 | HU-1 campos vacíos | `Ambos campos son obligatorios.` |
+| HU-1 sin conexión / error inesperado (respaldo local) | `No pudimos conectarnos con el servidor. Revisa tu conexión e inténtalo de nuevo.` / `Ocurrió un error inesperado. Inténtalo de nuevo.` |
 | HU-1.1 envío (exista o no la cuenta) | `Se ha enviado un correo con las instrucciones para restablecer tu contraseña.` (texto de la HU; ajustarlo si el PO lo alinea con el flujo de código, ver docs/api B5) |
 | HU-1.1 campo vacío | `Debes ingresar tu correo electrónico.` |
 | HU-2 correo registrado | `Este correo ya está registrado.` |

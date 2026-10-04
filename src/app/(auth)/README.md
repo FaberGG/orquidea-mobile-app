@@ -9,8 +9,8 @@ un usuario con sesión no puede volver a estas pantallas.
 |---|---|---|---|
 | `_layout.tsx` | — | Stack sin pestañas | — |
 | `login.tsx` | `/login` | `LoginScreen` | HU-1 |
-| `register.tsx` | `/register` | `RegisterScreen` | HU-2 |
-| `forgot-password.tsx` | `/forgot-password` | `ForgotPasswordScreen`: solicita el código | HU-1.1 |
+| `register.tsx` | `/register` | `RegisterScreen` (hoy solo es el destino del enlace "Registrarse" del login) | HU-2 |
+| `forgot-password.tsx` | `/forgot-password` | `ForgotPasswordScreen`: solicita el código (hoy solo es el destino del enlace de HU-1 CA4) | HU-1.1 |
 | `reset-password.tsx` | `/reset-password?email=` | `ResetPasswordScreen`: código de 6 dígitos y nueva contraseña | HU-1.1 |
 
 Flujos:

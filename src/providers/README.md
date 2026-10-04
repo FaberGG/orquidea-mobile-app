@@ -3,19 +3,19 @@
 **Responsabilidad:** componer en un solo lugar los providers de React que envuelven toda la app, en el orden
 correcto, para que `src/app/_layout.tsx` solo tenga que montar `<AppProviders>`.
 
-## Contenido previsto
+## Contenido
 
 | Archivo | Contenido |
 |---|---|
 | `app-providers.tsx` | Composición de providers |
 | `index.ts` | Exporta `AppProviders` |
 
-Orden previsto (de afuera hacia adentro):
+Orden (de afuera hacia adentro):
 
-1. `SafeAreaProvider` / `GestureHandlerRootView`
+1. `SafeAreaProvider`: lo monta Expo Router; `GestureHandlerRootView` se agregará cuando se use
 2. `QueryClientProvider` (`@/lib/query`)
 3. `SessionProvider` (`@/features/auth`)
-4. Provider de rol para `@/permissions` (conecta la sesión con los permisos)
+4. `SessionRoleProvider` → `RoleProvider` de `@/permissions` con el rol de la sesión
 5. `ThemeProvider` (tema claro/oscuro de navegación)
 
 ## Reglas

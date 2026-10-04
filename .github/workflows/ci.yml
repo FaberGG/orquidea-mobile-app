@@ -40,3 +40,6 @@ jobs:
 
       - name: TypeScript
         run: npm run typecheck
+
+      - name: Pruebas
+        run: npm test -- --ci
