@@ -11,4 +11,4 @@ mensajes según [CODIGO §10](../../../../docs/conventions/CODIGO.md#10-errores)
 | `useRequestPasswordReset` | Solicita el código; muestra siempre el mismo mensaje de éxito (HU-1.1 CA2) |
 | `useResetPassword` | Envía código y nueva contraseña; si el código es inválido o venció, muestra el `mensaje` del servidor |
 | `getLoginErrorMessage` | Traduce el error del login a mensaje (servidor → criterio de aceptación → respaldo) |
-| `useLogout` | Borra el token, limpia la caché y deja la sesión como visitante |
+| `useLogout` | Borra el token, deja la sesión en `null`, quita el resto de la caché de servidor y vuelve a `/` |
