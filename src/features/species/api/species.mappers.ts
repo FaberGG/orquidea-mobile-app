@@ -36,28 +36,24 @@ const CATEGORY_TO_API: Record<SpeciesCategory, 'AVE' | 'PLANTA' | 'INSECTO'> = {
   insect: 'INSECTO',
 };
 
-/**
- * Arma el `multipart/form-data` de `TaxonRequest`. La foto va como archivo con su URI local; sin foto
- * no se envía el campo y la API conserva la actual al editar.
- */
+/** Campos de texto de `TaxonRequest`, ya sin espacios sobrantes. */
+export function toSpeciesFields(input: SpeciesInput): Record<string, string> {
+  return {
+    categoria: CATEGORY_TO_API[input.category],
+    vernacularName: input.vernacularName.trim(),
+    scientificName: input.scientificName.trim(),
+    order: input.order.trim(),
+    family: input.family.trim(),
+    genus: input.genus.trim(),
+    alimentacion: input.diet.trim(),
+    rolEnHumedal: input.wetlandRole.trim(),
+    estadoConservacion: input.conservationStatus,
+  };
+}
+
+/** `multipart/form-data` solo de texto, para editar sin cambiar la foto. */
 export function toSpeciesFormData(input: SpeciesInput): FormData {
   const data = new FormData();
-  data.append('categoria', CATEGORY_TO_API[input.category]);
-  data.append('vernacularName', input.vernacularName.trim());
-  data.append('scientificName', input.scientificName.trim());
-  data.append('order', input.order.trim());
-  data.append('family', input.family.trim());
-  data.append('genus', input.genus.trim());
-  data.append('alimentacion', input.diet.trim());
-  data.append('rolEnHumedal', input.wetlandRole.trim());
-  data.append('estadoConservacion', input.conservationStatus);
-  if (input.photo) {
-    // En React Native un archivo en FormData es `{ uri, name, type }`, no un Blob.
-    data.append('foto', {
-      uri: input.photo.uri,
-      name: input.photo.fileName ?? 'foto.jpg',
-      type: input.photo.mimeType,
-    } as unknown as Blob);
-  }
+  for (const [name, value] of Object.entries(toSpeciesFields(input))) data.append(name, value);
   return data;
 }
