@@ -7,9 +7,9 @@
 | HU | Estado |
 |---|---|
 | HU-1 | ✅ Implementada (`feature/inicio-de-sesion`) |
-| HU-1.1 | Pendiente: hoy `/forgot-password` es solo el destino del enlace de HU-1 CA4 |
+| HU-1.1 | ✅ Implementada (`feature/recuperar-contrasena`), flujo de dos pasos con código de 6 dígitos; sin diseño en Figma (sigue el estilo del login) |
 | HU-2 | ✅ Implementada (`feature/registro`), diseño Figma nodo `44:468` |
-| HU-3 | Pendiente |
+| HU-3 | ✅ Implementada (`feature/cerrar-sesion`): pestaña **Cuenta** con CERRAR SESIÓN; sin diseño en Figma |
 
 Diseño: Figma "Humedal Orquidea", sección **HE-1 Registro y Autenticacion** (login: nodo `43:229`). Donde el
 Figma y los criterios de aceptación difieren, mandan los criterios: botón **INGRESAR** (Figma: "Iniciar Sesion") y
@@ -59,7 +59,9 @@ muestran con su `mensaje`, que coincide con estos textos (ver [CODIGO §10](../.
 | HU-1 credenciales incorrectas | `Correo o contraseña incorrectos.` |
 | HU-1 campos vacíos | `Ambos campos son obligatorios.` |
 | HU-1 sin conexión / error inesperado (respaldo local) | `No pudimos conectarnos con el servidor. Revisa tu conexión e inténtalo de nuevo.` / `Ocurrió un error inesperado. Inténtalo de nuevo.` |
-| HU-1.1 envío (exista o no la cuenta) | `Se ha enviado un correo con las instrucciones para restablecer tu contraseña.` (texto de la HU; ajustarlo si el PO lo alinea con el flujo de código, ver docs/api B5) |
+| HU-1.1 envío (exista o no la cuenta) | `Se ha enviado un correo con las instrucciones para restablecer tu contraseña.` (texto de la HU; ajustarlo si el PO lo alinea con el flujo de código, ver docs/api B5). Se muestra en el paso 2 |
+| HU-1.1 paso 2 (locales) | `Todos los campos son obligatorios.` · `El código debe tener 6 dígitos.` · `Las contraseñas no coinciden.` · `Código incorrecto o vencido.` (respaldo si el `400` no trae `mensaje`) |
+| HU-1.1 éxito (en el login) | `Tu contraseña fue actualizada. Inicia sesión con tu nueva contraseña.` |
 | HU-1.1 campo vacío | `Debes ingresar tu correo electrónico.` |
 | HU-2 correo registrado | `Este correo ya está registrado.` |
 | HU-2 campos incompletos | `Todos los campos son obligatorios.` |
