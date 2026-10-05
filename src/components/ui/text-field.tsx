@@ -25,6 +25,7 @@ export function TextField({
 }: TextFieldProps) {
   const theme = useTheme();
   const [isTextHidden, setIsTextHidden] = useState(true);
+  const isMultiline = inputProps.multiline === true;
 
   return (
     <View style={styles.container}>
@@ -34,6 +35,7 @@ export function TextField({
       <View
         style={[
           styles.inputRow,
+          isMultiline && styles.multilineRow,
           {
             borderColor: hasError ? theme.danger : theme.border,
             backgroundColor: theme.background,
@@ -42,6 +44,7 @@ export function TextField({
         {icon && <Icon name={icon} size={icon === 'email' ? 20 : 24} />}
         <TextInput
           accessibilityLabel={label}
+          textAlignVertical={isMultiline ? 'top' : undefined}
           placeholderTextColor={theme.textMuted}
           secureTextEntry={isPassword && isTextHidden}
           style={[styles.input, { color: theme.text }]}
@@ -74,6 +77,12 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     minHeight: MinTouchSize,
     paddingHorizontal: Spacing.three,
+  },
+  multilineRow: {
+    alignItems: 'flex-start',
+    borderRadius: Radius.medium + Spacing.one,
+    minHeight: 96,
+    paddingVertical: Spacing.two,
   },
   input: {
     flex: 1,

@@ -9,8 +9,8 @@ por rol**. Diseño: Figma, HE-3 → "Listar fichas" y "Detalle ficha".
 | HU | Descripción | Rol | Estado |
 |---|---|---|---|
 | HU-10 | Listado por categoría (chips con ícono) y detalle | Todos | ✅ Implementado (sin búsqueda: la API aún no la tiene) |
-| HU-7 | Crear ficha | Admin+ | Pendiente |
-| HU-8 | Editar ficha | Admin+ | Botón visible con `<Can>`; deshabilitado hasta la pantalla de edición |
+| HU-7 | Crear ficha | Admin+ | ✅ Formulario de `(admin)/species/new` (Figma "Crear ficha") |
+| HU-8 | Editar ficha | Admin+ | ✅ Formulario de `(admin)/species/[id]/edit` (Figma "Editar ficha") |
 | HU-9 | Eliminar ficha | Admin+ | Botón visible con `<Can>`; deshabilitado: la API no tiene `DELETE` (docs/api B1) |
 
 ## Modelo
@@ -40,7 +40,7 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 | [`hooks/`](hooks/README.md) | `useSpeciesList`, `useSpecies` |
 | [`schemas/`](schemas/README.md) | Validación de `TaxonDto` |
 | [`types/`](types/README.md) | `Species`, `SpeciesCategory`, `ConservationStatus` |
-| `constants.ts` | `SPECIES_LABELS`, filtros de categoría, estados de conservación y claves de caché |
+| `constants.ts` | `SPECIES_LABELS`, `SPECIES_FORM_LABELS`, `SPECIES_MESSAGES`, filtros, estados y claves de caché |
 | `index.ts` | Exporta `SpeciesListScreen`, `SpeciesDetailScreen` y `SPECIES_LABELS` |
 
 ## Visibilidad por rol
@@ -49,6 +49,7 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 |---|---|
 | Listado y detalle | `species:read` (todos) |
 | Botón **Editar ficha** en el detalle | `species:update` (admin, superadmin) |
+| Botón **+** del encabezado del listado y **Nueva ficha** en el menú lateral | `species:create` (admin, superadmin) |
 | Botón **Eliminar ficha** en el detalle | `species:delete` (admin, superadmin) |
 
 ## Mensajes

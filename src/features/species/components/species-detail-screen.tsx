@@ -144,8 +144,9 @@ function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTo
           <Can permission="species:update">
             <Button
               label={SPECIES_LABELS.editButton}
-              // HU-8: la pantalla de edición llega con su historia; se deja visible para el rol.
-              disabled
+              onPress={() =>
+                router.push({ pathname: '/species/[id]/edit', params: { id: species.id } })
+              }
             />
           </Can>
 

@@ -1,4 +1,5 @@
 import { type CONSERVATION_CODES } from '../constants';
+import { type SpeciesPhoto } from '../schemas/species-form.schema';
 
 /** Categorías que la API publica hoy (`AVE`, `PLANTA`, `INSECTO`); ver docs/api §3. */
 export type SpeciesCategory = 'bird' | 'plant' | 'insect';
@@ -20,4 +21,19 @@ export type Species = {
   wetlandRole: string | null;
   conservationStatus: ConservationStatus;
   photoUrl: string | null;
+};
+
+/** Datos que se envían a la API para crear o editar una ficha (`TaxonRequest`, multipart). */
+export type SpeciesInput = {
+  category: SpeciesCategory;
+  vernacularName: string;
+  scientificName: string;
+  order: string;
+  family: string;
+  genus: string;
+  diet: string;
+  wetlandRole: string;
+  conservationStatus: ConservationStatus;
+  /** `null` al editar significa "conservar la foto actual"; al crear es obligatoria. */
+  photo: SpeciesPhoto | null;
 };

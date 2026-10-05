@@ -1,1 +1,1 @@
-export { getSpecies, listSpecies } from './species.api';
+export { createSpecies, getSpecies, listSpecies, updateSpecies } from './species.api';

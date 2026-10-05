@@ -1,11 +1,11 @@
-# src/app/(admin)/species/ — Formularios de fichas
+# src/app/(admin)/species/ — Crear y editar ficha
 
-**Acceso:** administrador y superadministrador (`species:create`, `species:update`).
+**Acceso:** administrador y superadministrador (`species:create`).
 
-| Archivo | URL | Pantalla (`@/features/species`) | HU |
-|---|---|---|---|
-| `new.tsx` | `/species/new` | `CreateSpeciesScreen` | HU-7 |
-| `[id]/edit.tsx` | `/species/:id/edit` | `EditSpeciesScreen` | HU-8 |
+| Archivo | URL | Pantalla | HU | Permiso |
+|---|---|---|---|---|
+| `new.tsx` | `/species/new` | `SpeciesCreateScreen` | HU-7 | `species:create` |
+| `[id]/edit.tsx` | `/species/:id/edit` | `SpeciesEditScreen` | HU-8 | `species:update` |
 
-Ambas pantallas reutilizan el mismo `SpeciesForm`. Al guardar se invalida la caché del listado y del detalle.
-**CANCELAR** en edición descarta cambios y regresa a la ficha (`router.back()`).
+Al crear, la app vuelve al listado (`/`) y el listado se actualiza. Al editar, el mensaje
+`La ficha se actualizó correctamente.` aparece bajo el formulario.
