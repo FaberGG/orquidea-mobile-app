@@ -9,7 +9,7 @@ import { useTheme } from '@/hooks/use-theme';
 export type EmptyStateProps = {
   icon: IconName;
   title: string;
-  description: string;
+  description?: string;
   /** Acción opcional bajo el texto (p. ej. un botón para iniciar sesión). */
   children?: ReactNode;
 };
@@ -26,9 +26,11 @@ export function EmptyState({ icon, title, description, children }: EmptyStatePro
       <ThemedText style={styles.title} themeColor="textLabel" accessibilityRole="header">
         {title}
       </ThemedText>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.description}>
-        {description}
-      </ThemedText>
+      {description !== undefined && (
+        <ThemedText type="small" themeColor="textSecondary" style={styles.description}>
+          {description}
+        </ThemedText>
+      )}
       {children}
     </View>
   );

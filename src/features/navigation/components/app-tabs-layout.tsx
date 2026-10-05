@@ -4,6 +4,7 @@ import { Tabs } from 'expo-router/tabs';
 import { AppHeader } from '@/components/layout/app-header';
 import { TAB_ICON_SIZE, TabBar } from '@/components/layout/tab-bar';
 import { Icon, type IconName } from '@/components/ui/icon';
+import { CreateSpeciesButton } from '@/features/species';
 
 import { NAVIGATION_LABELS } from '../constants';
 
@@ -32,7 +33,18 @@ export function AppTabsLayout() {
       }}>
       <Tabs.Screen
         name="index"
-        options={{ title: NAVIGATION_LABELS.tabHome, tabBarIcon: tabIcon('home') }}
+        options={{
+          title: NAVIGATION_LABELS.tabHome,
+          tabBarIcon: tabIcon('home'),
+          // Inicio lleva el botón "+" a la derecha (HU-7), en el lugar del buscador descartado.
+          header: ({ navigation }) => (
+            <AppHeader
+              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
+              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              right={<CreateSpeciesButton />}
+            />
+          ),
+        }}
       />
       <Tabs.Screen
         name="community"

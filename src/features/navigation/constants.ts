@@ -12,6 +12,8 @@ export const NAVIGATION_LABELS = {
   guestDescription: 'Inicia sesión para reportar avistamientos y ver las opciones de tu cuenta.',
   loginButton: 'INICIAR SESIÓN',
   viewAccount: 'Ver mi cuenta',
+  sectionContent: 'Gestión de contenido',
+  newSpecies: 'Nueva ficha',
   sectionWetland: 'Humedal',
   wetlandComponents: 'Componentes del humedal',
   announcements: 'Anuncios',

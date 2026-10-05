@@ -6,6 +6,8 @@ type ApiErrorOptions = {
   kind: ApiErrorKind;
   path: string;
   serverMessage?: string;
+  /** Cuerpo tal como llegó (solo para depurar; nunca se muestra al usuario). */
+  body?: unknown;
   cause?: unknown;
 };
 
@@ -21,14 +23,16 @@ export class ApiError extends Error {
   readonly kind: ApiErrorKind;
   readonly path: string;
   readonly serverMessage: string | undefined;
+  readonly body: unknown;
 
-  constructor({ status, kind, path, serverMessage, cause }: ApiErrorOptions) {
+  constructor({ status, kind, path, serverMessage, body, cause }: ApiErrorOptions) {
     super(`ApiError ${kind} ${status} en ${path}`, { cause });
     this.name = 'ApiError';
     this.status = status;
     this.kind = kind;
     this.path = path;
     this.serverMessage = serverMessage;
+    this.body = body;
   }
 }
 

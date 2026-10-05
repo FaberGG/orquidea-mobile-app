@@ -1,19 +1,15 @@
-# src/app/(admin)/ — Rutas de gestión
+# src/app/(admin)/ — Gestión de contenido
 
-**Acceso:** administrador y superadministrador. Protegido en el layout raíz con
-`<Stack.Protected guard={can('species:create')}>`.
+**Acceso:** administrador y superadministrador. La raíz (`src/app/_layout.tsx`) la protege con
+`Stack.Protected guard={usePermission('species:create')}`; el visitante y el usuario registrado no la ven
+ni pueden abrirla por enlace.
 
-**Responsabilidad:** pantallas que **solo** tienen sentido para roles de gestión (formularios de creación y
-edición, administración de cuentas). Las acciones sobre pantallas compartidas (p. ej. botón Eliminar en el
-detalle de una ficha) **no** van aquí: se muestran con `<Can>` en la pantalla común.
+**Responsabilidad:** formularios de creación y edición. Las pantallas viven en las features; aquí solo
+se declaran las rutas.
 
-| Directorio / archivo | Acceso | Contenido |
-|---|---|---|
-| `_layout.tsx` | admin+ | Stack; anida `Stack.Protected` con `can('admins:read')` para `admins/` |
-| [`species/`](species/README.md) | admin+ | Crear y editar fichas (HU-7, HU-8) |
-| [`admins/`](admins/README.md) | solo superadmin | Gestión de administradores (HU-4, HU-5) |
-
-El grupo `(admin)` no agrega segmento a la URL. El nombre del grupo indica el tipo de acceso, no un "panel aparte".
-
-> Ocultar estas rutas en la UI no es seguridad: la API valida cada petición (ver
-> [ROLES-Y-PERMISOS](../../../docs/architecture/ROLES-Y-PERMISOS.md)).
+| Archivo | URL | Pantalla | HU | Estado |
+|---|---|---|---|---|
+| `_layout.tsx` | — | Stack sin encabezado (las pantallas dibujan el suyo) | — | ✅ |
+| [`species/new.tsx`](species/README.md) | `/species/new` | `SpeciesCreateScreen` | HU-7 | ✅ |
+| [`species/[id]/edit.tsx`](species/README.md) | `/species/:id/edit` | `SpeciesEditScreen` | HU-8 | ✅ |
+| [`admins/`](admins/README.md) | `/admins` | Gestión de administradores (solo superadmin) | HU-4, HU-5 | Pendiente |
