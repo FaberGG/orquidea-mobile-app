@@ -18,5 +18,6 @@
 - Un componente sube a esta carpeta cuando **dos o más features** lo necesitan.
 
 > Los archivos actuales en la raíz de esta carpeta (`themed-text`, `themed-view`, `external-link`) vienen de la
-> plantilla: los temáticos se reubican en `ui/` y los de demostración (`animated-icon`, `hint-row`, `web-badge`,
-> `app-tabs`) se eliminan o reemplazan en la tarea T0.1 del Sprint 1.
+> plantilla: los temáticos se reubican en `ui/` y los de demostración (`animated-icon`, `hint-row`, `web-badge`)
+> se eliminan en la tarea T0.1 del Sprint 1. La barra inferior de la plantilla (`app-tabs`) fue reemplazada
+> por `layout/tab-bar.tsx`.

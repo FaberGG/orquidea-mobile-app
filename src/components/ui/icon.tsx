@@ -1,22 +1,55 @@
-import { SymbolView } from 'expo-symbols';
-import { type ComponentProps } from 'react';
+import {
+  Asterisk,
+  AtSign,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  CircleUser,
+  CloudDownload,
+  Eye,
+  EyeOff,
+  House,
+  Leaf,
+  LogIn,
+  Map as MapIcon,
+  Megaphone,
+  Menu,
+  Search,
+  UserCog,
+  UserGroup,
+  type LucideIcon,
+} from 'lucide-react-native';
 
 import { type ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-type SymbolName = ComponentProps<typeof SymbolView>['name'];
-
 /**
- * Íconos de la app: SF Symbols en iOS y Material Symbols en Android/web (vía `expo-symbols`).
- * Cada ícono se nombra una sola vez aquí para no repetir los nombres por plataforma.
+ * Íconos de la app (Lucide, como en el diseño de Figma). Cada ícono se nombra una sola vez aquí
+ * con un nombre de la app, para que las pantallas no dependan de la librería. Ver ADR-0010.
  */
 const ICONS = {
-  email: { ios: 'at', android: 'alternate_email', web: 'alternate_email' },
-  password: { ios: 'asterisk', android: 'asterisk', web: 'asterisk' },
-  visibility: { ios: 'eye', android: 'visibility', web: 'visibility' },
-  visibilityOff: { ios: 'eye.slash', android: 'visibility_off', web: 'visibility_off' },
-  check: { ios: 'checkmark', android: 'check', web: 'check' },
-} as const satisfies Record<string, SymbolName>;
+  // Formularios de acceso (HE-01)
+  email: AtSign,
+  password: Asterisk,
+  visibility: Eye,
+  visibilityOff: EyeOff,
+  check: Check,
+  // Navegación principal (Figma: "Listar fichas")
+  home: House,
+  community: UserGroup,
+  map: MapIcon,
+  user: CircleUser,
+  menu: Menu,
+  search: Search,
+  // Menú lateral
+  wetland: Leaf,
+  announcements: Megaphone,
+  offline: CloudDownload,
+  manageAccounts: UserCog,
+  login: LogIn,
+  chevronRight: ChevronRight,
+  chevronDown: ChevronDown,
+} as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
 
@@ -26,8 +59,12 @@ export type IconProps = {
   color?: ThemeColor;
 };
 
-/** Ícono decorativo; si transmite información, quien lo usa debe darle `accessibilityLabel`. */
+/**
+ * Ícono decorativo; si transmite información, quien lo usa debe darle `accessibilityLabel`.
+ * El trazo es absoluto (2 px a cualquier tamaño), como los íconos exportados del Figma.
+ */
 export function Icon({ name, size = 24, color = 'primary' }: IconProps) {
   const theme = useTheme();
-  return <SymbolView name={ICONS[name]} size={size} tintColor={theme[color]} />;
+  const LucideGlyph = ICONS[name];
+  return <LucideGlyph size={size} color={theme[color]} strokeWidth={2} absoluteStrokeWidth />;
 }

@@ -44,3 +44,7 @@ example
 
 # IDEs
 .idea/
+
+# graphify (caché y visualización HTML; el grafo se regenera con /graphify)
+graphify-out/cache/
+graphify-out/graph.html

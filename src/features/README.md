@@ -8,13 +8,13 @@ pantallas, componentes propios, hooks de datos, llamadas a la API, validaciones 
 | Feature | Épica | Sprint | Contenido |
 |---|---|---|---|
 | [`auth/`](auth/README.md) | HE-01 | 1 | Login, registro, recuperación de contraseña, sesión, cierre de sesión |
-| [`home/`](home/README.md) | HE-01 (HU-1 CA1) | 1 | Pantalla de inicio con las opciones según el rol |
+| [`navigation/`](navigation/README.md) | Shell | 1 | Menú lateral y pestañas inferiores (compone las demás features) |
 | [`admins/`](admins/README.md) | HE-02 | 1 | Crear, editar y revocar administradores |
 | [`species/`](species/README.md) | HE-03 | 1 | Fichas taxonómicas: listado, detalle, crear, editar, eliminar |
 | `qr/` | HE-04 | futuro | Escaneo de QR → ficha |
-| `map/` | HE-05 | futuro | Mapa del sendero y estaciones |
+| [`map/`](map/README.md) | HE-05 | futuro (pestaña creada) | Mapa del sendero y estaciones |
 | `content/` | HE-06 | futuro | Componentes del humedal y anuncios |
-| `sightings/` | HE-07 | futuro | Reportes ciudadanos y moderación |
+| [`sightings/`](sightings/README.md) | HE-07 | futuro (pestaña creada) | Reportes ciudadanos y moderación (pestaña Comunidad) |
 
 ## Estructura interna estándar
 

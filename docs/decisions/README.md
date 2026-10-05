@@ -27,6 +27,7 @@ se reemplazan con uno nuevo.
 | [0006](0006-almacenamiento-seguro-de-sesion.md) | Sesión en expo-secure-store | Propuesto |
 | [0007](0007-herramientas-de-calidad.md) | ESLint, Prettier, husky, commitlint y GitHub Actions | Reemplazado parcialmente por 0008 |
 | [0008](0008-sin-validaciones-al-hacer-commit.md) | Sin validaciones al hacer commit; la calidad se verifica en el PR | Aceptado |
-| [0009](0009-tipografia-nunito-e-iconos-expo-symbols.md) | Tipografía Nunito e íconos con expo-symbols | Propuesto |
+| [0009](0009-tipografia-nunito-e-iconos-expo-symbols.md) | Tipografía Nunito e íconos con expo-symbols | Íconos reemplazados por 0010 |
+| [0010](0010-iconos-lucide.md) | Íconos con Lucide | Aceptado |
 
 Los ADR *Propuestos* se aceptan (o se modifican) al ejecutar la tarea del Sprint 1 que instala la dependencia.

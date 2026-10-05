@@ -78,19 +78,17 @@ describe('AccountScreen (HU-3)', () => {
     expect(screen.queryByText(AUTH_LABELS.logoutButton)).toBeNull();
   });
 
-  it('con sesión muestra los datos del usuario y la gestión de administradores si es superadmin', async () => {
+  it('con sesión muestra los datos del usuario y su rol', async () => {
     await renderAccount(SUPERADMIN);
 
     expect(await screen.findByText('María Solarte')).toBeTruthy();
     expect(screen.getByText('Rol: Superadministrador')).toBeTruthy();
-    expect(screen.getByText(AUTH_LABELS.manageAdmins)).toBeTruthy();
   });
 
-  it('no muestra la gestión de administradores a un usuario registrado', async () => {
+  it('muestra el rol de un usuario registrado', async () => {
     await renderAccount({ ...SUPERADMIN, role: 'user' });
 
     expect(await screen.findByText('Rol: Usuario registrado')).toBeTruthy();
-    expect(screen.queryByText(AUTH_LABELS.manageAdmins)).toBeNull();
   });
 
   it('CA1: CERRAR SESIÓN borra el token, deja la sesión como visitante y va al inicio', async () => {

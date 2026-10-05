@@ -13,16 +13,25 @@ const Palette = {
   neutroWhite: '#F7F8F8',
   neutro50: '#EFF1F0',
   neutro100: '#E3E8E6',
+  neutro200: '#D3D9D7',
   neutro300: '#ACB9B5',
   neutro400: '#7E958E',
+  neutro500: '#60766F',
   neutro600: '#3D514B',
   neutro700: '#293D37',
   neutro800: '#152822',
   neutro900: '#072219',
+  neutroBlack: '#000F0A',
   green50: '#E7F1EE',
+  green100: '#B3D2C9',
   green200: '#8FBDAF',
+  green300: '#5C9F8A',
+  green400: '#3C8C73',
   green500: '#0B6F50',
+  green600: '#0A6549',
+  green700: '#084F39',
   green800: '#063D2C',
+  green900: '#052F22',
 } as const;
 
 export const Colors = {
@@ -41,6 +50,13 @@ export const Colors = {
     success: Palette.green500,
     successBackground: Palette.green50,
     border: Palette.neutro100,
+    /** Fondo suave con el tono de marca (avatar, resaltados). */
+    primarySoft: Palette.green50,
+    /** Ícono y etiqueta de la pestaña activa / inactiva (Figma: green-700 / neutro-500). */
+    navActive: Palette.green700,
+    navInactive: Palette.neutro500,
+    /** Velo detrás del menú lateral. */
+    scrim: 'rgba(7, 34, 25, 0.4)',
   },
   dark: {
     text: Palette.neutro50,
@@ -57,6 +73,10 @@ export const Colors = {
     success: Palette.green200,
     successBackground: Palette.green800,
     border: Palette.neutro600,
+    primarySoft: Palette.green800,
+    navActive: Palette.green200,
+    navInactive: Palette.neutro300,
+    scrim: 'rgba(0, 15, 10, 0.6)',
   },
 } as const;
 
@@ -111,10 +131,13 @@ export const Radius = {
   medium: 12,
   /** Campos y botones redondeados del diseño. */
   pill: 24,
+  /** Tarjetas de contenido (Figma: listado de fichas). */
+  card: 20,
+  /** Círculos y chips completamente redondeados. */
+  full: 999,
 } as const;
 
 /** Tamaño mínimo de un área táctil (CODIGO §7). */
 export const MinTouchSize = 44;
 
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
 export const MaxContentWidth = 800;

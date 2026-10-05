@@ -24,13 +24,12 @@
 | Directorio / archivo | Acceso | Contenido |
 |---|---|---|
 | `_layout.tsx` | — | Providers + Stack raíz con guards |
-| [`(tabs)/`](%28tabs%29/README.md) | Todos | Shell principal con pestañas: inicio, fichas, cuenta |
+| [`(drawer)/`](%28drawer%29/README.md) | Todos | Menú lateral que envuelve [`(tabs)/`](%28drawer%29/%28tabs%29/README.md): Inicio (fichas), Comunidad, Mapas, Usuario |
 | [`species/`](species/README.md) | Todos | Detalle de ficha `species/[id].tsx` |
 | [`(auth)/`](%28auth%29/README.md) | Sin sesión | Login, registro, recuperar contraseña |
 | [`(admin)/`](%28admin%29/README.md) | Admin y superadmin | Formularios de fichas y gestión de administradores |
 
 Mapa completo y reglas de navegación: [`docs/architecture/NAVEGACION.md`](../../docs/architecture/NAVEGACION.md).
 
-> Implementado en HU-1: `_layout.tsx` (providers, splash y guard de `(auth)`), `(tabs)/index.tsx` (inicio) y
-> `(auth)/login.tsx`. `(tabs)/explore.tsx` y las pestañas de `components/app-tabs` siguen siendo la demo de la
-> plantilla hasta T0.1 / T0.10 del [Sprint 1](../../docs/sprints/sprint-01.md).
+> Implementado: `_layout.tsx` (providers, splash y guard de `(auth)`), el shell `(drawer)/(tabs)` con las cuatro
+> pestañas (Inicio, Comunidad y Mapas aún muestran un estado vacío) y las rutas de `(auth)`.
