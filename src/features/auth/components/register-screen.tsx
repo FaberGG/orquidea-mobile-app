@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { FormMessage } from '@/components/feedback/form-message';
 import { FormScreen } from '@/components/layout/form-screen';
@@ -14,6 +14,8 @@ import { Spacing } from '@/constants/theme';
 import { AUTH_LABELS } from '../constants';
 import { getRegisterErrorMessage, useRegister } from '../hooks';
 import { registerSchema, type RegisterFormValues } from '../schemas';
+import { AuthFooter } from './auth-footer';
+import { AuthHeader } from './auth-header';
 
 const FIELD_ORDER = [
   'firstName',
@@ -56,17 +58,7 @@ export function RegisterScreen() {
 
   return (
     <FormScreen>
-      <View style={styles.header}>
-        <ThemedText type="subtitle" accessibilityRole="header" style={styles.centered}>
-          {AUTH_LABELS.registerTitle}
-        </ThemedText>
-        <ThemedText
-          type="small"
-          themeColor="textSecondary"
-          style={[styles.centered, styles.subtitle]}>
-          {AUTH_LABELS.registerSubtitle}
-        </ThemedText>
-      </View>
+      <AuthHeader title={AUTH_LABELS.registerTitle} subtitle={AUTH_LABELS.registerSubtitle} />
 
       <View style={styles.fields}>
         <Controller
@@ -198,44 +190,17 @@ export function RegisterScreen() {
         isLoading={registerMutation.isPending}
       />
 
-      <View style={styles.footer}>
-        <ThemedText type="smallSemiBold" themeColor="textMuted">
-          {AUTH_LABELS.hasAccount}
-        </ThemedText>
-        <Pressable
-          accessibilityRole="link"
-          hitSlop={Spacing.three}
-          onPress={() => router.replace('/login')}>
-          <ThemedText type="smallBold" themeColor="primary">
-            {AUTH_LABELS.loginLink}
-          </ThemedText>
-        </Pressable>
-      </View>
+      <AuthFooter
+        question={AUTH_LABELS.hasAccount}
+        linkLabel={AUTH_LABELS.loginLink}
+        onPress={() => router.replace('/login')}
+      />
     </FormScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    alignItems: 'center',
-    gap: 14,
-    padding: 10,
-  },
-  centered: {
-    textAlign: 'center',
-  },
-  subtitle: {
-    maxWidth: 224,
-  },
   fields: {
     gap: Spacing.three,
-  },
-  footer: {
-    flexGrow: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    gap: 10,
-    padding: 10,
   },
 });

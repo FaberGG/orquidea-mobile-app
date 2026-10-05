@@ -31,3 +31,24 @@ export function getRegisterErrorMessage(error: unknown): string {
   }
   return AUTH_MESSAGES.unexpectedError;
 }
+
+/**
+ * HU-1.1 paso 1. Por seguridad (CA2) nunca se revela si la cuenta existe: solo se informan
+ * fallos de conexión o un correo con formato que la API rechaza.
+ */
+export function getForgotPasswordErrorMessage(error: unknown): string {
+  if (!isApiError(error)) return AUTH_MESSAGES.unexpectedError;
+  if (error.kind !== 'http') return AUTH_MESSAGES.networkError;
+  if (error.status === 400) return error.serverMessage ?? AUTH_MESSAGES.invalidEmail;
+  return AUTH_MESSAGES.unexpectedError;
+}
+
+/** HU-1.1 paso 2: un `400` es un código incorrecto o vencido (o datos inválidos). */
+export function getResetPasswordErrorMessage(error: unknown): string {
+  if (!isApiError(error)) return AUTH_MESSAGES.unexpectedError;
+  if (error.kind !== 'http') return AUTH_MESSAGES.networkError;
+  if (error.status >= 400 && error.status < 500) {
+    return error.serverMessage ?? AUTH_MESSAGES.wrongOrExpiredCode;
+  }
+  return AUTH_MESSAGES.unexpectedError;
+}
