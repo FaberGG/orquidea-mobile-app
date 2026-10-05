@@ -6,7 +6,14 @@ import { RoleProvider, type Role } from '@/permissions';
 import { HomeScreen } from './home-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
-jest.mock('@/features/auth', () => ({ useSession: jest.fn() }));
+jest.mock('@/features/auth', () => ({
+  useSession: jest.fn(),
+  ROLE_LABELS: {
+    user: 'Usuario registrado',
+    admin: 'Administrador',
+    superadmin: 'Superadministrador',
+  },
+}));
 
 function mockSession(role: Role) {
   const user =
