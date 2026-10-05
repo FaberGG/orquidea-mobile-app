@@ -3,16 +3,15 @@
 **Acceso:** todos los roles.
 
 **Responsabilidad:** ruta de detalle de una ficha taxonómica, fuera de las pestañas para mostrarse a
-pantalla completa sobre el shell.
+pantalla completa (sin barra inferior), como en el diseño "Detalle ficha".
 
-| Archivo | URL | Pantalla | HU |
-|---|---|---|---|
-| `[id].tsx` | `/species/:id` | `SpeciesDetailScreen` de `@/features/species` | HU-10, HU-8, HU-9 |
+| Archivo | URL | Pantalla | HU | Estado |
+|---|---|---|---|---|
+| `[id].tsx` | `/species/:id` | `SpeciesDetailScreen` de `@/features/species` | HU-10 | ✅ |
 
-La pantalla es la misma para todos los roles. Los administradores ven además:
-
-- **Editar** → `/species/:id/edit` (`<Can permission="species:update">`, HU-8).
-- **Eliminar** con confirmación (`<Can permission="species:delete">`, HU-9) — ⛔ pendiente: la API no tiene endpoint (docs/api B1).
+Las acciones **Editar** (`/species/:id/edit`, HU-8) y **Eliminar** (HU-9) solo aparecen con su permiso
+(`species:update` / `species:delete`). Están deshabilitadas: la pantalla de edición llega con HU-8 y la API
+aún no tiene el endpoint de eliminar (docs/api B1).
 
 En HE-04 esta ruta también será el destino del escaneo de códigos QR, por eso debe funcionar con
 deep links (`orquideamobileapp://species/<id>`).
