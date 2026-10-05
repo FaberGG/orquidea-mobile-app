@@ -3,7 +3,7 @@
 **Acceso:** solo sin sesión. Protegido en el layout raíz con `<Stack.Protected guard={!isAuthenticated}>`:
 un usuario con sesión no puede volver a estas pantallas.
 
-**Responsabilidad:** rutas de la épica HE-01 (excepto cerrar sesión, que vive en `(tabs)/account.tsx`).
+**Responsabilidad:** rutas de la épica HE-01 (excepto cerrar sesión, que vive en `(drawer)/(tabs)/account.tsx`).
 
 | Archivo | URL | Pantalla (`@/features/auth`) | HU |
 |---|---|---|---|

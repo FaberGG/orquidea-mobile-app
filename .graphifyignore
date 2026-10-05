@@ -1,0 +1,6 @@
+.expo/
+assets/
+.vscode/
+.claude/
+scripts/
+graphify-out/

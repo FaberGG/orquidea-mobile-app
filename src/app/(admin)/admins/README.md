@@ -9,4 +9,4 @@ Protegido con un `Stack.Protected` anidado en `(admin)/_layout.tsx`.
 | `new.tsx` | `/admins/new` | `CreateAdminScreen` | HU-4 |
 | `[id].tsx` | `/admins/:id` | `EditAdminScreen`: **GUARDAR CAMBIOS** (incluye habilitar/inhabilitar) y **REVOCAR ACCESO** | HU-5 |
 
-El punto de entrada para el superadmin es la pantalla de cuenta (`(tabs)/account.tsx`).
+El punto de entrada para el superadmin es **Gestionar cuentas** en el menú lateral (`@/features/navigation`).
