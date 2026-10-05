@@ -29,5 +29,6 @@ se reemplazan con uno nuevo.
 | [0008](0008-sin-validaciones-al-hacer-commit.md) | Sin validaciones al hacer commit; la calidad se verifica en el PR | Aceptado |
 | [0009](0009-tipografia-nunito-e-iconos-expo-symbols.md) | Tipografía Nunito e íconos con expo-symbols | Íconos reemplazados por 0010 |
 | [0010](0010-iconos-lucide.md) | Íconos con Lucide | Aceptado |
+| [0011](0011-seleccion-de-fotos-expo-image-picker.md) | Selección de fotos con expo-image-picker | Aceptado |
 
 Los ADR *Propuestos* se aceptan (o se modifican) al ejecutar la tarea del Sprint 1 que instala la dependencia.

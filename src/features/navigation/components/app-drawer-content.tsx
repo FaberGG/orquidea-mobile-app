@@ -92,6 +92,16 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
 
       <View style={[styles.divider, { backgroundColor: theme.border }]} />
 
+      <Can permission="species:create">
+        <DrawerSection title={NAVIGATION_LABELS.sectionContent}>
+          <DrawerItem
+            icon="add"
+            label={NAVIGATION_LABELS.newSpecies}
+            onPress={() => goTo('/species/new')}
+          />
+        </DrawerSection>
+      </Can>
+
       <DrawerSection title={NAVIGATION_LABELS.sectionWetland}>
         <DrawerItem icon="wetland" label={NAVIGATION_LABELS.wetlandComponents} isComingSoon />
         <DrawerItem icon="announcements" label={NAVIGATION_LABELS.announcements} isComingSoon />

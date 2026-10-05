@@ -85,5 +85,11 @@ Pendientes de resolver con el equipo de backend / Product Owner:
 | B4 | Los endpoints de administradores declaran sus errores con `ApiResponse` (esquema vacío) en lugar de `ApiErrorResponse` | Confirmar que en la práctica devuelven `ApiErrorResponse` |
 | B5 | HU-1.1 dice "correo con instrucciones", pero la API usa un **código de 6 dígitos** que se ingresa en la app | Alinear el texto de la HU con el Product Owner; la app implementa el flujo de dos pasos |
 | B6 | Campos con nombres en dos idiomas (Darwin Core en inglés, el resto en español) | Sin impacto funcional; decisión del backend |
+| B7 | `TaxonRequest` / `TaxonDto` no tienen **reino, filo (división) y clase**, que el diseño de Crear y Editar ficha muestra como taxonomía | El formulario y el detalle solo piden y muestran orden, familia y género. Falta decidir si el backend los agrega (y si son obligatorios) |
+| B8 | `categoria` solo acepta `AVE`, `PLANTA` e `INSECTO`; el diseño trae también **Mamíferos, Reptiles y Anfibios** | Esos chips de filtro y la opción "Grupo taxonómico" de Editar no se implementan. Las fichas de esas especies no se pueden registrar |
+| B9 | No hay búsqueda de fichas (ni por nombre) | Se omite el buscador del encabezado hasta que exista el endpoint |
+| B10 | No hay fuente de autocompletado por nombre científico (el diseño muestra sugerencias y "Auto" en la taxonomía) | Los campos de taxonomía se llenan a mano. Requiere un endpoint o un servicio externo de taxonomía, a decidir |
+| B11 | No se clasifica el **rol de cada especie en el humedal** (`rolEnHumedal` es texto libre) | Se muestra solo como texto en el detalle y el formulario |
+| B12 | El diseño ofrece **quitar foto** al editar; la API conserva la actual si no se envía una nueva | No hay forma de quitar la foto de una ficha |
 
 Al resolver una brecha, actualizar esta tabla y el [plan del sprint](../sprints/sprint-01.md).

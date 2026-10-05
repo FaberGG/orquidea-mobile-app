@@ -79,3 +79,73 @@ export const speciesKeys = {
   list: (category: CategoryFilter) => [...speciesKeys.all, 'list', category] as const,
   detail: (id: string) => [...speciesKeys.all, 'detail', id] as const,
 };
+
+/** Categorías que se pueden elegir al crear o editar (la API solo acepta estas tres). */
+export const SPECIES_FORM_CATEGORIES = ['bird', 'plant', 'insect'] as const;
+
+export const SPECIES_FORM_CATEGORY_OPTIONS = [
+  { id: 'bird', label: 'Aves', icon: 'bird' },
+  { id: 'plant', label: 'Plantas', icon: 'plant' },
+  { id: 'insect', label: 'Insectos', icon: 'insect' },
+] as const satisfies readonly {
+  id: (typeof SPECIES_FORM_CATEGORIES)[number];
+  label: string;
+  icon: IconName;
+}[];
+
+/**
+ * Estados que se ofrecen en el formulario (Figma: "Estado de conservación" de Crear y Editar ficha).
+ * La API acepta los nueve códigos; el resto no se ofrece hasta que el diseño lo incluya.
+ */
+export const SPECIES_FORM_CONSERVATION_CODES = ['CR', 'EN', 'VU', 'NT', 'LC'] as const;
+
+/** Mensajes de HU-7 y HU-8 (copiados de los criterios de aceptación) y respaldos locales. */
+export const SPECIES_MESSAGES = {
+  // HU-7 CA2
+  requiredFields: 'Debes completar todos los campos obligatorios.',
+  // HU-7 CA3
+  invalidImage: 'El formato de la imagen no es válido.',
+  // Respaldo local: el contrato devuelve 413 con su propio mensaje (docs/api §4).
+  imageTooLarge: 'La imagen supera el tamaño máximo de 10 MB.',
+  // HU-8 CA1
+  updateSuccess: 'La ficha se actualizó correctamente.',
+  // Respaldo local para errores no previstos.
+  saveError: 'No pudimos guardar la ficha. Inténtalo de nuevo.',
+  // Contrato: nombre científico duplicado (409); se muestra el mensaje del servidor si llega.
+  duplicateScientificName: 'Ya existe una ficha con ese nombre científico.',
+} as const;
+
+export const SPECIES_FORM_LABELS = {
+  createTitle: 'Crear ficha',
+  editTitle: 'Editar ficha',
+  createSubmit: 'Crear ficha',
+  editSubmit: 'Guardar cambios',
+  cancel: 'Cancelar',
+  photoSection: 'Fotografía',
+  photoUpload: 'Subir fotografía',
+  photoChange: 'Cambiar foto',
+  photoHint: 'JPG, PNG · máx. 10 MB',
+  identificationSection: 'Identificación',
+  taxonomySection: 'Taxonomía',
+  ecologySection: 'Ecología',
+  conservationSection: 'Estado de conservación',
+  conservationHint: 'Categorías UICN. Selecciona una opción.',
+  categoryLabel: 'Categoría',
+  categorySelected: 'Categoría seleccionada',
+  vernacularName: 'Nombre común',
+  vernacularNamePlaceholder: 'Ej. Martín pescador',
+  scientificName: 'Nombre científico',
+  scientificNamePlaceholder: 'Ej. Ceryle torquata',
+  order: 'Orden',
+  orderPlaceholder: 'Ej. Coraciiformes',
+  family: 'Familia',
+  familyPlaceholder: 'Ej. Alcedinidae',
+  genus: 'Género',
+  genusPlaceholder: 'Ej. Ceryle',
+  diet: 'Alimentación',
+  dietPlaceholder: 'Ej. Peces, crustáceos, insectos acuáticos...',
+  wetlandRole: 'Rol en el humedal',
+  wetlandRolePlaceholder: 'Ej. Controlador de poblaciones de peces...',
+  none: 'Ninguna',
+  back: 'Volver',
+} as const;

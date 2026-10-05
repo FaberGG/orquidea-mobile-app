@@ -87,4 +87,13 @@ describe('AppDrawerContent (menú lateral)', () => {
     );
     expect(item.props.accessibilityState).toEqual(expect.objectContaining({ disabled: true }));
   });
+  it('la gestión de contenido: Nueva ficha solo para administradores', async () => {
+    await renderAs('user');
+    expect(screen.queryByText(NAVIGATION_LABELS.newSpecies)).toBeNull();
+
+    await renderAs('admin');
+    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.newSpecies));
+    expect(closeDrawer).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith('/species/new');
+  });
 });
