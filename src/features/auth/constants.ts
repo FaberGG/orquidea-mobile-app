@@ -86,8 +86,6 @@ export const AUTH_LABELS = {
   accountGuestSubtitle: 'Inicia sesión o crea una cuenta para reportar avistamientos.',
   loginButtonGuest: 'INICIAR SESIÓN',
   roleLabel: 'Rol',
-  manageAdmins: 'Gestionar administradores',
-  manageAdminsDescription: 'Crea, edita y revoca cuentas de administrador.',
   // HU-3 CA1: "Clic en el botón CERRAR SESIÓN."
   logoutButton: 'CERRAR SESIÓN',
   loginLink: 'Iniciar sesión',

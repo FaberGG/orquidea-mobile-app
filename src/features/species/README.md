@@ -3,6 +3,9 @@
 **Responsabilidad:** consulta pública de la biodiversidad del humedal (aves, plantas, insectos) y su gestión
 por parte de administradores. Es el ejemplo principal de **una misma interfaz con capacidades por rol**.
 
+> **Estado:** `SpeciesListScreen` ya ocupa la pestaña **Inicio** (`/`) con un estado vacío; el listado,
+> los filtros por categoría y las tarjetas del Figma ("Listar fichas") llegan con HU-10.
+
 ## Historias
 
 | HU | Descripción | Rol | Pantalla |
@@ -33,8 +36,8 @@ Los campos taxonómicos usan los nombres Darwin Core del contrato; el resto se t
 | [`hooks/`](hooks/README.md) | `useSpeciesList`, `useSpecies`, `useCreateSpecies`, `useUpdateSpecies`, `useDeleteSpecies` |
 | [`schemas/`](schemas/README.md) | `species.schema.ts` |
 | [`types/`](types/README.md) | `Species`, `SpeciesCategory`, DTO |
-| `constants.ts` | `SPECIES_MESSAGES`, `speciesKeys`, `SPECIES_CATEGORIES`, formatos de imagen permitidos |
-| `index.ts` | Exporta las pantallas |
+| `constants.ts` ✅ | `SPECIES_LABELS` (creado); previstos: `SPECIES_MESSAGES`, `speciesKeys`, `SPECIES_CATEGORIES`, formatos de imagen permitidos |
+| `index.ts` ✅ | Exporta las pantallas (por ahora `SpeciesListScreen`) |
 
 ## Visibilidad por rol
 

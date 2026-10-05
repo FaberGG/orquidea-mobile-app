@@ -4,18 +4,20 @@ La navegación usa **Expo Router** (rutas basadas en archivos dentro de `src/app
 **rutas protegidas** (`Stack.Protected` con la prop `guard`, disponible desde SDK 53).
 Referencia: <https://docs.expo.dev/router/advanced/authentication/>
 
-## 1. Árbol de rutas propuesto (Sprint 1)
+## 1. Árbol de rutas (Sprint 1)
 
 ```
 src/app/
 ├── _layout.tsx                     Providers globales + Stack raíz con guards
 │
-├── (tabs)/                         Shell principal — TODOS los roles (incluido visitante)
-│   ├── _layout.tsx                 Tabs nativas
-│   ├── index.tsx                   /            Inicio (opciones según rol — HU-1 CA1)
-│   ├── species/
-│   │   └── index.tsx               /species     Listado por categoría (HU-10)
-│   └── account.tsx                 /account     Visitante: CTA login/registro · Logueado: perfil + cerrar sesión (HU-3)
+├── (drawer)/                       Menú lateral — TODOS los roles (incluido visitante)
+│   ├── _layout.tsx                 Drawer (AppDrawerLayout de @/features/navigation)
+│   └── (tabs)/                     Barra inferior — mismas 4 pestañas para todos los roles
+│       ├── _layout.tsx             Tabs con TabBar y AppHeader propios (Figma: "Listar fichas")
+│       ├── index.tsx               /            Inicio: listado de fichas taxonómicas (HU-10)
+│       ├── community.tsx           /community   Comunidad: avistamientos (HU-18, HU-19, HU-20)
+│       ├── map.tsx                 /map         Mapas: mapa del sendero (HU-12, HU-13)
+│       └── account.tsx             /account     Usuario: visitante → iniciar sesión · con sesión → datos, rol y cerrar sesión (HU-3)
 │
 ├── species/
 │   └── [id].tsx                    /species/:id Detalle de ficha (todos) + acciones admin vía <Can> (HU-8, HU-9)
@@ -41,12 +43,26 @@ src/app/
 > Los grupos `( )` no agregan segmentos a la URL. Expo Router prioriza rutas estáticas
 > (`/species/new`) sobre dinámicas (`/species/[id]`), por lo que no colisionan.
 
+### Barra inferior y menú lateral
+
+| Lugar | Contenido | Acceso |
+|---|---|---|
+| Barra inferior | Inicio · Comunidad · Mapas · Usuario | Todos los roles (las pestañas no cambian con el rol) |
+| Encabezado de las pestañas | Botón de menú (abre el menú lateral); acción opcional a la derecha (p. ej. buscar en Inicio) | Todos |
+| Menú lateral: identidad | Usuario: iniciales, nombre, correo y rol (lleva a `/account`). Visitante: botón **INICIAR SESIÓN** | Todos |
+| Menú lateral: Humedal | Componentes del humedal (HU-14), Anuncios (HU-17), Descargas sin conexión (HU-21) — *Próximamente* | Todos |
+| Menú lateral: Administración | Gestionar cuentas (HU-4, HU-5) — *Próximamente* | `<Can permission="admins:read">` |
+
+Lo que depende del rol dentro de cada pestaña se resuelve con `<Can>` en la propia pantalla
+(p. ej. **Crear ficha** en Inicio, revisar reportes en Comunidad, gestionar estaciones en Mapas).
+Los destinos del menú marcados *Próximamente* se enlazan cuando exista su ruta.
+
 ## 2. Guards en el layout raíz (esquema)
 
 ```tsx
 // src/app/_layout.tsx — esquema ilustrativo, no definitivo
 <Stack>
-  <Stack.Screen name="(tabs)" />
+  <Stack.Screen name="(drawer)" />
   <Stack.Screen name="species/[id]" />
 
   <Stack.Protected guard={!isAuthenticated}>

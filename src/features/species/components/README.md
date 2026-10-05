@@ -4,7 +4,7 @@
 
 | Componente | Descripción | HU |
 |---|---|---|
-| `SpeciesListScreen` | `CategorySelector` + lista de `SpeciesCard`; estado vacío con el mensaje de HU-10; botón crear con `<Can>` | HU-10 |
+| `SpeciesListScreen` ✅ (marcador) | Pestaña Inicio. Prevista: `CategorySelector` + lista de `SpeciesCard`; estado vacío con el mensaje de HU-10; botón crear con `<Can>` | HU-10 |
 | `SpeciesDetailScreen` | Todos los campos de la ficha + `SpeciesActions` | HU-10 |
 | `CreateSpeciesScreen` | `SpeciesForm` + **GUARDAR FICHA** | HU-7 |
 | `EditSpeciesScreen` | `SpeciesForm` precargado + **GUARDAR CAMBIOS** / **CANCELAR** | HU-8 |
