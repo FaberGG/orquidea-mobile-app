@@ -1,19 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { FormMessage } from '@/components/feedback/form-message';
 import { FormScreen } from '@/components/layout/form-screen';
-import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { TextField } from '@/components/ui/text-field';
 import { Spacing } from '@/constants/theme';
 
-import { AUTH_LABELS } from '../constants';
+import { AUTH_LABELS, AUTH_MESSAGES } from '../constants';
 import { getLoginErrorMessage, useLogin } from '../hooks';
 import { loginSchema, type LoginFormValues } from '../schemas';
+import { AuthFooter } from './auth-footer';
+import { AuthHeader } from './auth-header';
 
 const OPOSSUM = require('@/assets/images/illustrations/opossum.png');
 
@@ -28,6 +29,18 @@ export function LoginScreen() {
     defaultValues: { email: '', password: '' },
   });
   const loginMutation = useLogin();
+  // Se vuelve aquí con `?registered=true` tras registrarse (HU-2 CA1) o con
+  // `?passwordReset=true` tras restablecer la contraseña (HU-1.1).
+  const { registered, passwordReset } = useLocalSearchParams<{
+    registered?: string;
+    passwordReset?: string;
+  }>();
+  const successMessage =
+    registered === 'true'
+      ? AUTH_MESSAGES.registerSuccess
+      : passwordReset === 'true'
+        ? AUTH_MESSAGES.passwordResetSuccess
+        : undefined;
 
   const onSubmit = handleSubmit((values) => loginMutation.mutate(values));
 
@@ -43,17 +56,7 @@ export function LoginScreen() {
         <Image source={OPOSSUM} style={styles.opossum} contentFit="contain" accessible={false} />
       </View>
 
-      <View style={styles.header}>
-        <ThemedText type="subtitle" accessibilityRole="header" style={styles.centered}>
-          {AUTH_LABELS.loginTitle}
-        </ThemedText>
-        <ThemedText
-          type="small"
-          themeColor="textSecondary"
-          style={[styles.centered, styles.subtitle]}>
-          {AUTH_LABELS.loginSubtitle}
-        </ThemedText>
-      </View>
+      <AuthHeader title={AUTH_LABELS.loginTitle} subtitle={AUTH_LABELS.loginSubtitle} />
 
       <View style={styles.fields}>
         <Controller
@@ -109,7 +112,11 @@ export function LoginScreen() {
         </View>
       </View>
 
-      {errorMessage !== undefined && <FormMessage message={errorMessage} />}
+      {errorMessage !== undefined ? (
+        <FormMessage message={errorMessage} />
+      ) : (
+        successMessage !== undefined && <FormMessage variant="success" message={successMessage} />
+      )}
 
       <Button
         label={AUTH_LABELS.loginButton}
@@ -117,19 +124,11 @@ export function LoginScreen() {
         isLoading={loginMutation.isPending}
       />
 
-      <View style={styles.footer}>
-        <ThemedText type="smallSemiBold" themeColor="textMuted">
-          {AUTH_LABELS.noAccount}
-        </ThemedText>
-        <Pressable
-          accessibilityRole="link"
-          hitSlop={Spacing.three}
-          onPress={() => router.push('/register')}>
-          <ThemedText type="smallBold" themeColor="primary">
-            {AUTH_LABELS.registerLink}
-          </ThemedText>
-        </Pressable>
-      </View>
+      <AuthFooter
+        question={AUTH_LABELS.noAccount}
+        linkLabel={AUTH_LABELS.registerLink}
+        onPress={() => router.push('/register')}
+      />
     </FormScreen>
   );
 }
@@ -143,29 +142,10 @@ const styles = StyleSheet.create({
     width: 90,
     height: 175,
   },
-  header: {
-    alignItems: 'center',
-    gap: 14,
-    padding: 10,
-  },
-  centered: {
-    textAlign: 'center',
-  },
-  subtitle: {
-    maxWidth: 224,
-  },
   fields: {
     gap: Spacing.three,
   },
   forgotPassword: {
     alignItems: 'flex-end',
-  },
-  footer: {
-    flexGrow: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    gap: 10,
-    padding: 10,
   },
 });

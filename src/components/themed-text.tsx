@@ -11,6 +11,8 @@ export type ThemedTextProps = TextProps & {
     | 'smallSemiBold'
     | 'smallBold'
     | 'label'
+    | 'caption'
+    | 'captionBold'
     | 'subtitle'
     | 'link'
     | 'linkPrimary'
@@ -31,6 +33,8 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
         type === 'smallSemiBold' && styles.smallSemiBold,
         type === 'smallBold' && styles.smallBold,
         type === 'label' && styles.label,
+        type === 'caption' && styles.caption,
+        type === 'captionBold' && styles.captionBold,
         type === 'subtitle' && styles.subtitle,
         type === 'link' && styles.link,
         type === 'linkPrimary' && [styles.link, { color: theme.primary }],
@@ -64,6 +68,16 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.bold,
     fontSize: 13,
     lineHeight: 18,
+  },
+  caption: {
+    fontFamily: FontFamily.medium,
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  captionBold: {
+    fontFamily: FontFamily.bold,
+    fontSize: 12,
+    lineHeight: 16,
   },
   default: {
     fontFamily: FontFamily.regular,
