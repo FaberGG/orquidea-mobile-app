@@ -1,6 +1,6 @@
 # 0009 — Tipografía Nunito e íconos con expo-symbols
 
-**Estado:** Propuesto
+**Estado:** Propuesto. La parte de íconos fue reemplazada por [0010](0010-iconos-lucide.md) (Lucide).
 
 ## Contexto
 

@@ -21,7 +21,7 @@
 ```
 src/
 ├── app/            Capa de RUTAS        Expo Router: layouts, guards, pantallas delgadas
-├── features/       Capa de DOMINIO      auth · admins · species · (map, content, sightings… en sprints futuros)
+├── features/       Capa de DOMINIO      auth · admins · species · navigation (shell) · map · sightings · (content… en sprints futuros)
 │   └── <feature>/
 │       ├── api/          llamadas HTTP del dominio + mapeo DTO ⇄ modelo
 │       ├── components/   componentes y pantallas propias del dominio

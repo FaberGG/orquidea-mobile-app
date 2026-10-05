@@ -22,7 +22,7 @@ function RootNavigator() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="(drawer)" />
 
       {/* Login, registro y recuperación solo sin sesión: al iniciar sesión se retiran de la pila. */}
       <Stack.Protected guard={!isAuthenticated}>

@@ -1,0 +1,867 @@
+{
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\.prettierrc.json": {
+    "mtime": 1791164669.9211621,
+    "ast_hash": "7afbab92940b29f74c5a0681c345b963",
+    "semantic_hash": "7afbab92940b29f74c5a0681c345b963"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\app.json": {
+    "mtime": 1791164669.9261649,
+    "ast_hash": "57c944b2b941421009881c349c6b7055",
+    "semantic_hash": "57c944b2b941421009881c349c6b7055"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\eslint.config.js": {
+    "mtime": 1791164669.962662,
+    "ast_hash": "7c070d29d6b128a42556af8bfb3c8d43",
+    "semantic_hash": "7c070d29d6b128a42556af8bfb3c8d43"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\expo-env.d.ts": {
+    "mtime": 1791166450.2848063,
+    "ast_hash": "0dd9dccdb4b08595bc83df70d6a154d3",
+    "semantic_hash": "0dd9dccdb4b08595bc83df70d6a154d3"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\package.json": {
+    "mtime": 1791164669.9670002,
+    "ast_hash": "b04b4b23082be37f77c8727f2fd2fd05",
+    "semantic_hash": "b04b4b23082be37f77c8727f2fd2fd05"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\tsconfig.json": {
+    "mtime": 1791164670.052078,
+    "ast_hash": "2b3633a4c2905e3ee802f4b3bbe7cc1d",
+    "semantic_hash": "2b3633a4c2905e3ee802f4b3bbe7cc1d"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\api\\openapi.json": {
+    "mtime": 1791164669.950117,
+    "ast_hash": "7f3db0f89b7417a41372c36c5b093236",
+    "semantic_hash": "7f3db0f89b7417a41372c36c5b093236"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\jest\\style-mock.js": {
+    "mtime": 1791164669.962662,
+    "ast_hash": "a979a95f4bab414d8a4beb75c88a992d",
+    "semantic_hash": "a979a95f4bab414d8a4beb75c88a992d"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\_layout.tsx": {
+    "mtime": 1791164669.9805162,
+    "ast_hash": "e182b327296353b7419b3b07b56e865a",
+    "semantic_hash": "e182b327296353b7419b3b07b56e865a"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(auth)\\login.tsx": {
+    "mtime": 1791164669.976527,
+    "ast_hash": "7d7bc23086f05f36f74defee4ca73ddc",
+    "semantic_hash": "7d7bc23086f05f36f74defee4ca73ddc"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(auth)\\register.tsx": {
+    "mtime": 1791164669.976527,
+    "ast_hash": "f82b59432beb73201a7ac812bed277da",
+    "semantic_hash": "f82b59432beb73201a7ac812bed277da"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(auth)\\_layout.tsx": {
+    "mtime": 1791165509.76389,
+    "ast_hash": "201e80be03fbfe637cfe448427d86eb3",
+    "semantic_hash": "201e80be03fbfe637cfe448427d86eb3"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(tabs)\\account.tsx": {
+    "mtime": 1791165509.7648907,
+    "ast_hash": "890b482b3f3d2d56f7726abeb92efacd",
+    "semantic_hash": "890b482b3f3d2d56f7726abeb92efacd"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(tabs)\\explore.tsx": {
+    "mtime": 1791164669.9785116,
+    "ast_hash": "42adf91e47cfe6b5d4ede54a35db24d0",
+    "semantic_hash": "42adf91e47cfe6b5d4ede54a35db24d0"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(tabs)\\index.tsx": {
+    "mtime": 1791164669.9785116,
+    "ast_hash": "603b9fe3dceddb44f7b444c0ce4f99aa",
+    "semantic_hash": "603b9fe3dceddb44f7b444c0ce4f99aa"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(tabs)\\_layout.tsx": {
+    "mtime": 1791164669.9775116,
+    "ast_hash": "7c903e1919fae7b5fca4f74c35348f2e",
+    "semantic_hash": "7c903e1919fae7b5fca4f74c35348f2e"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\animated-icon.tsx": {
+    "mtime": 1791164669.9840257,
+    "ast_hash": "46cea5b4aaa994fa61f8a3d1574b2ff8",
+    "semantic_hash": "46cea5b4aaa994fa61f8a3d1574b2ff8"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\animated-icon.web.tsx": {
+    "mtime": 1791164669.9840257,
+    "ast_hash": "2defa175163e104a6e2232436fa77e30",
+    "semantic_hash": "2defa175163e104a6e2232436fa77e30"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\app-tabs.tsx": {
+    "mtime": 1791165509.76589,
+    "ast_hash": "00431f6ed4fbc1f64cabb38961650525",
+    "semantic_hash": "00431f6ed4fbc1f64cabb38961650525"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\app-tabs.web.tsx": {
+    "mtime": 1791165509.7668905,
+    "ast_hash": "23cdd8d9a7565429311c21e1d54da276",
+    "semantic_hash": "23cdd8d9a7565429311c21e1d54da276"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\external-link.tsx": {
+    "mtime": 1791164669.9850242,
+    "ast_hash": "4f7a6cf3d6fb8c3369821eec68edc416",
+    "semantic_hash": "4f7a6cf3d6fb8c3369821eec68edc416"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\hint-row.tsx": {
+    "mtime": 1791164669.9870236,
+    "ast_hash": "efffcec3bd8715d4e520b3cfbd1caf62",
+    "semantic_hash": "efffcec3bd8715d4e520b3cfbd1caf62"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\themed-text.tsx": {
+    "mtime": 1791165166.742633,
+    "ast_hash": "0a915a85a32093d7a7a0d624d6962d85",
+    "semantic_hash": "0a915a85a32093d7a7a0d624d6962d85"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\themed-view.tsx": {
+    "mtime": 1791164669.9890244,
+    "ast_hash": "3668642ae4534b5fd428bea5c70c1912",
+    "semantic_hash": "3668642ae4534b5fd428bea5c70c1912"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\web-badge.tsx": {
+    "mtime": 1791164669.9925306,
+    "ast_hash": "bd92db7e196ff01045f01f2de11506f3",
+    "semantic_hash": "bd92db7e196ff01045f01f2de11506f3"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\feedback\\form-message.tsx": {
+    "mtime": 1791165166.742633,
+    "ast_hash": "be7f441f2fa85ac84244720c93358217",
+    "semantic_hash": "be7f441f2fa85ac84244720c93358217"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\layout\\form-screen.tsx": {
+    "mtime": 1791164669.988024,
+    "ast_hash": "af275e8c4a82d8a6068268006573a6a2",
+    "semantic_hash": "af275e8c4a82d8a6068268006573a6a2"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\ui\\button.tsx": {
+    "mtime": 1791164669.9900239,
+    "ast_hash": "fb3e0968eaa297938afd572ce0fb3cab",
+    "semantic_hash": "fb3e0968eaa297938afd572ce0fb3cab"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\ui\\checkbox.tsx": {
+    "mtime": 1791165166.7441373,
+    "ast_hash": "45e0089914a50c1ae1317cd81b9bedc0",
+    "semantic_hash": "45e0089914a50c1ae1317cd81b9bedc0"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\ui\\collapsible.tsx": {
+    "mtime": 1791164669.9910269,
+    "ast_hash": "f62a78c19aaab7c6da963a1c3a3ec4d0",
+    "semantic_hash": "f62a78c19aaab7c6da963a1c3a3ec4d0"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\ui\\icon.tsx": {
+    "mtime": 1791165166.7451434,
+    "ast_hash": "fe3d22d5996fe1c37a6c4272173a71a5",
+    "semantic_hash": "fe3d22d5996fe1c37a6c4272173a71a5"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\ui\\text-field.tsx": {
+    "mtime": 1791164669.9925306,
+    "ast_hash": "fc8d866db0b7c0b5b71c3ab8da9ce9ed",
+    "semantic_hash": "fc8d866db0b7c0b5b71c3ab8da9ce9ed"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\config\\app-config.ts": {
+    "mtime": 1791164669.994537,
+    "ast_hash": "de394bc9c0d641a0b09cc0f260823e50",
+    "semantic_hash": "de394bc9c0d641a0b09cc0f260823e50"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\config\\env.ts": {
+    "mtime": 1791164669.995043,
+    "ast_hash": "300d855c083e7fa4d7e1fa087df925fc",
+    "semantic_hash": "300d855c083e7fa4d7e1fa087df925fc"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\config\\index.ts": {
+    "mtime": 1791164669.9960494,
+    "ast_hash": "b7ebbeadd6ef8247f7f3a764568da4fa",
+    "semantic_hash": "b7ebbeadd6ef8247f7f3a764568da4fa"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\config\\__tests__\\env.test.ts": {
+    "mtime": 1791164669.9935377,
+    "ast_hash": "66edf2728e2f5e354344cffd93b81f14",
+    "semantic_hash": "66edf2728e2f5e354344cffd93b81f14"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\constants\\theme.ts": {
+    "mtime": 1791165166.7461436,
+    "ast_hash": "4d987ec61687e0d0d7bac98845220604",
+    "semantic_hash": "4d987ec61687e0d0d7bac98845220604"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\constants.ts": {
+    "mtime": 1791165509.778095,
+    "ast_hash": "7eb14de7d6aa23095580736b92d74a8e",
+    "semantic_hash": "7eb14de7d6aa23095580736b92d74a8e"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\index.ts": {
+    "mtime": 1791165509.7831023,
+    "ast_hash": "070175f9dbd1ca883fa4e434242d6c94",
+    "semantic_hash": "070175f9dbd1ca883fa4e434242d6c94"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\api\\auth.api.ts": {
+    "mtime": 1791165509.768942,
+    "ast_hash": "2b7c95040c05ad83becf07bdb03af950",
+    "semantic_hash": "2b7c95040c05ad83becf07bdb03af950"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\api\\auth.mappers.test.ts": {
+    "mtime": 1791164670.004564,
+    "ast_hash": "34a927c846babc618d53fa50313f2239",
+    "semantic_hash": "34a927c846babc618d53fa50313f2239"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\api\\auth.mappers.ts": {
+    "mtime": 1791164670.0055654,
+    "ast_hash": "f537bf721ddaf953b5e81009e83691c2",
+    "semantic_hash": "f537bf721ddaf953b5e81009e83691c2"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\api\\index.ts": {
+    "mtime": 1791165509.7699418,
+    "ast_hash": "52c1fba73f10cb490aef1b58744329cc",
+    "semantic_hash": "52c1fba73f10cb490aef1b58744329cc"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\account-screen.test.tsx": {
+    "mtime": 1791165509.7709413,
+    "ast_hash": "cc802567737e81768c2fcad6dadbac02",
+    "semantic_hash": "cc802567737e81768c2fcad6dadbac02"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\account-screen.tsx": {
+    "mtime": 1791165509.7719414,
+    "ast_hash": "53d6899d91ef9c18f48d81e4da3a5939",
+    "semantic_hash": "53d6899d91ef9c18f48d81e4da3a5939"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\auth-footer.tsx": {
+    "mtime": 1791165509.7729423,
+    "ast_hash": "a42ec9c8f5450ba1f2e0c4ecad2a7485",
+    "semantic_hash": "a42ec9c8f5450ba1f2e0c4ecad2a7485"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\auth-header.tsx": {
+    "mtime": 1791165509.7729423,
+    "ast_hash": "5ef33213220f253e6e93f10b8209e0a2",
+    "semantic_hash": "5ef33213220f253e6e93f10b8209e0a2"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\index.ts": {
+    "mtime": 1791165509.7739415,
+    "ast_hash": "179793d1a1b24777c936b87a3c05f624",
+    "semantic_hash": "179793d1a1b24777c936b87a3c05f624"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\login-screen.test.tsx": {
+    "mtime": 1791165509.7749436,
+    "ast_hash": "11e8531a8dc4a1525cb309884734dafa",
+    "semantic_hash": "11e8531a8dc4a1525cb309884734dafa"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\login-screen.tsx": {
+    "mtime": 1791165509.7759423,
+    "ast_hash": "dcfbd38efe5973ba7e3a4444e339edd1",
+    "semantic_hash": "dcfbd38efe5973ba7e3a4444e339edd1"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\register-screen.test.tsx": {
+    "mtime": 1791165166.7501469,
+    "ast_hash": "4bc951632808a9ca303df1404a3aaa13",
+    "semantic_hash": "4bc951632808a9ca303df1404a3aaa13"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\register-screen.tsx": {
+    "mtime": 1791165509.7759423,
+    "ast_hash": "fcf4c02d4f7aec5b848b6f005ad413eb",
+    "semantic_hash": "fcf4c02d4f7aec5b848b6f005ad413eb"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\session-provider.tsx": {
+    "mtime": 1791164670.0105631,
+    "ast_hash": "8a19b9bdd5ecab8acfe40e672dfb0b08",
+    "semantic_hash": "8a19b9bdd5ecab8acfe40e672dfb0b08"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\hooks\\get-auth-error-message.test.ts": {
+    "mtime": 1791165166.751145,
+    "ast_hash": "344574fc90a894f903987bb1eccce4aa",
+    "semantic_hash": "344574fc90a894f903987bb1eccce4aa"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\hooks\\get-auth-error-message.ts": {
+    "mtime": 1791165509.7801013,
+    "ast_hash": "d0bebb382a1e594893d278997c968c4f",
+    "semantic_hash": "d0bebb382a1e594893d278997c968c4f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\hooks\\index.ts": {
+    "mtime": 1791165509.7801013,
+    "ast_hash": "14aaeba7c63b2e022173f16dd2287c1f",
+    "semantic_hash": "14aaeba7c63b2e022173f16dd2287c1f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\hooks\\use-login.ts": {
+    "mtime": 1791164670.014079,
+    "ast_hash": "41f11fd5e6f969dcf20f7e3b9b4bbf4f",
+    "semantic_hash": "41f11fd5e6f969dcf20f7e3b9b4bbf4f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\hooks\\use-logout.ts": {
+    "mtime": 1791165509.7811024,
+    "ast_hash": "a37bf7f173d6baf808954e6a0e2d8186",
+    "semantic_hash": "a37bf7f173d6baf808954e6a0e2d8186"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\hooks\\use-register.ts": {
+    "mtime": 1791165166.753145,
+    "ast_hash": "3c11a8467ad37043012aec388a3ba29e",
+    "semantic_hash": "3c11a8467ad37043012aec388a3ba29e"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\hooks\\use-session.ts": {
+    "mtime": 1791164670.014079,
+    "ast_hash": "66cec7e41345c68c8b95e67764aa330a",
+    "semantic_hash": "66cec7e41345c68c8b95e67764aa330a"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\schemas\\auth-dto.schema.ts": {
+    "mtime": 1791164670.0160775,
+    "ast_hash": "03bda1ce03fa8b602d1bb1fe06f98f9d",
+    "semantic_hash": "03bda1ce03fa8b602d1bb1fe06f98f9d"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\schemas\\index.ts": {
+    "mtime": 1791165509.7841096,
+    "ast_hash": "0a60dae6ad647b79fb06e6ce86a1f62f",
+    "semantic_hash": "0a60dae6ad647b79fb06e6ce86a1f62f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\schemas\\login.schema.test.ts": {
+    "mtime": 1791164670.0170765,
+    "ast_hash": "695cac226daa4f995f3e43b3c4442cc2",
+    "semantic_hash": "695cac226daa4f995f3e43b3c4442cc2"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\schemas\\login.schema.ts": {
+    "mtime": 1791164670.0170765,
+    "ast_hash": "ee6ceedcd00d4e7a7cfbfca4df95c066",
+    "semantic_hash": "ee6ceedcd00d4e7a7cfbfca4df95c066"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\schemas\\register.schema.test.ts": {
+    "mtime": 1791165166.7541454,
+    "ast_hash": "c85b1847fb3f863c07fe9f4a34d4d134",
+    "semantic_hash": "c85b1847fb3f863c07fe9f4a34d4d134"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\schemas\\register.schema.ts": {
+    "mtime": 1791165166.7552862,
+    "ast_hash": "3d5eb6fdb27898bd1c7f5e7228cacdd1",
+    "semantic_hash": "3d5eb6fdb27898bd1c7f5e7228cacdd1"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\types\\auth.dto.ts": {
+    "mtime": 1791165509.7870996,
+    "ast_hash": "094b93ac4197ce5fa5aed48f200dea99",
+    "semantic_hash": "094b93ac4197ce5fa5aed48f200dea99"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\types\\index.ts": {
+    "mtime": 1791165509.7881014,
+    "ast_hash": "84a2ce5448974b84ddcc92f9cfa53a59",
+    "semantic_hash": "84a2ce5448974b84ddcc92f9cfa53a59"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\types\\session.ts": {
+    "mtime": 1791165509.7881014,
+    "ast_hash": "72f607b65349662efc4216c8e2ca457f",
+    "semantic_hash": "72f607b65349662efc4216c8e2ca457f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\types\\user.ts": {
+    "mtime": 1791164670.0190773,
+    "ast_hash": "56f97d6a7dc2a35e1db0a84bcb87de93",
+    "semantic_hash": "56f97d6a7dc2a35e1db0a84bcb87de93"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\home\\index.ts": {
+    "mtime": 1791164670.0220764,
+    "ast_hash": "681c4bcf287a2b51309a0f44d3414dcc",
+    "semantic_hash": "681c4bcf287a2b51309a0f44d3414dcc"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\home\\components\\home-option.tsx": {
+    "mtime": 1791164670.021077,
+    "ast_hash": "e592ff5d2adeb8facaeb79f08832d3df",
+    "semantic_hash": "e592ff5d2adeb8facaeb79f08832d3df"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\home\\components\\home-screen.test.tsx": {
+    "mtime": 1791165509.7902079,
+    "ast_hash": "c8fae3d3ad00b02b1b5bf3aafea08db3",
+    "semantic_hash": "c8fae3d3ad00b02b1b5bf3aafea08db3"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\home\\components\\home-screen.tsx": {
+    "mtime": 1791165509.7902079,
+    "ast_hash": "4da6c3cf8dedfabcc57dc0f2b3f6dfd3",
+    "semantic_hash": "4da6c3cf8dedfabcc57dc0f2b3f6dfd3"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\hooks\\use-app-fonts.ts": {
+    "mtime": 1791165166.7572849,
+    "ast_hash": "f72f0c66aea4b278e417b49ddebdb582",
+    "semantic_hash": "f72f0c66aea4b278e417b49ddebdb582"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\hooks\\use-color-scheme.ts": {
+    "mtime": 1791164670.0286508,
+    "ast_hash": "6f3444fcb9c7013a839a7832be518831",
+    "semantic_hash": "6f3444fcb9c7013a839a7832be518831"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\hooks\\use-color-scheme.web.ts": {
+    "mtime": 1791164670.029653,
+    "ast_hash": "2034028bbe7b8b3b73f1a1d92a339bf8",
+    "semantic_hash": "2034028bbe7b8b3b73f1a1d92a339bf8"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\hooks\\use-theme.ts": {
+    "mtime": 1791164670.030653,
+    "ast_hash": "e058af4f5801bcaa97dad62f12085a27",
+    "semantic_hash": "e058af4f5801bcaa97dad62f12085a27"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\api\\api-error.ts": {
+    "mtime": 1791164670.033652,
+    "ast_hash": "1d47d62c5e83f324f442f1a5c09f1a1c",
+    "semantic_hash": "1d47d62c5e83f324f442f1a5c09f1a1c"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\api\\auth-interceptor.ts": {
+    "mtime": 1791164670.033652,
+    "ast_hash": "692d40ce7dab70d3a8c694e78262f7da",
+    "semantic_hash": "692d40ce7dab70d3a8c694e78262f7da"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\api\\client.ts": {
+    "mtime": 1791164670.0350325,
+    "ast_hash": "3276bcaaf6b90e4fdcc26ec4a64ad35e",
+    "semantic_hash": "3276bcaaf6b90e4fdcc26ec4a64ad35e"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\api\\index.ts": {
+    "mtime": 1791164670.0360343,
+    "ast_hash": "944646e60ed25751f350b9937b43c81e",
+    "semantic_hash": "944646e60ed25751f350b9937b43c81e"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\api\\__tests__\\client.test.ts": {
+    "mtime": 1791164670.033652,
+    "ast_hash": "8c1d5551c65db096c497573662901388",
+    "semantic_hash": "8c1d5551c65db096c497573662901388"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\query\\index.ts": {
+    "mtime": 1791164670.037033,
+    "ast_hash": "cf664950330e0f9c3b6d5de90a918806",
+    "semantic_hash": "cf664950330e0f9c3b6d5de90a918806"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\query\\query-client.ts": {
+    "mtime": 1791164670.0380323,
+    "ast_hash": "4757d454a5a11085bbb764fcd7d4fa57",
+    "semantic_hash": "4757d454a5a11085bbb764fcd7d4fa57"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\storage\\index.ts": {
+    "mtime": 1791164670.040034,
+    "ast_hash": "76f3999ac81d6066619f56dd3f38adbd",
+    "semantic_hash": "76f3999ac81d6066619f56dd3f38adbd"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\storage\\secure-storage.ts": {
+    "mtime": 1791164670.040034,
+    "ast_hash": "53fc1247cb0adc56a975e30eb19f2b79",
+    "semantic_hash": "53fc1247cb0adc56a975e30eb19f2b79"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\storage\\secure-storage.web.ts": {
+    "mtime": 1791164670.041034,
+    "ast_hash": "3a7ccfa802a263b71934b65d1cd1b1eb",
+    "semantic_hash": "3a7ccfa802a263b71934b65d1cd1b1eb"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\can-component.tsx": {
+    "mtime": 1791164670.0450768,
+    "ast_hash": "cae44c830f82038f68a884951ea428b6",
+    "semantic_hash": "cae44c830f82038f68a884951ea428b6"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\can.ts": {
+    "mtime": 1791164670.0450768,
+    "ast_hash": "f69a5c655b3d2dd1e5ecd635aee418f5",
+    "semantic_hash": "f69a5c655b3d2dd1e5ecd635aee418f5"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\index.ts": {
+    "mtime": 1791164670.0460784,
+    "ast_hash": "76219243121aa5e937689c8900e12ae8",
+    "semantic_hash": "76219243121aa5e937689c8900e12ae8"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\permissions.ts": {
+    "mtime": 1791164670.0470774,
+    "ast_hash": "5df2c8dbbe5172f280de9ae012b807a5",
+    "semantic_hash": "5df2c8dbbe5172f280de9ae012b807a5"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\role-context.tsx": {
+    "mtime": 1791164670.0470774,
+    "ast_hash": "c6167a4fd0ce108562822c0fc87637c6",
+    "semantic_hash": "c6167a4fd0ce108562822c0fc87637c6"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\roles.ts": {
+    "mtime": 1791164670.0480764,
+    "ast_hash": "f3dd3445c1963982c3e94bb924166802",
+    "semantic_hash": "f3dd3445c1963982c3e94bb924166802"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\use-permission.ts": {
+    "mtime": 1791164670.0480764,
+    "ast_hash": "efeaed430bd453ba7edf88a43dc080e1",
+    "semantic_hash": "efeaed430bd453ba7edf88a43dc080e1"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\__tests__\\can-component.test.tsx": {
+    "mtime": 1791164670.0440333,
+    "ast_hash": "4e601ea14cdb4f25cec39c2824f6e5ef",
+    "semantic_hash": "4e601ea14cdb4f25cec39c2824f6e5ef"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\__tests__\\can.test.ts": {
+    "mtime": 1791164670.0440333,
+    "ast_hash": "d1037032331ac87d4bc29e395432b06d",
+    "semantic_hash": "d1037032331ac87d4bc29e395432b06d"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\providers\\app-providers.tsx": {
+    "mtime": 1791164670.0500762,
+    "ast_hash": "e2b90d4347f87ba305cb3ead5bc58318",
+    "semantic_hash": "e2b90d4347f87ba305cb3ead5bc58318"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\providers\\index.ts": {
+    "mtime": 1791164670.0500762,
+    "ast_hash": "8a2b09f40c4c9a07a1ed06f883d71cf3",
+    "semantic_hash": "8a2b09f40c4c9a07a1ed06f883d71cf3"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\AGENTS.md": {
+    "mtime": 1791164669.923162,
+    "ast_hash": "126dae0cf712056a87477f3cedad6c37",
+    "semantic_hash": "126dae0cf712056a87477f3cedad6c37"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\CONTRIBUTING.md": {
+    "mtime": 1791164669.9241638,
+    "ast_hash": "15b2f0b43ed4d89d96df8ced6853bde5",
+    "semantic_hash": "15b2f0b43ed4d89d96df8ced6853bde5"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\README.md": {
+    "mtime": 1791164669.9251628,
+    "ast_hash": "530e6f8a1c9143c105bf7a609b61ae72",
+    "semantic_hash": "530e6f8a1c9143c105bf7a609b61ae72"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\.github\\pull_request_template.md": {
+    "mtime": 1791164669.9176476,
+    "ast_hash": "19d1f08e6cf7a85624c351847625dffd",
+    "semantic_hash": "19d1f08e6cf7a85624c351847625dffd"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\.github\\ISSUE_TEMPLATE\\bug.md": {
+    "mtime": 1791164669.9166462,
+    "ast_hash": "4802626c59adda37f5365d43f12dd953",
+    "semantic_hash": "4802626c59adda37f5365d43f12dd953"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\.github\\ISSUE_TEMPLATE\\historia-usuario.md": {
+    "mtime": 1791164669.9166462,
+    "ast_hash": "1106a0c0722817bae70d9d7b0d2a9017",
+    "semantic_hash": "1106a0c0722817bae70d9d7b0d2a9017"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\.github\\workflows\\ci.yml": {
+    "mtime": 1791164669.919156,
+    "ast_hash": "b054451e982f4624c0b3fa28e034a41b",
+    "semantic_hash": "b054451e982f4624c0b3fa28e034a41b"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\README.md": {
+    "mtime": 1791164669.9491162,
+    "ast_hash": "6e7c8f94cd105cf25a96768cc28a3891",
+    "semantic_hash": "6e7c8f94cd105cf25a96768cc28a3891"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\api\\README.md": {
+    "mtime": 1791164669.950117,
+    "ast_hash": "073bbb993383357b4d28edfbbe07ab99",
+    "semantic_hash": "073bbb993383357b4d28edfbbe07ab99"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\architecture\\ARQUITECTURA.md": {
+    "mtime": 1791164669.951151,
+    "ast_hash": "49c431359f4e7e1389dd708211cf5f9d",
+    "semantic_hash": "49c431359f4e7e1389dd708211cf5f9d"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\architecture\\NAVEGACION.md": {
+    "mtime": 1791164669.951151,
+    "ast_hash": "1fd7bcd57015560600c25d95c34d13b4",
+    "semantic_hash": "1fd7bcd57015560600c25d95c34d13b4"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\architecture\\README.md": {
+    "mtime": 1791164669.9521506,
+    "ast_hash": "6bc7c432797192080fd1d94e85f1b07b",
+    "semantic_hash": "6bc7c432797192080fd1d94e85f1b07b"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\architecture\\ROLES-Y-PERMISOS.md": {
+    "mtime": 1791164669.9531505,
+    "ast_hash": "3fff71a470879b34aeb55d3400fd7c8c",
+    "semantic_hash": "3fff71a470879b34aeb55d3400fd7c8c"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\conventions\\CODIGO.md": {
+    "mtime": 1791164669.9531505,
+    "ast_hash": "d46b3bde393371ddc2097cee13bc69ff",
+    "semantic_hash": "d46b3bde393371ddc2097cee13bc69ff"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\conventions\\GIT.md": {
+    "mtime": 1791164669.9541512,
+    "ast_hash": "41edd7dc5a1c5cb7327ae2bc02ec3305",
+    "semantic_hash": "41edd7dc5a1c5cb7327ae2bc02ec3305"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\conventions\\README.md": {
+    "mtime": 1791164669.9541512,
+    "ast_hash": "ad3a80deb3d8f52ef372d12e0530aa1c",
+    "semantic_hash": "ad3a80deb3d8f52ef372d12e0530aa1c"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0001-arquitectura-por-features.md": {
+    "mtime": 1791164669.9551523,
+    "ast_hash": "2600475c41b4ee64038bce2b92d7adce",
+    "semantic_hash": "2600475c41b4ee64038bce2b92d7adce"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0002-permisos-sobre-roles.md": {
+    "mtime": 1791164669.9561512,
+    "ast_hash": "29dd8c2590577b23d28fb76ae108ad64",
+    "semantic_hash": "29dd8c2590577b23d28fb76ae108ad64"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0003-estado-de-servidor-tanstack-query.md": {
+    "mtime": 1791164669.95715,
+    "ast_hash": "f6a5bb22260752df46a760f75ddc7d8e",
+    "semantic_hash": "f6a5bb22260752df46a760f75ddc7d8e"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0004-formularios-rhf-zod.md": {
+    "mtime": 1791164669.95715,
+    "ast_hash": "51f7f91107321f9945f56a15d6fc4177",
+    "semantic_hash": "51f7f91107321f9945f56a15d6fc4177"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0005-pruebas-jest-expo.md": {
+    "mtime": 1791164669.9581509,
+    "ast_hash": "1890691db0b7f7bec563900a9926be16",
+    "semantic_hash": "1890691db0b7f7bec563900a9926be16"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0006-almacenamiento-seguro-de-sesion.md": {
+    "mtime": 1791164669.9581509,
+    "ast_hash": "693bf8f3bafd1dc352e4ed6abff85897",
+    "semantic_hash": "693bf8f3bafd1dc352e4ed6abff85897"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0007-herramientas-de-calidad.md": {
+    "mtime": 1791164669.9581509,
+    "ast_hash": "43b0836304965d4f0be9d7dd8193ade8",
+    "semantic_hash": "43b0836304965d4f0be9d7dd8193ade8"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0008-sin-validaciones-al-hacer-commit.md": {
+    "mtime": 1791164669.9591508,
+    "ast_hash": "e3acf5ae527888614533924cdcfefd5f",
+    "semantic_hash": "e3acf5ae527888614533924cdcfefd5f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\0009-tipografia-nunito-e-iconos-expo-symbols.md": {
+    "mtime": 1791164669.9591508,
+    "ast_hash": "179490e66b281e516a03ef19cf3660c2",
+    "semantic_hash": "179490e66b281e516a03ef19cf3660c2"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\decisions\\README.md": {
+    "mtime": 1791164669.9591508,
+    "ast_hash": "258d219b0094b9974cb098cd963643b9",
+    "semantic_hash": "258d219b0094b9974cb098cd963643b9"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\requirements\\Historias-Usuario.md": {
+    "mtime": 1791164669.960656,
+    "ast_hash": "7a76d4d5cbd1c87ffbda41e37bdb19de",
+    "semantic_hash": "7a76d4d5cbd1c87ffbda41e37bdb19de"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\requirements\\README.md": {
+    "mtime": 1791164669.960656,
+    "ast_hash": "01cebeb0c5a3da29b2273bf9b515599e",
+    "semantic_hash": "01cebeb0c5a3da29b2273bf9b515599e"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\sprints\\README.md": {
+    "mtime": 1791164669.9616616,
+    "ast_hash": "f6aeac28c3f3a7399fe3c120764becd1",
+    "semantic_hash": "f6aeac28c3f3a7399fe3c120764becd1"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\docs\\sprints\\sprint-01.md": {
+    "mtime": 1791164669.9616616,
+    "ast_hash": "6697f319d5dd60033391449b6ecbdadd",
+    "semantic_hash": "6697f319d5dd60033391449b6ecbdadd"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\README.md": {
+    "mtime": 1791164669.9709995,
+    "ast_hash": "e7d7a31c4482983fe8fa5976a259de89",
+    "semantic_hash": "e7d7a31c4482983fe8fa5976a259de89"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\README.md": {
+    "mtime": 1791164669.9805162,
+    "ast_hash": "cd38269cfbcb24766c672920114c84cf",
+    "semantic_hash": "cd38269cfbcb24766c672920114c84cf"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(admin)\\README.md": {
+    "mtime": 1791164669.9725175,
+    "ast_hash": "c2c653a6ac5c3bda859f402a7776cf0f",
+    "semantic_hash": "c2c653a6ac5c3bda859f402a7776cf0f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(admin)\\admins\\README.md": {
+    "mtime": 1791164669.9725175,
+    "ast_hash": "0346e8150b71eaf2cdb168c66a27bed9",
+    "semantic_hash": "0346e8150b71eaf2cdb168c66a27bed9"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(admin)\\species\\README.md": {
+    "mtime": 1791164669.9735117,
+    "ast_hash": "cdbace79a100a3c7af30571ef8d37a8c",
+    "semantic_hash": "cdbace79a100a3c7af30571ef8d37a8c"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(auth)\\README.md": {
+    "mtime": 1791165509.7628846,
+    "ast_hash": "6a03f52d5ce1298e200d5dcc6a99909f",
+    "semantic_hash": "6a03f52d5ce1298e200d5dcc6a99909f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(tabs)\\README.md": {
+    "mtime": 1791165509.7648907,
+    "ast_hash": "d724058ab9220fb566ed723caea98e0d",
+    "semantic_hash": "d724058ab9220fb566ed723caea98e0d"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\(tabs)\\species\\README.md": {
+    "mtime": 1791164669.9795122,
+    "ast_hash": "b404470976d2c9d22f37407de4492173",
+    "semantic_hash": "b404470976d2c9d22f37407de4492173"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\app\\species\\README.md": {
+    "mtime": 1791164669.9815118,
+    "ast_hash": "8a9762d183f3778897b8d1f1e8bca65a",
+    "semantic_hash": "8a9762d183f3778897b8d1f1e8bca65a"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\README.md": {
+    "mtime": 1791164669.9820175,
+    "ast_hash": "3272b96b4d45c04d8e456f06c86afcc5",
+    "semantic_hash": "3272b96b4d45c04d8e456f06c86afcc5"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\feedback\\README.md": {
+    "mtime": 1791165166.741634,
+    "ast_hash": "a329e63a406b857427059bff7ae50c19",
+    "semantic_hash": "a329e63a406b857427059bff7ae50c19"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\layout\\README.md": {
+    "mtime": 1791164669.988024,
+    "ast_hash": "d0408849c3d747e44806e729fb9bd50f",
+    "semantic_hash": "d0408849c3d747e44806e729fb9bd50f"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\components\\ui\\README.md": {
+    "mtime": 1791165166.7441373,
+    "ast_hash": "3f12bb8f83c76b9b03cec75c8b039508",
+    "semantic_hash": "3f12bb8f83c76b9b03cec75c8b039508"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\config\\README.md": {
+    "mtime": 1791164669.9935377,
+    "ast_hash": "2ab4bfdb48efb9f48d7e257004d80907",
+    "semantic_hash": "2ab4bfdb48efb9f48d7e257004d80907"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\constants\\README.md": {
+    "mtime": 1791164669.997049,
+    "ast_hash": "0a48cc1c105b7f49ba41cc07d525f4e5",
+    "semantic_hash": "0a48cc1c105b7f49ba41cc07d525f4e5"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\README.md": {
+    "mtime": 1791164669.9980502,
+    "ast_hash": "a9c9795ff10dc7d480c868100b1eb903",
+    "semantic_hash": "a9c9795ff10dc7d480c868100b1eb903"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\admins\\README.md": {
+    "mtime": 1791164669.9980502,
+    "ast_hash": "36cb365bd76916888d6186029199b1bb",
+    "semantic_hash": "36cb365bd76916888d6186029199b1bb"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\admins\\api\\README.md": {
+    "mtime": 1791164669.9990506,
+    "ast_hash": "cd4e4391c68ca5bee40e8e209c87a357",
+    "semantic_hash": "cd4e4391c68ca5bee40e8e209c87a357"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\admins\\components\\README.md": {
+    "mtime": 1791164670.000051,
+    "ast_hash": "b0cb4bd2d72cf87c5085a373337e4c58",
+    "semantic_hash": "b0cb4bd2d72cf87c5085a373337e4c58"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\admins\\hooks\\README.md": {
+    "mtime": 1791164670.000051,
+    "ast_hash": "70d5e589c1f5947396931716fa68211b",
+    "semantic_hash": "70d5e589c1f5947396931716fa68211b"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\admins\\schemas\\README.md": {
+    "mtime": 1791164670.00105,
+    "ast_hash": "4a62595f2ad12de3a854c02588952d14",
+    "semantic_hash": "4a62595f2ad12de3a854c02588952d14"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\admins\\types\\README.md": {
+    "mtime": 1791164670.0025573,
+    "ast_hash": "3486e68d0d7594da287b791cca787140",
+    "semantic_hash": "3486e68d0d7594da287b791cca787140"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\README.md": {
+    "mtime": 1791165509.7679422,
+    "ast_hash": "f122be600193fbef0fc582cfbaad561e",
+    "semantic_hash": "f122be600193fbef0fc582cfbaad561e"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\api\\README.md": {
+    "mtime": 1791164670.0035644,
+    "ast_hash": "1d0a765ca5012e28ac3bd478b126bbd3",
+    "semantic_hash": "1d0a765ca5012e28ac3bd478b126bbd3"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\components\\README.md": {
+    "mtime": 1791165509.7709413,
+    "ast_hash": "a1f4aa09741e19c50385f5b02676c428",
+    "semantic_hash": "a1f4aa09741e19c50385f5b02676c428"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\hooks\\README.md": {
+    "mtime": 1791165509.7791014,
+    "ast_hash": "51aec2c67e8354d8b4126d79b241be81",
+    "semantic_hash": "51aec2c67e8354d8b4126d79b241be81"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\schemas\\README.md": {
+    "mtime": 1791165166.753145,
+    "ast_hash": "39b4f2f4d6cb2448eaddf1e5ba9ce472",
+    "semantic_hash": "39b4f2f4d6cb2448eaddf1e5ba9ce472"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\auth\\types\\README.md": {
+    "mtime": 1791164670.0180764,
+    "ast_hash": "76fe868bc310a04228528ebb50f6dd93",
+    "semantic_hash": "76fe868bc310a04228528ebb50f6dd93"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\home\\README.md": {
+    "mtime": 1791165509.7892072,
+    "ast_hash": "d7482ac0ab0d8e7ee9e4e6ba909bdb0c",
+    "semantic_hash": "d7482ac0ab0d8e7ee9e4e6ba909bdb0c"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\species\\README.md": {
+    "mtime": 1791164670.0235848,
+    "ast_hash": "7af6c4d2db04e3c0f75379d5735b4b72",
+    "semantic_hash": "7af6c4d2db04e3c0f75379d5735b4b72"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\species\\api\\README.md": {
+    "mtime": 1791164670.0235848,
+    "ast_hash": "2ce125ea0b879c1fa7e7342c6c3058d1",
+    "semantic_hash": "2ce125ea0b879c1fa7e7342c6c3058d1"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\species\\components\\README.md": {
+    "mtime": 1791164670.0245943,
+    "ast_hash": "f67912b32ace8ee69f55fac339b8e97c",
+    "semantic_hash": "f67912b32ace8ee69f55fac339b8e97c"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\species\\hooks\\README.md": {
+    "mtime": 1791164670.025644,
+    "ast_hash": "7e7a8adf252ca3dd2eca3d39a0ad4581",
+    "semantic_hash": "7e7a8adf252ca3dd2eca3d39a0ad4581"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\species\\schemas\\README.md": {
+    "mtime": 1791164670.025644,
+    "ast_hash": "2894bda97265c05c39671d60f69ac32a",
+    "semantic_hash": "2894bda97265c05c39671d60f69ac32a"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\features\\species\\types\\README.md": {
+    "mtime": 1791164670.0266528,
+    "ast_hash": "709ce1b83ee54dbb6799495298d1a436",
+    "semantic_hash": "709ce1b83ee54dbb6799495298d1a436"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\hooks\\README.md": {
+    "mtime": 1791164670.0276537,
+    "ast_hash": "ce0ba5d5557a62850e62b705b81ea503",
+    "semantic_hash": "ce0ba5d5557a62850e62b705b81ea503"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\README.md": {
+    "mtime": 1791164670.031652,
+    "ast_hash": "071a4c86ebec488559f020a2b1971c60",
+    "semantic_hash": "071a4c86ebec488559f020a2b1971c60"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\api\\README.md": {
+    "mtime": 1791164670.0326517,
+    "ast_hash": "e9733110762001bd3028e1ed79d8b595",
+    "semantic_hash": "e9733110762001bd3028e1ed79d8b595"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\query\\README.md": {
+    "mtime": 1791164670.037033,
+    "ast_hash": "ee7e00851d68d0f3b3d54cc7e6d398ab",
+    "semantic_hash": "ee7e00851d68d0f3b3d54cc7e6d398ab"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\lib\\storage\\README.md": {
+    "mtime": 1791164670.0380323,
+    "ast_hash": "1f5f5745d4e0c49eef67155c103bffea",
+    "semantic_hash": "1f5f5745d4e0c49eef67155c103bffea"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\permissions\\README.md": {
+    "mtime": 1791164670.043033,
+    "ast_hash": "593825080be423853ee3afe6ba7cf202",
+    "semantic_hash": "593825080be423853ee3afe6ba7cf202"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\providers\\README.md": {
+    "mtime": 1791164670.049078,
+    "ast_hash": "24c7195e9eeb5f35db811c69379baef2",
+    "semantic_hash": "24c7195e9eeb5f35db811c69379baef2"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\types\\README.md": {
+    "mtime": 1791164670.0510788,
+    "ast_hash": "fc79a4aae044c6d40d2a6b592be15199",
+    "semantic_hash": "fc79a4aae044c6d40d2a6b592be15199"
+  },
+  "C:\\Users\\jhonn\\OneDrive\\Almacen\\Repositorios\\Proyecto-Humedal-Orquidea\\orquidea-mobile-app\\src\\utils\\README.md": {
+    "mtime": 1791164670.0510788,
+    "ast_hash": "672756cc626f9d94bd5ba42dc2358285",
+    "semantic_hash": "672756cc626f9d94bd5ba42dc2358285"
+  }
+}
