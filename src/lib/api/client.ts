@@ -98,6 +98,7 @@ export async function request<T>(
       kind: 'http',
       path,
       serverMessage: readServerMessage(data),
+      body: data,
     });
   }
 
