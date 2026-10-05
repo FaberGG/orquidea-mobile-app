@@ -9,7 +9,7 @@
 | HU-1 | ✅ Implementada (`feature/inicio-de-sesion`) |
 | HU-1.1 | ✅ Implementada (`feature/recuperar-contrasena`), flujo de dos pasos con código de 6 dígitos; sin diseño en Figma (sigue el estilo del login) |
 | HU-2 | ✅ Implementada (`feature/registro`), diseño Figma nodo `44:468` |
-| HU-3 | Pendiente |
+| HU-3 | ✅ Implementada (`feature/cerrar-sesion`): pestaña **Cuenta** con CERRAR SESIÓN; sin diseño en Figma |
 
 Diseño: Figma "Humedal Orquidea", sección **HE-1 Registro y Autenticacion** (login: nodo `43:229`). Donde el
 Figma y los criterios de aceptación difieren, mandan los criterios: botón **INGRESAR** (Figma: "Iniciar Sesion") y
