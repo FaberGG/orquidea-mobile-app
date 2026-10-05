@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { type ReactNode } from 'react';
 
 import { ApiError } from '@/lib/api';
@@ -12,7 +12,10 @@ import { type LoginResult } from '../types';
 import { LoginScreen } from './login-screen';
 import { SessionProvider } from './session-provider';
 
-jest.mock('expo-router', () => ({ router: { replace: jest.fn(), push: jest.fn() } }));
+jest.mock('expo-router', () => ({
+  router: { replace: jest.fn(), push: jest.fn() },
+  useLocalSearchParams: jest.fn(() => ({})),
+}));
 jest.mock('@/lib/storage', () => ({
   getToken: jest.fn(),
   saveToken: jest.fn(),
@@ -62,6 +65,9 @@ describe('LoginScreen (HU-1)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Sin parámetros de ruta por defecto: algunas pruebas simulan volver del registro o del cambio
+    // de contraseña.
+    jest.mocked(useLocalSearchParams).mockReturnValue({});
     // gcTime infinito: evita timers pendientes que impiden que Jest termine al desmontar.
     queryClient = new QueryClient({
       defaultOptions: {
@@ -135,6 +141,20 @@ describe('LoginScreen (HU-1)', () => {
     await fireEvent.press(screen.getByText('Registrarse'));
 
     expect(router.push).toHaveBeenCalledWith('/register');
+  });
+
+  it('HU-2 CA1: al volver del registro muestra la confirmación', async () => {
+    jest.mocked(useLocalSearchParams).mockReturnValue({ registered: 'true' });
+    await renderLogin();
+
+    expect(screen.getByText(AUTH_MESSAGES.registerSuccess)).toBeTruthy();
+  });
+
+  it('HU-1.1: al volver de restablecer la contraseña muestra la confirmación', async () => {
+    jest.mocked(useLocalSearchParams).mockReturnValue({ passwordReset: 'true' });
+    await renderLogin();
+
+    expect(screen.getByText(AUTH_MESSAGES.passwordResetSuccess)).toBeTruthy();
   });
 
   it('sin conexión muestra el mensaje de respaldo', async () => {

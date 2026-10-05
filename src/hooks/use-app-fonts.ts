@@ -1,5 +1,6 @@
 import {
   Nunito_400Regular,
+  Nunito_500Medium,
   Nunito_600SemiBold,
   Nunito_700Bold,
   useFonts,
@@ -10,6 +11,11 @@ import {
  * listas o fallo de carga (en ese caso se usa la fuente del sistema en lugar de bloquear la app).
  */
 export function useAppFonts(): boolean {
-  const [isLoaded, error] = useFonts({ Nunito_400Regular, Nunito_600SemiBold, Nunito_700Bold });
+  const [isLoaded, error] = useFonts({
+    Nunito_400Regular,
+    Nunito_500Medium,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+  });
   return isLoaded || error !== null;
 }
