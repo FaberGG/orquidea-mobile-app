@@ -6,21 +6,27 @@ import { useTheme } from '@/hooks/use-theme';
 
 export type FormMessageProps = {
   message: string;
+  /** `error` (por defecto) para validaciones y fallos; `success` para confirmaciones. */
+  variant?: 'error' | 'success';
 };
 
 /**
- * Mensaje de error de un formulario (textos de los criterios de aceptación).
+ * Mensaje debajo de un formulario (textos de los criterios de aceptación).
  * Se anuncia a los lectores de pantalla al aparecer.
  */
-export function FormMessage({ message }: FormMessageProps) {
+export function FormMessage({ message, variant = 'error' }: FormMessageProps) {
   const theme = useTheme();
+  const isError = variant === 'error';
 
   return (
     <View
-      accessibilityRole="alert"
+      accessibilityRole={isError ? 'alert' : 'summary'}
       accessibilityLiveRegion="polite"
-      style={[styles.container, { backgroundColor: theme.dangerBackground }]}>
-      <ThemedText type="small" style={{ color: theme.danger }}>
+      style={[
+        styles.container,
+        { backgroundColor: isError ? theme.dangerBackground : theme.successBackground },
+      ]}>
+      <ThemedText type="small" style={{ color: isError ? theme.danger : theme.success }}>
         {message}
       </ThemedText>
     </View>

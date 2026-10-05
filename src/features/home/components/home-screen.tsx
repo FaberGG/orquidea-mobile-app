@@ -6,10 +6,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useSession } from '@/features/auth';
+import { ROLE_LABELS, useSession } from '@/features/auth';
 import { Can } from '@/permissions';
 
-import { ROLE_LABELS } from '../constants';
 import { HomeOption } from './home-option';
 
 /**

@@ -19,8 +19,10 @@ const Palette = {
   neutro700: '#293D37',
   neutro800: '#152822',
   neutro900: '#072219',
+  green50: '#E7F1EE',
   green200: '#8FBDAF',
   green500: '#0B6F50',
+  green800: '#063D2C',
 } as const;
 
 export const Colors = {
@@ -36,6 +38,8 @@ export const Colors = {
     onPrimary: Palette.neutroWhite,
     danger: '#B3261E',
     dangerBackground: '#FCEEEE',
+    success: Palette.green500,
+    successBackground: Palette.green50,
     border: Palette.neutro100,
   },
   dark: {
@@ -50,6 +54,8 @@ export const Colors = {
     onPrimary: Palette.neutro900,
     danger: '#F2B8B5',
     dangerBackground: '#3A1614',
+    success: Palette.green200,
+    successBackground: Palette.green800,
     border: Palette.neutro600,
   },
 } as const;
@@ -59,6 +65,7 @@ export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 /** Familias de Nunito (tipografía del diseño). Se cargan en `useAppFonts`. */
 export const FontFamily = {
   regular: 'Nunito_400Regular',
+  medium: 'Nunito_500Medium',
   semiBold: 'Nunito_600SemiBold',
   bold: 'Nunito_700Bold',
 } as const;
