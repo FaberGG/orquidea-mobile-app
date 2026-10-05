@@ -9,6 +9,7 @@
 | `ResetPasswordScreen` | Código de 6 dígitos y nueva contraseña; al éxito vuelve a `LoginScreen` | HU-1.1 |
 | `RegisterScreen` | Nombre, apellido, correo, contraseña y botón **REGISTRARME** | HU-2 |
 | `AccountScreen` | Visitante: invitación a ingresar o registrarse. Con sesión: datos del usuario, botón **CERRAR SESIÓN** y, con `<Can permission="admins:read">`, acceso a gestión de administradores | HU-3 |
+| `AuthHeader` / `AuthFooter` | Título + subtítulo centrados y pie "pregunta + enlace" comunes a las pantallas de acceso | HU-1, HU-1.1, HU-2 |
 | `SessionProvider` | Context de sesión (estado, usuario, rol, acciones) | HU-1, HU-3 |
 
 Las pantallas obtienen datos y acciones de `../hooks`; los campos de formulario usan los componentes de
