@@ -1,12 +1,11 @@
 # src/features/species/hooks/
 
-**Responsabilidad:** queries y mutations de fichas, invalidación de caché y traducción de errores a
-`SPECIES_MESSAGES`.
+**Responsabilidad:** queries de fichas (TanStack Query) y, cuando existan, mutations con invalidación de caché.
 
-| Hook | Descripción |
-|---|---|
-| `useSpeciesList(category)` | Listado por categoría |
-| `useSpecies(id)` | Detalle |
-| `useCreateSpecies` | Crea; invalida el listado de su categoría |
-| `useUpdateSpecies` | Edita; invalida detalle y listado; muestra `La ficha se actualizó correctamente.` |
-| `useDeleteSpecies` | Elimina tras confirmar; invalida el listado y vuelve atrás — ⛔ pendiente de endpoint (docs/api B1) |
+| Hook | Descripción | Estado |
+|---|---|---|
+| `useSpeciesList(category)` | Listado por categoría; la clave incluye la categoría (`speciesKeys.list`) | ✅ |
+| `useSpecies(id)` | Detalle (`speciesKeys.detail`) | ✅ |
+| `useCreateSpecies` | Crea; invalida el listado | Pendiente (HU-7) |
+| `useUpdateSpecies` | Edita; invalida detalle y listado (HU-8) | Pendiente |
+| `useDeleteSpecies` | Elimina; ⛔ sin endpoint (docs/api B1) | Bloqueado (HU-9) |

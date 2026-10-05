@@ -1,64 +1,64 @@
 # src/features/species/ — Fichas taxonómicas (HE-03)
 
-**Responsabilidad:** consulta pública de la biodiversidad del humedal (aves, plantas, insectos) y su gestión
-por parte de administradores. Es el ejemplo principal de **una misma interfaz con capacidades por rol**.
-
-> **Estado:** `SpeciesListScreen` ya ocupa la pestaña **Inicio** (`/`) con un estado vacío; el listado,
-> los filtros por categoría y las tarjetas del Figma ("Listar fichas") llegan con HU-10.
+**Responsabilidad:** consulta pública de la biodiversidad del humedal (listado y detalle) y, para
+administradores, su edición y eliminación. Es el ejemplo principal de **una misma interfaz con capacidades
+por rol**. Diseño: Figma, HE-3 → "Listar fichas" y "Detalle ficha".
 
 ## Historias
 
-| HU | Descripción | Rol | Pantalla |
+| HU | Descripción | Rol | Estado |
 |---|---|---|---|
-| HU-10 | Listado por categoría | Todos | `SpeciesListScreen`, `SpeciesDetailScreen` |
-| HU-7 | Crear ficha | Admin+ | `CreateSpeciesScreen` |
-| HU-8 | Editar ficha | Admin+ | `EditSpeciesScreen` |
-| HU-9 | Eliminar ficha ⛔ | Admin+ | Acción en `SpeciesDetailScreen` |
-
-⛔ **HU-9 bloqueada:** la API no tiene `DELETE /api/fichas-taxonomicas/{id}`
-([docs/api B1](../../../docs/api/README.md#5-brechas-con-las-historias-de-usuario)).
+| HU-10 | Listado por categoría (chips con ícono) y detalle | Todos | ✅ Implementado (sin búsqueda: la API aún no la tiene) |
+| HU-7 | Crear ficha | Admin+ | ✅ Formulario de `(admin)/species/new` (Figma "Crear ficha") |
+| HU-8 | Editar ficha | Admin+ | ✅ Formulario de `(admin)/species/[id]/edit` (Figma "Editar ficha") |
+| HU-9 | Eliminar ficha | Admin+ | Botón visible con `<Can>`; deshabilitado: la API no tiene `DELETE` (docs/api B1) |
 
 ## Modelo
 
-`Species`: `id`, `category` (`bird` \| `plant` \| `insect`), `order`, `family`, `genus`, `scientificName`,
-`vernacularName` (nombre común), `diet`, `wetlandRole`, `conservationStatus` (UICN), `photoUrl`, `createdAt`,
-`updatedAt`.
+`Species`: `id`, `category` (`bird` | `plant` | `insect`), `order`, `family`, `genus`, `scientificName`,
+`vernacularName`, `diet`, `wetlandRole`, `conservationStatus`, `photoUrl`. Los campos opcionales son `null`
+cuando la API los envía vacíos.
 
-Los campos taxonómicos usan los nombres Darwin Core del contrato; el resto se traduce del español
-(ver [docs/api §3](../../../docs/api/README.md#3-traducción-contrato--app)).
+El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el rol de cada especie.
 
-## Contenido previsto
+## Categorías y estados de conservación
 
-| Carpeta | Contenido |
+- **Chips de categoría:** Todos, Aves (`AVE`), Plantas (`PLANTA`), Insectos (`INSECTO`). Cada chip tiene su
+  ícono (`LayoutGrid`, `Bird`, `Sprout`, `Bug`). Mamíferos, Reptiles y Anfibios del Figma **no** están: la API
+  no los acepta (`categoria` solo admite `AVE`, `PLANTA`, `INSECTO`).
+- **Estados de conservación:** los nueve códigos de la API (`EX`, `EW`, `CR`, `EN`, `VU`, `NT`, `LC`, `DD`,
+  `NE`) están modelados en `CONSERVATION_STATUSES` con etiqueta y colores. Los siete del diseño usan los
+  colores de la leyenda "Riesgo de extinción de especies". `DD` y `NE` no tienen color en el diseño: son
+  provisionales y se confirman con diseño.
+
+## Contenido
+
+| Carpeta / archivo | Contenido |
 |---|---|
-| [`api/`](api/README.md) | `species.api.ts`: `listSpecies`, `getSpecies`, `createSpecies`, `updateSpecies`, `deleteSpecies` |
-| [`components/`](components/README.md) | Pantallas, `CategorySelector`, `SpeciesCard`, `SpeciesForm`, `SpeciesActions` |
-| [`hooks/`](hooks/README.md) | `useSpeciesList`, `useSpecies`, `useCreateSpecies`, `useUpdateSpecies`, `useDeleteSpecies` |
-| [`schemas/`](schemas/README.md) | `species.schema.ts` |
-| [`types/`](types/README.md) | `Species`, `SpeciesCategory`, DTO |
-| `constants.ts` ✅ | `SPECIES_LABELS` (creado); previstos: `SPECIES_MESSAGES`, `speciesKeys`, `SPECIES_CATEGORIES`, formatos de imagen permitidos |
-| `index.ts` ✅ | Exporta las pantallas (por ahora `SpeciesListScreen`) |
+| [`api/`](api/README.md) | `listSpecies`, `getSpecies`, mapeo DTO → `Species` |
+| [`components/`](components/README.md) | Listado, detalle, tarjeta, chips y estados de conservación |
+| [`hooks/`](hooks/README.md) | `useSpeciesList`, `useSpecies` |
+| [`schemas/`](schemas/README.md) | Validación de `TaxonDto` |
+| [`types/`](types/README.md) | `Species`, `SpeciesCategory`, `ConservationStatus` |
+| `constants.ts` | `SPECIES_LABELS`, `SPECIES_FORM_LABELS`, `SPECIES_MESSAGES`, filtros, estados y claves de caché |
+| `index.ts` | Exporta `SpeciesListScreen`, `SpeciesDetailScreen` y `SPECIES_LABELS` |
 
 ## Visibilidad por rol
 
 | Elemento | Permiso |
 |---|---|
 | Listado y detalle | `species:read` (todos) |
-| Botón **Crear ficha** en el listado | `species:create` |
-| Botones **Editar** / **Eliminar** en el detalle | `species:update` / `species:delete` |
+| Botón **Editar ficha** en el detalle | `species:update` (admin, superadmin) |
+| Botón **+** del encabezado del listado y **Nueva ficha** en el menú lateral | `species:create` (admin, superadmin) |
+| Botón **Eliminar ficha** en el detalle | `species:delete` (admin, superadmin) |
 
-## Mensajes (textuales)
-
-Se guardan en `constants.ts` para las validaciones del cliente y como respaldo; los errores de la API se
-muestran con su `mensaje`, que coincide con estos textos (ver [CODIGO §10](../../../docs/conventions/CODIGO.md#10-errores)).
+## Mensajes
 
 | Caso | Mensaje |
 |---|---|
-| HU-7 campos incompletos | `Debes completar todos los campos obligatorios.` |
-| HU-7 formato de imagen | `El formato de la imagen no es válido.` |
-| Contrato: nombre científico duplicado (409) | Mensaje del servidor |
-| Contrato: imagen mayor a 10 MB (413) | Mensaje del servidor |
-| HU-8 edición exitosa | `La ficha se actualizó correctamente.` |
 | HU-10 categoría vacía | `Aún no hay especies registradas en esta categoría.` |
+| HU-10 sin fichas (filtro Todos) | `Aún no hay especies registradas.` (local, no viene de una HU) |
+| Ficha inexistente (404) | `Esta ficha no existe o ya no está disponible.` (local) |
+| Error de carga | `No pudimos cargar las fichas. Revisa tu conexión e inténtalo de nuevo.` (local) |
 
 > HE-04 (QR) y HE-08 (offline) reutilizarán `getSpecies` y la caché de esta feature.
