@@ -20,3 +20,14 @@ export type RegisterRequestDto = {
   correo: string;
   contrasena: string;
 };
+
+export type Admin = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: 'admin' | 'superadmin';
+  isEnabled: boolean;
+};
+
+export type UpdateAdminInput = Pick<Admin, 'firstName' | 'lastName' | 'email' | 'isEnabled'>;

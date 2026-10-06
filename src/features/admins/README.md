@@ -10,21 +10,19 @@
 | HU | Descripción | Pantalla |
 |---|---|---|
 | HU-4 | Crear administrador | `CreateAdminScreen` ✅ |
-| HU-5 | Editar, inhabilitar o revocar administrador | `AdminListScreen` parcial; `EditAdminScreen` pendiente |
+| HU-5 | Editar, inhabilitar o revocar administrador | `AdminListScreen` y `EditAdminScreen` ✅ |
 
-⛔ **Bloqueado en parte:** la API no tiene endpoints para listar ni consultar administradores
-([docs/api B2](../../../docs/api/README.md#5-brechas-con-las-historias-de-usuario)). Editar y revocar existen, pero no
-hay de dónde obtener el listado ni los datos actuales del administrador.
+El backend ya permite listar administradores. No tiene consulta individual, por lo que el detalle se
+obtiene del listado. La app conserva estados de carga, error y lista vacía.
 
-El menú lateral ya abre `/admins` dentro del layout compartido. La pantalla explica el bloqueo del listado y
-permite crear administrador. No se muestran cuentas ficticias ni se habilita edición/revocación sin datos reales.
+El menú lateral abre `/admins` dentro del layout compartido. Solo se muestran cuentas devueltas por la API.
 `POST /api/administradores/registrarAdmin` crea solo `ADMINISTRADOR`, según el backend actual.
 
 ## Contenido previsto
 
 | Carpeta | Contenido |
 |---|---|
-| [`api/`](api/README.md) | `admins.api.ts`: `createAdmin`, `updateAdmin`, `revokeAdmin` (+ `listAdmins`, `getAdmin` cuando existan) |
+| [`api/`](api/README.md) | `admins.api.ts`: `createAdmin`, `listAdmins`, `getAdmin`, `updateAdmin`, `revokeAdmin` |
 | [`components/`](components/README.md) | Pantallas, `AdminForm`, `AdminListItem`, diálogo de confirmación de revocación |
 | [`hooks/`](hooks/README.md) | `useAdmins`, `useAdmin`, `useCreateAdmin`, `useUpdateAdmin`, `useRevokeAdmin` |
 | [`schemas/`](schemas/README.md) | `admin.schema.ts` |

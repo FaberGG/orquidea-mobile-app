@@ -24,7 +24,7 @@ function localAddress() {
 async function main() {
   const server = await startMockHe2Api();
   const url = `http://${localAddress()}:8080`;
-  console.log('\n=== Orquídea · prueba local HU-4 (sin backend ni correos reales) ===');
+  console.log('\n=== Orquídea · prueba local HE-2 (sin backend ni correos reales) ===');
   console.log(`API de prueba: ${url}`);
   console.log('Superadmin: superadmin@orquidea.test / Prueba123!');
   console.log('Admin:      admin@orquidea.test / Prueba123!');

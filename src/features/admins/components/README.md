@@ -5,10 +5,9 @@
 | Componente | Descripción | HU |
 |---|---|---|
 | `AdminListScreen` | Listado de administradores y botón para crear uno nuevo | HU-5 |
-| `CreateAdminScreen` | `AdminForm` + botón **CREAR ADMINISTRADOR** | HU-4 |
-| `EditAdminScreen` | `AdminForm` + **GUARDAR CAMBIOS** y **REVOCAR ACCESO** (con confirmación) | HU-5 |
-| `AdminForm` | Formulario compartido: en creación pide contraseña; en edición muestra el interruptor *Habilitado* | HU-4, HU-5 |
-| `AdminListItem` | Fila del listado | HU-5 |
+| `CreateAdminScreen` | Formulario + botón **CREAR ADMINISTRADOR** | HU-4 |
+| `EditAdminScreen` | Formulario de edición + **GUARDAR CAMBIOS** y **REVOCAR ACCESO** con confirmación | HU-5 |
+| `AdminListScreen` | Listado real, búsqueda local y acceso al detalle | HU-5 |
 
-Estado actual: `CreateAdminScreen` confirma la creación por API y `AdminListScreen` conduce al formulario.
-El listado real y la edición/revocación esperan endpoints de consulta del backend.
+La API impide editar una cuenta superadministradora con `PUT`; su detalle permite revocar con las reglas
+del servidor. El mismo layout de navegación se conserva en todas estas pantallas.

@@ -53,6 +53,25 @@ export default function AdminsLayout() {
           ),
         }}
       />
+      <Stack.Screen
+        name="[id]"
+        options={{
+          header: ({ navigation }) => (
+            <AppHeader
+              title={ADMIN_LABELS.editTitle}
+              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
+              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              right={
+                <HeaderIconButton
+                  icon="chevronLeft"
+                  accessibilityLabel="Volver a administradores"
+                  onPress={() => router.back()}
+                />
+              }
+            />
+          ),
+        }}
+      />
     </Stack>
   );
 }

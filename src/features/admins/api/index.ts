@@ -1,1 +1,1 @@
-export { createAdmin } from './admins.api';
+export { createAdmin, getAdmin, listAdmins, revokeAdmin, updateAdmin } from './admins.api';
