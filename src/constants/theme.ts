@@ -84,10 +84,10 @@ export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
 /** Familias de Nunito (tipografía del diseño). Se cargan en `useAppFonts`. */
 export const FontFamily = {
-  regular: 'Nunito_400Regular',
-  medium: 'Nunito_500Medium',
-  semiBold: 'Nunito_600SemiBold',
-  bold: 'Nunito_700Bold',
+  regular: Platform.OS === 'web' ? 'Nunito_400Regular, Arial, sans-serif' : 'Nunito_400Regular',
+  medium: Platform.OS === 'web' ? 'Nunito_500Medium, Arial, sans-serif' : 'Nunito_500Medium',
+  semiBold: Platform.OS === 'web' ? 'Nunito_600SemiBold, Arial, sans-serif' : 'Nunito_600SemiBold',
+  bold: Platform.OS === 'web' ? 'Nunito_700Bold, Arial, sans-serif' : 'Nunito_700Bold',
 } as const;
 
 export const Fonts = Platform.select({

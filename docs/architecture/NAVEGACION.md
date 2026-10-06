@@ -17,7 +17,8 @@ src/app/
 │       ├── index.tsx               /            Inicio: listado de fichas taxonómicas (HU-10)
 │       ├── community.tsx           /community   Comunidad: avistamientos (HU-18, HU-19, HU-20)
 │       ├── map.tsx                 /map         Mapas: mapa del sendero (HU-12, HU-13)
-│       └── account.tsx             /account     Usuario: visitante → iniciar sesión · con sesión → datos, rol y cerrar sesión (HU-3)
+│       ├── account.tsx             /account     Usuario: visitante → iniciar sesión · con sesión → datos, rol y cerrar sesión (HU-3)
+│       └── admins/                /admins      Ruta oculta de la barra inferior; gestión HE-2 (solo superadmin)
 │
 ├── species/
 │   └── [id].tsx                    /species/:id Detalle de ficha (todos) + acciones admin vía <Can> (HU-8, HU-9)
@@ -34,10 +35,7 @@ src/app/
     ├── species/
     │   ├── new.tsx                 /species/new         HU-7
     │   └── [id]/edit.tsx           /species/:id/edit    HU-8
-    └── admins/                     guard: can('admins:read') → solo superadmin
-        ├── index.tsx               /admins              Listado (HU-5) — bloqueado: falta endpoint (docs/api B2)
-        ├── new.tsx                 /admins/new          HU-4
-        └── [id].tsx                /admins/:id          Editar / revocar (HU-5)
+    └── admins/                     reservado en la arquitectura; HE-2 vive actualmente bajo (drawer)/(tabs)
 ```
 
 > Los grupos `( )` no agregan segmentos a la URL. Expo Router prioriza rutas estáticas
@@ -51,7 +49,7 @@ src/app/
 | Encabezado de las pestañas | Botón de menú (abre el menú lateral); acción opcional a la derecha (p. ej. buscar en Inicio) | Todos |
 | Menú lateral: identidad | Usuario: iniciales, nombre, correo y rol (lleva a `/account`). Visitante: botón **INICIAR SESIÓN** | Todos |
 | Menú lateral: Humedal | Componentes del humedal (HU-14), Anuncios (HU-17), Descargas sin conexión (HU-21) — *Próximamente* | Todos |
-| Menú lateral: Administración | Gestionar cuentas (HU-4, HU-5) — *Próximamente* | `<Can permission="admins:read">` |
+| Menú lateral: Administración | Gestionar cuentas abre `/admins`; creación HU-4 disponible, listado HU-5 pendiente del endpoint | `<Can permission="admins:read">` |
 
 Lo que depende del rol dentro de cada pestaña se resuelve con `<Can>` en la propia pantalla
 (p. ej. **Crear ficha** en Inicio, revisar reportes en Comunidad, gestionar estaciones en Mapas).

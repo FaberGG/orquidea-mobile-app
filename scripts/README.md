@@ -6,6 +6,13 @@ código, utilidades de desarrollo). No se incluyen en el bundle.
 | Script | Estado |
 |---|---|
 | `reset-project.js` | De la plantilla de Expo. **No ejecutar**: mueve `src/` a `example/`. Se elimina en la tarea T0.1 del Sprint 1 |
+| `mock-he2-api.cjs` | API efímera para probar login y creación de HU-4 sin modificar el backend real |
+| `start-he2-demo.cjs` | Inicia la API de prueba y Expo con `npm run demo:he2` |
+
+Para revisar HE-2: ejecuta `npm run demo:he2`, abre `http://localhost:8081` (o pulsa `w` en Expo), inicia
+sesión con `superadmin@orquidea.test` / `Prueba123!`, abre el menú izquierdo y entra a **Gestionar cuentas**.
+El botón **+** abre HU-4. La API de prueba vive solo en memoria: al detener el comando, las cuentas creadas
+desaparecen. `admin@orquidea.test` / `Prueba123!` permite comprobar que un administrador no ve esa opción.
 
 Previstos según necesidad: generación de tipos desde el OpenAPI del backend, verificación de variables de entorno.
 

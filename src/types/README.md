@@ -6,6 +6,7 @@
 |---|---|
 | `api.ts` | `Paginated<T>`, `ApiErrorBody` y otras formas genéricas de respuesta de la API |
 | `utility.ts` | Utilidades de tipos (`Nullable<T>`, etc.) si se necesitan |
+| `css.d.ts` | Declaraciones para CSS global y módulos CSS usados en web |
 
 ## Reglas
 

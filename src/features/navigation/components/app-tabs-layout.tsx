@@ -58,6 +58,7 @@ export function AppTabsLayout() {
         name="account"
         options={{ title: NAVIGATION_LABELS.tabUser, tabBarIcon: tabIcon('user') }}
       />
+      <Tabs.Screen name="admins" options={{ href: null, headerShown: false }} />
     </Tabs>
   );
 }

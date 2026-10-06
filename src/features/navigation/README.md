@@ -12,7 +12,10 @@ un dominio propio: reúne las pantallas de otras features (solo por su `index.ts
 | `components/drawer-item.tsx` | `DrawerItem` (fila con ícono; los destinos sin ruta se marcan *Próximamente* y no son presionables) y `DrawerSection` |
 | `components/app-tabs-layout.tsx` | `AppTabsLayout`: `Tabs` con `TabBar`, `AppHeader` (abre el menú con `DrawerActions.openDrawer()`) y las 4 pestañas |
 | `constants.ts` | `NAVIGATION_LABELS`: etiquetas de pestañas y textos del menú |
-| `index.ts` | Exporta `AppDrawerLayout` y `AppTabsLayout` |
+| `index.ts` | Exporta los layouts y las etiquetas del shell |
+
+`Gestionar cuentas` abre `/admins` solo con `admins:read`. La ruta de HE-2 se monta como pestaña oculta:
+permanece el mismo menú lateral y la misma barra inferior de cuatro destinos.
 
 ## Diseño del menú lateral
 
@@ -28,4 +31,3 @@ tiene esquinas derechas de 24 px, igual que la barra inferior.
 | Componentes del humedal | HU-14 | exista `features/content` |
 | Anuncios | HU-17 | exista `features/content` |
 | Descargas sin conexión | HU-21 | se implemente HE-08 |
-| Gestionar cuentas | HU-4, HU-5 | existan las rutas de `(admin)/admins` |

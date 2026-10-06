@@ -14,6 +14,7 @@ const SAFE_AREA_METRICS = {
 const ROUTES = [
   { key: 'index-1', name: 'index', title: 'Inicio' },
   { key: 'map-1', name: 'map', title: 'Mapas' },
+  { key: 'admins-1', name: 'admins', title: 'Administradores' },
 ];
 
 function renderTabBar(index: number) {
@@ -27,6 +28,7 @@ function renderTabBar(index: number) {
       {
         options: {
           title: route.title,
+          href: route.name === 'admins' ? null : undefined,
           tabBarIcon: ({ focused }: { focused: boolean }) => (
             <Text>{`${route.name}-icon-${focused ? 'on' : 'off'}`}</Text>
           ),
@@ -67,5 +69,11 @@ describe('TabBar', () => {
 
     await fireEvent.press(screen.getByRole('tab', { name: 'Mapas' }));
     expect(navigation.navigate).toHaveBeenCalledWith('map', undefined);
+  });
+
+  it('oculta la ruta de administradores de la barra inferior', async () => {
+    await renderTabBar(2).render();
+    expect(screen.queryByRole('tab', { name: 'Administradores' })).toBeNull();
+    expect(screen.getByRole('tab', { name: 'Inicio' })).toBeTruthy();
   });
 });

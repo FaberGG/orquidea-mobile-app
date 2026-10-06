@@ -78,6 +78,9 @@ describe('AppDrawerContent (menú lateral)', () => {
     await renderAs('superadmin');
     expect(screen.getByText(NAVIGATION_LABELS.sectionAdmin)).toBeTruthy();
     expect(screen.getByText(NAVIGATION_LABELS.manageAccounts)).toBeTruthy();
+    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.manageAccounts));
+    expect(closeDrawer).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith('/admins');
   });
 
   it('los destinos sin implementar no son presionables', async () => {
