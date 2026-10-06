@@ -4,8 +4,8 @@
 
 | Tipo | Descripción |
 |---|---|
-| `Admin` | `id`, `firstName`, `lastName`, `email`, `role` (`admin` \| `superadmin` \| `user` tras revocar), `isEnabled`, `createdAt` |
-| `CreateAdminInput`, `UpdateAdminInput` | Datos de entrada de los formularios (inferidos de los esquemas) |
-| `AdministratorDto`, `AdministratorUpdateRequestDto`, `RegisterResponseDto` | Forma del JSON de la API (campos en español); solo se usan en `../api` |
+| `Admin` | `id`, `firstName`, `lastName`, `email`, `role` (`admin` \| `superadmin`), `isEnabled` |
+| `CreateAdminInput`, `UpdateAdminInput` | Datos de entrada de los formularios |
+| `RegisterRequestDto` | Forma del JSON de creación; los demás DTO se validan en `../schemas` |
 
-En HU-4 ya están definidos `CreateAdminInput`, `CreatedAdmin` y `RegisterRequestDto`.
+La respuesta de revocación pasa a `USUARIO_REGISTRADO`; la app extrae su ID y la quita del listado.

@@ -11,7 +11,18 @@ export const ADMIN_MESSAGES = {
   unexpectedError: 'Ocurrió un error inesperado. Inténtalo de nuevo.',
   listUnavailable:
     'El listado de administradores estará disponible cuando el servidor permita consultarlo.',
+  loadError: 'No pudimos cargar los administradores.',
+  notFound: 'El administrador ya no está disponible.',
+  saved: 'Los cambios se guardaron correctamente.',
+  revoked: 'El acceso de administrador fue revocado.',
+  onlySuperadmin: 'No puedes revocar el único superadministrador de la plataforma.',
 } as const;
+
+export const adminKeys = {
+  all: ['admins'] as const,
+  list: () => [...adminKeys.all, 'list'] as const,
+  detail: (id: string) => [...adminKeys.all, 'detail', id] as const,
+};
 
 export const ADMIN_LABELS = {
   title: 'Crear administrador',
@@ -27,4 +38,19 @@ export const ADMIN_LABELS = {
   back: 'VOLVER A ADMINISTRADORES',
   listTitle: 'Administradores',
   createAction: 'Agregar administrador',
+  editTitle: 'Editar administrador',
+  status: 'Estado de la cuenta',
+  enabled: 'Habilitada',
+  disabled: 'Inhabilitada',
+  save: 'GUARDAR CAMBIOS',
+  revoke: 'REVOCAR ACCESO',
+  revokeTitle: 'Revocar acceso',
+  revokeQuestion:
+    'Esta cuenta pasará a usuario registrado y perderá las funciones administrativas.',
+  cancel: 'CANCELAR',
+  retry: 'REINTENTAR',
+  noAdmins: 'Todavía no hay administradores.',
+  noSearchResults: 'No se encontraron administradores.',
+  superadminRole: 'Superadministrador',
+  adminRole: 'Administrador',
 } as const;

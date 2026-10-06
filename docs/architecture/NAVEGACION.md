@@ -49,7 +49,7 @@ src/app/
 | Encabezado de las pestañas | Botón de menú (abre el menú lateral); acción opcional a la derecha (p. ej. buscar en Inicio) | Todos |
 | Menú lateral: identidad | Usuario: iniciales, nombre, correo y rol (lleva a `/account`). Visitante: botón **INICIAR SESIÓN** | Todos |
 | Menú lateral: Humedal | Componentes del humedal (HU-14), Anuncios (HU-17), Descargas sin conexión (HU-21) — *Próximamente* | Todos |
-| Menú lateral: Administración | Gestionar cuentas abre `/admins`; creación HU-4 disponible, listado HU-5 pendiente del endpoint | `<Can permission="admins:read">` |
+| Menú lateral: Administración | Gestionar cuentas abre `/admins`; creación HU-4 y gestión HU-5 | `<Can permission="admins:read">` |
 
 Lo que depende del rol dentro de cada pestaña se resuelve con `<Can>` en la propia pantalla
 (p. ej. **Crear ficha** en Inicio, revisar reportes en Comunidad, gestionar estaciones en Mapas).
