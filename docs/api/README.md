@@ -32,6 +32,7 @@ Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar l
 | `POST /api/autenticacion/restablecer-contrasena` | — | HU-1.1 paso 2: correo + código + nueva contraseña | 204 · 400 (código incorrecto o vencido) |
 | `POST /api/autenticacion/registro` | — | HU-2 | 201 `RegisterResponse` · 400 · 409 |
 | `POST /api/administradores/registrarAdmin` | Superadmin | HU-4 | 201 `RegisterResponse` · 400 · 401 · 403 · 409 |
+| `GET /api/administradores` | Superadmin | HU-5 (listado, incluye inhabilitados) | 200 `AdministratorDto[]` · 401 · 403 |
 | `PUT /api/administradores/{id}` | Superadmin | HU-5 (editar / inhabilitar con `habilitado`) | 200 `AdministratorDto` · 400 · 401 · 403 · 404 · 409 |
 | `POST /api/administradores/{id}/revocar-acceso` | Superadmin | HU-5 (revocar) | 200 `AdministratorDto` · 401 · 403 · 404 · 409 |
 | `GET /api/fichas-taxonomicas?categoria=` | — | HU-10 | 200 `TaxonDto[]` (sin paginación) · 400 |
@@ -80,7 +81,7 @@ Pendientes de resolver con el equipo de backend / Product Owner:
 | # | Brecha | Impacto |
 |---|---|---|
 | B1 | No existe `DELETE /api/fichas-taxonomicas/{id}` | **HU-9 bloqueada** |
-| B2 | No existen `GET /api/administradores` ni `GET /api/administradores/{id}` | **HU-5 bloqueada en parte**: no hay listado ni detalle de los administradores que se van a editar o revocar |
+| B2 | El backend ya expone `GET /api/administradores`, pero no `GET /api/administradores/{id}` | La app obtiene el detalle desde el listado completo; conviene agregar GET individual si el listado se pagina |
 | B3 | `registrarAdmin` no documenta el error de "límite de administradores alcanzado" (HU-4 CA2) | No se sabe qué estado devuelve; si también es 409, solo se distingue por `mensaje` |
 | B4 | Los endpoints de administradores declaran sus errores con `ApiResponse` (esquema vacío) en lugar de `ApiErrorResponse` | Confirmar que en la práctica devuelven `ApiErrorResponse` |
 | B5 | HU-1.1 dice "correo con instrucciones", pero la API usa un **código de 6 dígitos** que se ingresa en la app | Alinear el texto de la HU con el Product Owner; la app implementa el flujo de dos pasos |

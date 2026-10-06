@@ -3,6 +3,7 @@ node_modules/
 .expo/
 dist/
 web-build/
+graphify-out/
 android/
 ios/
 package-lock.json

@@ -50,14 +50,14 @@ Feature: [`src/features/admins/`](../../src/features/admins/README.md) · Permis
 
 | HU | Ruta | Piezas principales | Rama |
 |---|---|---|---|
-| HU-4 Crear administrador | `(admin)/admins/new.tsx` | `CreateAdminScreen`, `createAdminSchema`, `useCreateAdmin` | `feat/hu-4-crear-admin` |
-| HU-5 Editar / inhabilitar / revocar ⛔ parcial | `(admin)/admins/index.tsx`, `(admin)/admins/[id].tsx` | `AdminListScreen`, `EditAdminScreen`, `useUpdateAdmin`, `useRevokeAdmin` | `feat/hu-5-editar-revocar-admin` |
-| HU-6 Herencia superadmin | — | Matriz de permisos (superadmin ⊇ admin) + pruebas | `feat/hu-6-herencia-superadmin` |
+| HU-4 Crear administrador | `(drawer)/(tabs)/admins/new.tsx` | `CreateAdminScreen`, `createAdminSchema`, `useCreateAdmin` | `codex/he2-frontend` |
+| HU-5 Editar / inhabilitar / revocar | `(drawer)/(tabs)/admins/index.tsx`, `(drawer)/(tabs)/admins/[id].tsx` | `AdminListScreen`, `EditAdminScreen`, `useUpdateAdmin`, `useRevokeAdmin` | `codex/he2-frontend` |
+| HU-6 Herencia superadmin | Layout compartido | Matriz de permisos (superadmin ⊇ admin) + pruebas | `codex/he2-frontend` |
 
 Notas:
 - El límite de administradores (HU-4 CA2) y la regla del único superadmin (HU-5 CA3) los valida la API;
   la app muestra el `mensaje` de la respuesta de error.
-- HU-6 se cumple principalmente con T0.8; esta rama agrega las pruebas que lo demuestran.
+- HU-6 se aplica a las funciones administrativas disponibles; mapa, contenido y reportes siguen en desarrollo.
 
 ## 3. HE-03 — Fichas taxonómicas
 
@@ -82,7 +82,7 @@ Notas:
 | Brecha | Historia | Estado | Mientras tanto |
 |---|---|---|---|
 | B1: no existe `DELETE` de fichas | HU-9 | ⛔ Bloqueada | Dejar preparado `SpeciesActions` con la acción oculta |
-| B2: no hay listado ni detalle de administradores | HU-5 | ⛔ Parcial | Implementar `updateAdmin`/`revokeAdmin` y el formulario; el listado espera el endpoint |
+| B2: hay listado pero no GET individual de administradores | HU-5 | Resuelta para este sprint | El detalle se obtiene del listado; revisar cuando haya paginación |
 | B3: error de límite de administradores sin documentar | HU-4 CA2 | ⚠️ Por confirmar | Mostrar el `mensaje` del servidor |
 | B4: errores de administradores con esquema vacío | HU-4, HU-5 | ⚠️ Por confirmar | Mensaje local de respaldo |
 | B5: HU-1.1 dice enlace, la API usa código | HU-1.1 | ⚠️ Por alinear la HU | Implementar el flujo de código |
