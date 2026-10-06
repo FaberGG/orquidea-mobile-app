@@ -17,6 +17,8 @@ export type SessionContextValue = {
   signOut: () => Promise<void>;
   /** Actualiza los datos del usuario y sus permisos desde el servidor. */
   refreshSession: () => Promise<void>;
+  /** Aplica el rol confirmado por una mutación del servidor a la cuenta actual. */
+  applyConfirmedRole: (role: User['role']) => void;
 };
 
 export const SessionContext = createContext<SessionContextValue | null>(null);
@@ -55,6 +57,8 @@ export function SessionProvider({ children }: SessionProviderProps) {
   const refreshSession = useCallback(async () => {
     const previousUser = queryClient.getQueryData<User | null>(authKeys.me()) ?? null;
     const updatedUser = await getMe();
+    // Una respuesta tardía no puede restaurar la sesión después de cerrar sesión o cambiar de cuenta.
+    if ((queryClient.getQueryData<User | null>(authKeys.me()) ?? null) !== previousUser) return;
     if (previousUser?.role !== updatedUser.role) {
       // Los datos obtenidos con el rol anterior no deben permanecer en caché.
       queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
@@ -92,6 +96,12 @@ export function SessionProvider({ children }: SessionProviderProps) {
       queryClient.setQueryData(authKeys.me(), null);
     },
     refreshSession,
+    applyConfirmedRole: (role) => {
+      const currentUser = queryClient.getQueryData<User | null>(authKeys.me());
+      if (!currentUser || currentUser.role === role) return;
+      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
+      queryClient.setQueryData(authKeys.me(), { ...currentUser, role });
+    },
   };
 
   return <SessionContext value={value}>{children}</SessionContext>;

@@ -32,7 +32,7 @@ function getAdminError(error: unknown): string {
 
 function AdminForm({ admin }: { admin: Admin }) {
   const theme = useTheme();
-  const { user, refreshSession } = useSession();
+  const { user, applyConfirmedRole } = useSession();
   const update = useUpdateAdmin(admin.id);
   const revoke = useRevokeAdmin(admin.id);
   const [confirming, setConfirming] = useState(false);
@@ -82,7 +82,8 @@ function AdminForm({ admin }: { admin: Admin }) {
     try {
       await revoke.mutateAsync();
       if (user?.id === admin.id) {
-        await refreshSession();
+        // La respuesta de revocación confirma que esta cuenta pasó a usuario registrado.
+        applyConfirmedRole('user');
         router.replace('/');
       } else {
         setRevoked(true);

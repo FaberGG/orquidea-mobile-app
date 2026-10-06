@@ -38,8 +38,8 @@ enlace **¿Olvidaste tu contraseña?** (Figma: "Olvido su contraseña?"). Los te
 
 ## Sesión
 
-- `SessionProvider` expone `{ status: 'loading' | 'authenticated' | 'guest', user, signIn, signOut }`; `useSession()` agrega
-  `isAuthenticated` y `role`.
+- `SessionProvider` expone `{ status: 'loading' | 'authenticated' | 'guest', user, signIn, signOut, refreshSession, applyConfirmedRole }`;
+  `useSession()` agrega `isAuthenticated` y `role`. `applyConfirmedRole` solo se usa tras una respuesta de la API que confirma el nuevo rol.
 - El usuario vive en la caché de servidor bajo `authKeys.me()`: iniciar o cerrar sesión es actualizar esa entrada.
 - Al iniciar la app: lee el token de `@/lib/storage` → `getMe()` → resuelve el rol. Mientras tanto la splash sigue visible.
   Si no hay red o la API falla con algo distinto de `401`, la sesión arranca como visitante pero el token se conserva
