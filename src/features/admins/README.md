@@ -9,12 +9,16 @@
 
 | HU | Descripción | Pantalla |
 |---|---|---|
-| HU-4 | Crear administrador | `CreateAdminScreen` |
-| HU-5 | Editar, inhabilitar o revocar administrador | `AdminListScreen` ⛔, `EditAdminScreen` |
+| HU-4 | Crear administrador | `CreateAdminScreen` ✅ |
+| HU-5 | Editar, inhabilitar o revocar administrador | `AdminListScreen` parcial; `EditAdminScreen` pendiente |
 
 ⛔ **Bloqueado en parte:** la API no tiene endpoints para listar ni consultar administradores
 ([docs/api B2](../../../docs/api/README.md#5-brechas-con-las-historias-de-usuario)). Editar y revocar existen, pero no
 hay de dónde obtener el listado ni los datos actuales del administrador.
+
+El menú lateral ya abre `/admins` dentro del layout compartido. La pantalla explica el bloqueo del listado y
+permite crear administrador. No se muestran cuentas ficticias ni se habilita edición/revocación sin datos reales.
+`POST /api/administradores/registrarAdmin` crea solo `ADMINISTRADOR`, según el backend actual.
 
 ## Contenido previsto
 

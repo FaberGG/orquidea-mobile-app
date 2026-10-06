@@ -13,6 +13,9 @@ Archivo previsto: `admins.api.ts`
 | `listAdmins()` | ⛔ No existe en la API (brecha B2) | HU-5 |
 | `getAdmin(id)` | ⛔ No existe en la API (brecha B2) | HU-5 |
 
+`createAdmin` ya envía el `RegisterRequest` real y valida `RegisterResponse`. No hay llamadas de listado
+hasta que el backend publique el contrato correspondiente.
+
 ## Errores
 
 | Estado | Caso |

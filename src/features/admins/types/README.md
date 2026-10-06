@@ -7,3 +7,5 @@
 | `Admin` | `id`, `firstName`, `lastName`, `email`, `role` (`admin` \| `superadmin` \| `user` tras revocar), `isEnabled`, `createdAt` |
 | `CreateAdminInput`, `UpdateAdminInput` | Datos de entrada de los formularios (inferidos de los esquemas) |
 | `AdministratorDto`, `AdministratorUpdateRequestDto`, `RegisterResponseDto` | Forma del JSON de la API (campos en español); solo se usan en `../api` |
+
+En HU-4 ya están definidos `CreateAdminInput`, `CreatedAdmin` y `RegisterRequestDto`.
