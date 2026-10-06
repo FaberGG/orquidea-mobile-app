@@ -32,7 +32,7 @@ function getAdminError(error: unknown): string {
 
 function AdminForm({ admin }: { admin: Admin }) {
   const theme = useTheme();
-  const { user, signOut } = useSession();
+  const { user, applyConfirmedRole } = useSession();
   const update = useUpdateAdmin(admin.id);
   const revoke = useRevokeAdmin(admin.id);
   const [confirming, setConfirming] = useState(false);
@@ -51,6 +51,12 @@ function AdminForm({ admin }: { admin: Admin }) {
       isEnabled: admin.isEnabled,
     },
   });
+  const busy = update.isPending || revoke.isPending;
+
+  const clearSaveFeedback = () => {
+    setSaved(false);
+    if (update.isError) update.reset();
+  };
 
   if (revoked) {
     return (
@@ -76,7 +82,8 @@ function AdminForm({ admin }: { admin: Admin }) {
     try {
       await revoke.mutateAsync();
       if (user?.id === admin.id) {
-        await signOut();
+        // La respuesta de revocación confirma que esta cuenta pasó a usuario registrado.
+        applyConfirmedRole('user');
         router.replace('/');
       } else {
         setRevoked(true);
@@ -103,10 +110,14 @@ function AdminForm({ admin }: { admin: Admin }) {
               <TextField
                 label={ADMIN_LABELS.firstName}
                 value={value}
-                onChangeText={onChange}
+                onChangeText={(next) => {
+                  clearSaveFeedback();
+                  onChange(next);
+                }}
                 onBlur={onBlur}
                 hasError={Boolean(errors.firstName)}
                 autoCapitalize="words"
+                editable={!busy}
               />
             )}
           />
@@ -117,10 +128,14 @@ function AdminForm({ admin }: { admin: Admin }) {
               <TextField
                 label={ADMIN_LABELS.lastName}
                 value={value}
-                onChangeText={onChange}
+                onChangeText={(next) => {
+                  clearSaveFeedback();
+                  onChange(next);
+                }}
                 onBlur={onBlur}
                 hasError={Boolean(errors.lastName)}
                 autoCapitalize="words"
+                editable={!busy}
               />
             )}
           />
@@ -131,11 +146,15 @@ function AdminForm({ admin }: { admin: Admin }) {
               <TextField
                 label={ADMIN_LABELS.email}
                 value={value}
-                onChangeText={onChange}
+                onChangeText={(next) => {
+                  clearSaveFeedback();
+                  onChange(next);
+                }}
                 onBlur={onBlur}
                 hasError={Boolean(errors.email)}
                 autoCapitalize="none"
                 keyboardType="email-address"
+                editable={!busy}
               />
             )}
           />
@@ -150,7 +169,11 @@ function AdminForm({ admin }: { admin: Admin }) {
                 <Switch
                   accessibilityLabel={ADMIN_LABELS.status}
                   value={value}
-                  onValueChange={onChange}
+                  onValueChange={(next) => {
+                    clearSaveFeedback();
+                    onChange(next);
+                  }}
+                  disabled={busy}
                   trackColor={{ true: theme.primary }}
                 />
               </View>
@@ -168,21 +191,32 @@ function AdminForm({ admin }: { admin: Admin }) {
           )}
           {saved && <ThemedText themeColor="success">{ADMIN_MESSAGES.saved}</ThemedText>}
           {update.isError && <FormMessage message={getAdminError(update.error)} />}
-          <Button label={ADMIN_LABELS.save} onPress={onSave} isLoading={update.isPending} />
+          <Button
+            label={ADMIN_LABELS.save}
+            onPress={onSave}
+            isLoading={update.isPending}
+            disabled={revoke.isPending}
+          />
         </>
       )}
       {revoke.isError && <FormMessage message={getAdminError(revoke.error)} />}
       <Button
         label={ADMIN_LABELS.revoke}
         variant="link"
-        onPress={() => setConfirming(true)}
+        onPress={() => {
+          revoke.reset();
+          setConfirming(true);
+        }}
         isLoading={revoke.isPending}
+        disabled={update.isPending}
       />
       <Modal
         visible={confirming}
         transparent
         animationType="fade"
-        onRequestClose={() => setConfirming(false)}>
+        onRequestClose={() => {
+          if (!revoke.isPending) setConfirming(false);
+        }}>
         <View style={styles.modalBackdrop}>
           <View style={[styles.modalCard, { backgroundColor: theme.background }]}>
             <ThemedText type="subtitle">{ADMIN_LABELS.revokeTitle}</ThemedText>
@@ -190,6 +224,7 @@ function AdminForm({ admin }: { admin: Admin }) {
             <Button label={ADMIN_LABELS.revoke} onPress={() => void onRevoke()} />
             <Pressable
               accessibilityRole="button"
+              disabled={revoke.isPending}
               onPress={() => setConfirming(false)}
               style={styles.cancel}>
               <ThemedText themeColor="primary">{ADMIN_LABELS.cancel}</ThemedText>

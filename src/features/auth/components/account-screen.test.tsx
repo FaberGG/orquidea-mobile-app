@@ -1,8 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { router } from 'expo-router';
-import { type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 
+import { handleForbidden } from '@/lib/api';
 import { clearToken, getToken } from '@/lib/storage';
 import { RoleProvider } from '@/permissions';
 
@@ -30,6 +31,15 @@ const SUPERADMIN: User = {
 };
 
 let queryClient: QueryClient;
+let applyConfirmedRole: ReturnType<typeof useSession>['applyConfirmedRole'];
+
+function SessionProbe() {
+  const confirmedRoleAction = useSession().applyConfirmedRole;
+  useEffect(() => {
+    applyConfirmedRole = confirmedRoleAction;
+  }, [confirmedRoleAction]);
+  return null;
+}
 
 /** Conecta el rol de la sesión con los permisos, como hace AppProviders. */
 function RoleFromSession({ children }: { children: ReactNode }) {
@@ -52,7 +62,13 @@ async function renderAccount(user: User | null) {
     .mocked(getToken)
     .mockResolvedValue(user ? { token: 'jwt', expiresAt: Date.now() + 60_000 } : null);
   if (user) jest.mocked(getMe).mockResolvedValue(user);
-  await render(<AccountScreen />, { wrapper: Providers });
+  await render(
+    <>
+      <AccountScreen />
+      <SessionProbe />
+    </>,
+    { wrapper: Providers },
+  );
   await waitFor(() => expect(queryClient.getQueryState(authKeys.me())?.status).toBe('success'));
 }
 
@@ -101,6 +117,52 @@ describe('AccountScreen (HU-3)', () => {
     expect(clearToken).toHaveBeenCalled();
     expect(queryClient.getQueryData(authKeys.me())).toBeNull();
     expect(queryClient.getQueryData(['species', 'list', 'bird'])).toBeUndefined();
+    expect(await screen.findByText(AUTH_LABELS.loginButtonGuest)).toBeTruthy();
+  });
+
+  it('refresca el rol después de un 403 y elimina la caché del rol anterior', async () => {
+    await renderAccount(SUPERADMIN);
+    queryClient.setQueryData(['admins', 'list'], [{ id: 'privado' }]);
+    jest.mocked(getMe).mockResolvedValue({ ...SUPERADMIN, role: 'user' });
+
+    await act(async () => handleForbidden());
+
+    expect(await screen.findByText('Rol: Usuario registrado')).toBeTruthy();
+    expect(queryClient.getQueryData(['admins', 'list'])).toBeUndefined();
+  });
+
+  it('aplica el rol confirmado por la revocación sin otra consulta de red', async () => {
+    await renderAccount(SUPERADMIN);
+    queryClient.setQueryData(['admins', 'list'], [{ id: 'privado' }]);
+
+    await act(async () => applyConfirmedRole('user'));
+
+    expect(await screen.findByText('Rol: Usuario registrado')).toBeTruthy();
+    expect(queryClient.getQueryData(['admins', 'list'])).toBeUndefined();
+    expect(getMe).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignora una consulta de rol que termina después de cerrar sesión', async () => {
+    await renderAccount(SUPERADMIN);
+    let resolveRefresh!: (user: User) => void;
+    jest.mocked(getMe).mockImplementation(
+      () =>
+        new Promise<User>((resolve) => {
+          resolveRefresh = resolve;
+        }),
+    );
+
+    const pendingRefresh = handleForbidden();
+    await waitFor(() => expect(getMe).toHaveBeenCalledTimes(2));
+    await fireEvent.press(await screen.findByText(AUTH_LABELS.logoutButton));
+    await waitFor(() => expect(queryClient.getQueryData(authKeys.me())).toBeNull());
+
+    await act(async () => {
+      resolveRefresh(SUPERADMIN);
+      await pendingRefresh;
+    });
+
+    expect(queryClient.getQueryData(authKeys.me())).toBeNull();
     expect(await screen.findByText(AUTH_LABELS.loginButtonGuest)).toBeTruthy();
   });
 });

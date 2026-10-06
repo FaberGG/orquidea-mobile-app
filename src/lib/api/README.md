@@ -8,7 +8,7 @@ sobre este cliente; ningún otro lugar usa `fetch` directamente.
 | Archivo | Contenido |
 |---|---|
 | `client.ts` | `apiClient.get/post/put/patch/delete` sobre `fetch`; base URL desde `@/config`; JSON y `multipart/form-data` |
-| `auth-interceptor.ts` | Adjunta `Authorization: Bearer <token>`; ante `401` en una petición autenticada notifica cierre de sesión (la API no tiene renovación de token) |
+| `auth-interceptor.ts` | Adjunta `Authorization: Bearer <token>`; ante `401` notifica cierre de sesión y ante `403` actualiza el rol para aplicar permisos vigentes |
 | `api-error.ts` | Clase `ApiError` (`status`, `message`, `path`) construida desde `ApiErrorResponse` (`estado`, `mensaje`, `ruta`); errores de red/timeout con `status: 0`. Debe tolerar cuerpos vacíos (docs/api B4) |
 | `index.ts` | API pública |
 
@@ -19,6 +19,7 @@ sobre este cliente; ningún otro lugar usa `fetch` directamente.
 - Soporta `multipart/form-data` (fichas con foto) además de JSON.
 - Contrato de referencia: [`docs/api/`](../../../docs/api/README.md).
 - Para avisar a la sesión de un `401` irrecuperable se usa un callback registrado (`onUnauthorized`), no un import a `features/auth`.
+- Para avisar a la sesión de un `403` se usa un callback registrado (`onForbidden`); las respuestas simultáneas comparten la consulta de rol.
 - Timeout por defecto configurable (red móvil inestable en el humedal).
 - `request(..., { authenticated: false })` en endpoints públicos: no adjunta token y un `401` no cierra la sesión
   (en el login, `401` significa credenciales incorrectas).

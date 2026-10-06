@@ -39,4 +39,21 @@ describe('HU-4: validación de creación de administrador', () => {
     if (!result.success)
       expect(result.error.issues[0].message).toBe(ADMIN_MESSAGES.passwordMismatch);
   });
+
+  it('rechaza los nombres y correos que superan los límites de la API', () => {
+    expect(createAdminSchema.safeParse({ ...valid, firstName: 'A'.repeat(101) })).toMatchObject({
+      success: false,
+      error: { issues: [expect.objectContaining({ message: ADMIN_MESSAGES.firstNameTooLong })] },
+    });
+    expect(createAdminSchema.safeParse({ ...valid, lastName: 'A'.repeat(101) })).toMatchObject({
+      success: false,
+      error: { issues: [expect.objectContaining({ message: ADMIN_MESSAGES.lastNameTooLong })] },
+    });
+    expect(
+      createAdminSchema.safeParse({ ...valid, email: `${'a'.repeat(247)}@test.co` }),
+    ).toMatchObject({
+      success: false,
+      error: { issues: [expect.objectContaining({ message: ADMIN_MESSAGES.emailTooLong })] },
+    });
+  });
 });
