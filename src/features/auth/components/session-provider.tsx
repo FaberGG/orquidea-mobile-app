@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { createContext, useEffect, type ReactNode } from 'react';
+import { createContext, useCallback, useEffect, type ReactNode } from 'react';
 
-import { isApiError, setUnauthorizedHandler } from '@/lib/api';
+import { isApiError, setForbiddenHandler, setUnauthorizedHandler } from '@/lib/api';
 import { clearToken, getToken, saveToken } from '@/lib/storage';
 
 import { getMe } from '../api';
@@ -15,6 +15,8 @@ export type SessionContextValue = {
   signIn: (result: LoginResult) => Promise<void>;
   /** Borra el token y deja la sesión como visitante. */
   signOut: () => Promise<void>;
+  /** Actualiza los datos del usuario y sus permisos desde el servidor. */
+  refreshSession: () => Promise<void>;
 };
 
 export const SessionContext = createContext<SessionContextValue | null>(null);
@@ -50,11 +52,32 @@ export function SessionProvider({ children }: SessionProviderProps) {
     retry: false,
   });
 
-  // Un 401 en cualquier petición autenticada vence la sesión (no hay renovación de token).
-  useEffect(
-    () => setUnauthorizedHandler(() => queryClient.setQueryData(authKeys.me(), null)),
-    [queryClient],
-  );
+  const refreshSession = useCallback(async () => {
+    const previousUser = queryClient.getQueryData<User | null>(authKeys.me()) ?? null;
+    const updatedUser = await getMe();
+    if (previousUser?.role !== updatedUser.role) {
+      // Los datos obtenidos con el rol anterior no deben permanecer en caché.
+      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
+    }
+    queryClient.setQueryData(authKeys.me(), updatedUser);
+  }, [queryClient]);
+
+  // Un 401 vence la sesión; un 403 vuelve a consultar el rol antes de actualizar las rutas.
+  useEffect(() => {
+    const removeUnauthorizedHandler = setUnauthorizedHandler(() => {
+      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
+      queryClient.setQueryData(authKeys.me(), null);
+    });
+    const removeForbiddenHandler = setForbiddenHandler(() =>
+      refreshSession().catch(() => {
+        // Un fallo de red no invalida la sesión; el backend mantiene la autorización efectiva.
+      }),
+    );
+    return () => {
+      removeUnauthorizedHandler();
+      removeForbiddenHandler();
+    };
+  }, [queryClient, refreshSession]);
 
   const value: SessionContextValue = {
     status: isPending ? 'loading' : user ? 'authenticated' : 'guest',
@@ -65,8 +88,10 @@ export function SessionProvider({ children }: SessionProviderProps) {
     },
     signOut: async () => {
       await clearToken();
+      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
       queryClient.setQueryData(authKeys.me(), null);
     },
+    refreshSession,
   };
 
   return <SessionContext value={value}>{children}</SessionContext>;

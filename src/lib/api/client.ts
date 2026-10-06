@@ -1,7 +1,7 @@
 import { APP_CONFIG, getEnv } from '@/config';
 
 import { ApiError, readServerMessage } from './api-error';
-import { getAuthorizationHeader, handleUnauthorized } from './auth-interceptor';
+import { getAuthorizationHeader, handleForbidden, handleUnauthorized } from './auth-interceptor';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -93,6 +93,7 @@ export async function request<T>(
 
   if (!response.ok) {
     if (response.status === 401 && authenticated) await handleUnauthorized();
+    if (response.status === 403 && authenticated) await handleForbidden();
     throw new ApiError({
       status: response.status,
       kind: 'http',
