@@ -29,14 +29,14 @@ const account = {
 const mutateUpdate = jest.fn();
 const mutateRevoke = jest.fn();
 const resetRevoke = jest.fn();
-const refreshSession = jest.fn();
+const applyConfirmedRole = jest.fn();
 
 describe('EditAdminScreen (HU-5)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.mocked(useSession).mockReturnValue({
       user: { id: 'super-1', role: 'superadmin' },
-      refreshSession,
+      applyConfirmedRole,
     } as unknown as ReturnType<typeof useSession>);
     jest.mocked(useAdmin).mockReturnValue({
       data: account,
@@ -89,7 +89,7 @@ describe('EditAdminScreen (HU-5)', () => {
   it('al revocarse, actualiza el rol y conserva la sesión como usuario registrado', async () => {
     jest.mocked(useSession).mockReturnValue({
       user: { id: account.id, role: 'superadmin' },
-      refreshSession,
+      applyConfirmedRole,
     } as unknown as ReturnType<typeof useSession>);
     jest.mocked(useAdmin).mockReturnValue({
       data: { ...account, role: 'superadmin' },
@@ -103,7 +103,7 @@ describe('EditAdminScreen (HU-5)', () => {
     await fireEvent.press(screen.getByText(ADMIN_LABELS.revoke));
     await fireEvent.press(screen.getAllByText(ADMIN_LABELS.revoke)[1]);
 
-    await waitFor(() => expect(refreshSession).toHaveBeenCalled());
+    await waitFor(() => expect(applyConfirmedRole).toHaveBeenCalledWith('user'));
     expect(router.replace).toHaveBeenCalledWith('/');
   });
 
