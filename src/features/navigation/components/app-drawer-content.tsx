@@ -110,7 +110,11 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
 
       <Can permission="admins:read">
         <DrawerSection title={NAVIGATION_LABELS.sectionAdmin}>
-          <DrawerItem icon="manageAccounts" label={NAVIGATION_LABELS.manageAccounts} isComingSoon />
+          <DrawerItem
+            icon="manageAccounts"
+            label={NAVIGATION_LABELS.manageAccounts}
+            onPress={() => goTo('/admins')}
+          />
         </DrawerSection>
       </Can>
 

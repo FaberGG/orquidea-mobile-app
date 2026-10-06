@@ -9,6 +9,7 @@
 Notas:
 - El Figma no define tema oscuro: `Colors.dark` se deriva de las mismas escalas manteniendo contraste AA.
 - `danger` / `dangerBackground` no están en el Figma (provisionales).
+- En web, `FontFamily` conserva Nunito como primera opción y usa una fuente sans-serif si el navegador no carga el archivo.
 
 ## Reglas
 
