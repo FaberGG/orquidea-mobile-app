@@ -2,6 +2,9 @@
 export const ADMIN_MESSAGES = {
   requiredFields: 'Debes completar todos los campos obligatorios.',
   invalidEmail: 'Ingresa un correo electrónico válido.',
+  firstNameTooLong: 'El nombre no puede superar 100 caracteres.',
+  lastNameTooLong: 'El apellido no puede superar 100 caracteres.',
+  emailTooLong: 'El correo no puede superar 254 caracteres.',
   passwordMismatch: 'Las contraseñas no coinciden.',
   duplicateEmail: 'Este correo ya está registrado.',
   limitReached:
