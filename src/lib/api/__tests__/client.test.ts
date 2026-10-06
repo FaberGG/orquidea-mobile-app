@@ -1,7 +1,7 @@
 import { clearToken, getToken } from '@/lib/storage';
 
 import { ApiError } from '../api-error';
-import { setUnauthorizedHandler } from '../auth-interceptor';
+import { setForbiddenHandler, setUnauthorizedHandler } from '../auth-interceptor';
 import { apiClient } from '../client';
 
 jest.mock('@/config', () => ({
@@ -105,6 +105,21 @@ describe('apiClient', () => {
 
     expect(clearToken).toHaveBeenCalled();
     expect(onUnauthorized).toHaveBeenCalled();
+    unregister();
+  });
+
+  it('actualiza los permisos al recibir un 403 sin cerrar la sesión', async () => {
+    const refreshPermissions = jest.fn();
+    const unregister = setForbiddenHandler(refreshPermissions);
+    fetchMock.mockResolvedValue(jsonResponse(403, { mensaje: 'No tiene permisos.' }));
+
+    await expect(apiClient.get('/api/administradores')).rejects.toMatchObject({
+      status: 403,
+      serverMessage: 'No tiene permisos.',
+    });
+
+    expect(refreshPermissions).toHaveBeenCalledTimes(1);
+    expect(clearToken).not.toHaveBeenCalled();
     unregister();
   });
 

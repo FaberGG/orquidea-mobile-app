@@ -1,8 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { type ReactNode } from 'react';
 
+import { handleForbidden } from '@/lib/api';
 import { clearToken, getToken } from '@/lib/storage';
 import { RoleProvider } from '@/permissions';
 
@@ -102,5 +103,16 @@ describe('AccountScreen (HU-3)', () => {
     expect(queryClient.getQueryData(authKeys.me())).toBeNull();
     expect(queryClient.getQueryData(['species', 'list', 'bird'])).toBeUndefined();
     expect(await screen.findByText(AUTH_LABELS.loginButtonGuest)).toBeTruthy();
+  });
+
+  it('refresca el rol después de un 403 y elimina la caché del rol anterior', async () => {
+    await renderAccount(SUPERADMIN);
+    queryClient.setQueryData(['admins', 'list'], [{ id: 'privado' }]);
+    jest.mocked(getMe).mockResolvedValue({ ...SUPERADMIN, role: 'user' });
+
+    await act(async () => handleForbidden());
+
+    expect(await screen.findByText('Rol: Usuario registrado')).toBeTruthy();
+    expect(queryClient.getQueryData(['admins', 'list'])).toBeUndefined();
   });
 });
