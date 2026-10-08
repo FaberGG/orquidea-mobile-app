@@ -10,7 +10,8 @@ export type Permission =
   | 'species:delete'
   | 'admins:read'
   | 'admins:create'
-  | 'admins:update';
+  | 'admins:update'
+  | 'announcements:publish';
 
 /**
  * Permisos que cada rol agrega a los que hereda.
@@ -19,7 +20,7 @@ export type Permission =
 const OWN_PERMISSIONS: Record<Role, readonly Permission[]> = {
   visitor: ['auth:login', 'species:read'],
   user: ['auth:logout'],
-  admin: ['species:create', 'species:update', 'species:delete'],
+  admin: ['species:create', 'species:update', 'species:delete', 'announcements:publish'],
   superadmin: ['admins:read', 'admins:create', 'admins:update'],
 };
 

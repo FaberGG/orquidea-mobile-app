@@ -58,9 +58,10 @@ Los permisos se nombran `recurso:acción` en inglés.
 | `admins:read` | Ver listado de administradores | HU-5 | — | — | — | ✔ |
 | `admins:create` | Crear administrador | HU-4 | — | — | — | ✔ |
 | `admins:update` | Editar / revocar administrador | HU-5 | — | — | — | ✔ |
+| `announcements:publish` | Publicar anuncios e información educativa | HU-16 | — | — | ✔ | ✔ |
 
 Permisos previstos para sprints futuros (no implementar aún): `sightings:create` (user+),
-`sightings:review` (admin+), `map:manage`, `content:manage`, `announcements:publish` (admin+).
+`sightings:review` (admin+), `map:manage`, `content:manage` (admin+).
 
 > Al agregar un permiso: actualizar esta tabla **y** la matriz en `src/permissions/` en el mismo PR.
 
