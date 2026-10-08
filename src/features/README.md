@@ -13,7 +13,7 @@ pantallas, componentes propios, hooks de datos, llamadas a la API, validaciones 
 | [`species/`](species/README.md) | HE-03 | 1 | Fichas taxonómicas: listado, detalle, crear, editar, eliminar |
 | `qr/` | HE-04 | futuro | Escaneo de QR → ficha |
 | [`map/`](map/README.md) | HE-05 | futuro (pestaña creada) | Mapa del sendero y estaciones |
-| `content/` | HE-06 | futuro | Componentes del humedal y anuncios |
+| [`content/`](content/README.md) | HE-06 | 2 | Anuncios (HU-16 hecho) y componentes del humedal |
 | [`sightings/`](sightings/README.md) | HE-07 | futuro (pestaña creada) | Reportes ciudadanos y moderación (pestaña Comunidad) |
 
 ## Estructura interna estándar

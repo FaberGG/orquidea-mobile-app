@@ -12,6 +12,7 @@ se declaran las rutas.
 | `_layout.tsx` | — | Stack sin encabezado (las pantallas dibujan el suyo) | — | ✅ |
 | [`species/new.tsx`](species/README.md) | `/species/new` | `SpeciesCreateScreen` | HU-7 | ✅ |
 | [`species/[id]/edit.tsx`](species/README.md) | `/species/:id/edit` | `SpeciesEditScreen` | HU-8 | ✅ |
+| `announcements/new.tsx` | `/announcements/new` | `PublishAnnouncementScreen` (`@/features/content`) | HU-16 | ✅ |
 
 La HE-2 se implementa bajo [`(drawer)/(tabs)/admins/`](../(drawer)/(tabs)/admins/README.md) para conservar
 el menú y las cuatro opciones inferiores del layout compartido.

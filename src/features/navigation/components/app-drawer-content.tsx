@@ -99,6 +99,13 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
             label={NAVIGATION_LABELS.newSpecies}
             onPress={() => goTo('/species/new')}
           />
+          <Can permission="announcements:publish">
+            <DrawerItem
+              icon="announcements"
+              label={NAVIGATION_LABELS.publishAnnouncement}
+              onPress={() => goTo('/announcements/new')}
+            />
+          </Can>
         </DrawerSection>
       </Can>
 
