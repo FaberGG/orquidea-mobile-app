@@ -69,6 +69,18 @@ describe('AppDrawerContent (menú lateral)', () => {
     expect(router.navigate).toHaveBeenCalledWith('/account');
   });
 
+  it('HU-16: el administrador ve "Publicar anuncio" y lleva al formulario', async () => {
+    await renderAs('admin');
+
+    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.publishAnnouncement));
+    expect(router.navigate).toHaveBeenCalledWith('/announcements/new');
+  });
+
+  it('HU-16: el usuario registrado no ve "Publicar anuncio"', async () => {
+    await renderAs('user');
+    expect(screen.queryByText(NAVIGATION_LABELS.publishAnnouncement)).toBeNull();
+  });
+
   it('el administrador no ve la gestión de cuentas', async () => {
     await renderAs('admin');
     expect(screen.queryByText(NAVIGATION_LABELS.manageAccounts)).toBeNull();

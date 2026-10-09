@@ -92,5 +92,6 @@ Pendientes de resolver con el equipo de backend / Product Owner:
 | B10 | No hay fuente de autocompletado por nombre científico (el diseño muestra sugerencias y "Auto" en la taxonomía) | Los campos de taxonomía se llenan a mano. Requiere un endpoint o un servicio externo de taxonomía, a decidir |
 | B11 | No se clasifica el **rol de cada especie en el humedal** (`rolEnHumedal` es texto libre) | Se muestra solo como texto en el detalle y el formulario |
 | B12 | El diseño ofrece **quitar foto** al editar; la API conserva la actual si no se envía una nueva | No hay forma de quitar la foto de una ficha |
+| B13 | `POST/GET /api/anuncios` (HU-16/17) se acordaron por chat (`titulo`, `descripcion`) pero aún no están en `openapi.json` | El front de HU-16 usa esos nombres; confirmar al exportar el contrato |
 
 Al resolver una brecha, actualizar esta tabla y el [plan del sprint](../sprints/sprint-01.md).
