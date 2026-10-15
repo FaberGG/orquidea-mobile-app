@@ -4,7 +4,7 @@ La navegación usa **Expo Router** (rutas basadas en archivos dentro de `src/app
 **rutas protegidas** (`Stack.Protected` con la prop `guard`, disponible desde SDK 53).
 Referencia: <https://docs.expo.dev/router/advanced/authentication/>
 
-## 1. Árbol de rutas (Sprint 1)
+## 1. Árbol de rutas
 
 ```
 src/app/
@@ -18,6 +18,7 @@ src/app/
 │       ├── community.tsx           /community   Comunidad: avistamientos (HU-18, HU-19, HU-20)
 │       ├── map.tsx                 /map         Mapas: mapa del sendero (HU-12, HU-13)
 │       ├── account.tsx             /account     Usuario: visitante → iniciar sesión · con sesión → datos, rol y cerrar sesión (HU-3)
+│       ├── announcements.tsx        /announcements Anuncios públicos desde el menú lateral (HU-17)
 │       └── admins/                /admins      Ruta oculta de la barra inferior; gestión HE-2 (solo superadmin)
 │
 ├── species/
@@ -48,7 +49,7 @@ src/app/
 | Barra inferior | Inicio · Comunidad · Mapas · Usuario | Todos los roles (las pestañas no cambian con el rol) |
 | Encabezado de las pestañas | Botón de menú (abre el menú lateral); acción opcional a la derecha (p. ej. buscar en Inicio) | Todos |
 | Menú lateral: identidad | Usuario: iniciales, nombre, correo y rol (lleva a `/account`). Visitante: botón **INICIAR SESIÓN** | Todos |
-| Menú lateral: Humedal | Componentes del humedal (HU-14), Anuncios (HU-17), Descargas sin conexión (HU-21) — *Próximamente* | Todos |
+| Menú lateral: Humedal | Componentes del humedal (HU-14), Descargas sin conexión (HU-21) — *Próximamente*; Anuncios (HU-17) abre `/announcements` | Todos |
 | Menú lateral: Administración | Gestionar cuentas abre `/admins`; creación HU-4 y gestión HU-5 | `<Can permission="admins:read">` |
 
 Lo que depende del rol dentro de cada pestaña se resuelve con `<Can>` en la propia pantalla

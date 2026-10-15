@@ -7,6 +7,11 @@ export const CONTENT_MESSAGES = {
   announcementRequiredFields: 'Debes completar el título y el contenido del anuncio.',
   // HU-16 CA1 (la HU no define texto: confirmación local)
   announcementPublished: 'El anuncio se publicó correctamente.',
+  // HU-17 CA2
+  announcementsEmpty: 'Aún no hay anuncios publicados.',
+  announcementsLoadError:
+    'No pudimos cargar los anuncios. Revisa tu conexión e inténtalo de nuevo.',
+  announcementsRefreshError: 'No pudimos actualizar los anuncios. Inténtalo de nuevo.',
   // Respaldo local (CODIGO §10)
   networkError: 'No pudimos conectarnos con el servidor. Revisa tu conexión e inténtalo de nuevo.',
   forbidden: 'No tienes permisos para publicar anuncios.',
@@ -25,6 +30,11 @@ export const CONTENT_LABELS = {
   descriptionPlaceholder: 'Escribe el anuncio o la información educativa',
   // HU-16 CA1 y CA2: "Clic en el botón PUBLICAR."
   publishButton: 'PUBLICAR',
+  announcementsTitle: 'Anuncios',
+  announcementsRetry: 'REINTENTAR',
+  announcementsRefreshButton: 'ACTUALIZAR',
+  announcementsPublishedPrefix: 'Publicado el',
+  announcementsRefresh: 'Actualizar anuncios',
 } as const;
 
 /** Límites de longitud del formulario (provisionales hasta que el contrato los defina). */

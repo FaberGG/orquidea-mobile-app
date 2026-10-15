@@ -58,6 +58,20 @@ export function AppTabsLayout() {
         name="account"
         options={{ title: NAVIGATION_LABELS.tabUser, tabBarIcon: tabIcon('user') }}
       />
+      <Tabs.Screen
+        name="announcements"
+        options={{
+          href: null,
+          title: NAVIGATION_LABELS.announcements,
+          header: ({ navigation }) => (
+            <AppHeader
+              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
+              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              title={NAVIGATION_LABELS.announcements}
+            />
+          ),
+        }}
+      />
       <Tabs.Screen name="admins" options={{ href: null, headerShown: false }} />
     </Tabs>
   );
