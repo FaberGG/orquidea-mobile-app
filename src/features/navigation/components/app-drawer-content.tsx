@@ -110,7 +110,11 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
       </Can>
 
       <DrawerSection title={NAVIGATION_LABELS.sectionWetland}>
-        <DrawerItem icon="wetland" label={NAVIGATION_LABELS.wetlandComponents} isComingSoon />
+        <DrawerItem
+          icon="wetland"
+          label={NAVIGATION_LABELS.wetlandComponents}
+          onPress={() => goTo('/wetland')}
+        />
         <DrawerItem icon="announcements" label={NAVIGATION_LABELS.announcements} isComingSoon />
         <DrawerItem icon="offline" label={NAVIGATION_LABELS.offlineDownloads} isComingSoon />
       </DrawerSection>

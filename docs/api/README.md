@@ -93,5 +93,6 @@ Pendientes de resolver con el equipo de backend / Product Owner:
 | B11 | No se clasifica el **rol de cada especie en el humedal** (`rolEnHumedal` es texto libre) | Se muestra solo como texto en el detalle y el formulario |
 | B12 | El diseño ofrece **quitar foto** al editar; la API conserva la actual si no se envía una nueva | No hay forma de quitar la foto de una ficha |
 | B13 | `POST/GET /api/anuncios` (HU-16/17) se acordaron por chat (`titulo`, `descripcion`) pero aún no están en `openapi.json` | El front de HU-16 usa esos nombres; confirmar al exportar el contrato |
+| B14 | `GET/PUT /api/componentes`, `POST/DELETE /api/componentes/{tipo}/fotos` (HU-14/15) se acordaron por chat (`tipo`, `nombre`, `descripcion`, `tieneContenido`, `fotos[{id,url}]`, `fechaActualizacion`; campo `foto` en el multipart) pero aún no están en `openapi.json` | El front de HU-14/15 usa esos nombres (ver `src/features/content/README.md`); confirmar al exportar el contrato |
 
 Al resolver una brecha, actualizar esta tabla y el [plan del sprint](../sprints/sprint-01.md).

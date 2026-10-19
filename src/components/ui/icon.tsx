@@ -30,6 +30,7 @@ import {
   Trash,
   UserCog,
   UserGroup,
+  X,
   Zap,
   type LucideIcon,
 } from 'lucide-react-native';
@@ -78,6 +79,8 @@ const ICONS = {
   imagePlus: ImagePlus,
   save: Save,
   delete: Trash,
+  // Contenido del humedal (HE-06)
+  close: X,
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

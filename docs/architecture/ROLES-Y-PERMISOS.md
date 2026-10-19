@@ -59,9 +59,10 @@ Los permisos se nombran `recurso:acción` en inglés.
 | `admins:create` | Crear administrador | HU-4 | — | — | — | ✔ |
 | `admins:update` | Editar / revocar administrador | HU-5 | — | — | — | ✔ |
 | `announcements:publish` | Publicar anuncios e información educativa | HU-16 | — | — | ✔ | ✔ |
+| `content:manage` | Editar el texto y las fotos de los componentes del humedal | HU-15 | — | — | ✔ | ✔ |
 
 Permisos previstos para sprints futuros (no implementar aún): `sightings:create` (user+),
-`sightings:review` (admin+), `map:manage`, `content:manage` (admin+).
+`sightings:review` (admin+), `map:manage`.
 
 > Al agregar un permiso: actualizar esta tabla **y** la matriz en `src/permissions/` en el mismo PR.
 

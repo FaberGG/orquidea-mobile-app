@@ -95,6 +95,13 @@ describe('AppDrawerContent (menú lateral)', () => {
     expect(router.navigate).toHaveBeenCalledWith('/admins');
   });
 
+  it('Componentes del humedal abre la consulta para cualquier rol (HU-14)', async () => {
+    await renderAs('visitor');
+    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.wetlandComponents));
+    expect(closeDrawer).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith('/wetland');
+  });
+
   it('los destinos sin implementar no son presionables', async () => {
     await renderAs('visitor');
     const item = screen.getByLabelText(
