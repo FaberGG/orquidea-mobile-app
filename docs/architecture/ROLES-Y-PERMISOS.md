@@ -60,9 +60,13 @@ Los permisos se nombran `recurso:acción` en inglés.
 | `admins:update` | Editar / revocar administrador | HU-5 | — | — | — | ✔ |
 | `announcements:publish` | Publicar anuncios e información educativa | HU-16 | — | — | ✔ | ✔ |
 | `content:manage` | Editar el texto y las fotos de los componentes del humedal | HU-15 | — | — | ✔ | ✔ |
+| `sightings:create` | Crear un reporte de avistamiento (**no se hereda**: la API responde `403` a los administradores) | HU-18 | — | ✔ | — | — |
+| `sightings:review` | Revisar la cola de reportes y aprobarlos o rechazarlos | HU-19 | — | — | ✔ | ✔ |
 
-Permisos previstos para sprints futuros (no implementar aún): `sightings:create` (user+),
-`sightings:review` (admin+), `map:manage`.
+El foro de avistamientos (HU-20) es público y no necesita permiso. Permisos previstos para sprints futuros
+(no implementar aún): `map:manage`.
+
+`auth:login` y `sightings:create` son **no heredables**: solo los tiene el rol que los declara.
 
 > Al agregar un permiso: actualizar esta tabla **y** la matriz en `src/permissions/` en el mismo PR.
 

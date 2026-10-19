@@ -22,14 +22,25 @@ function RootNavigator() {
   const { isAuthenticated } = useSession();
   // Gestión de contenido (fichas, y el resto de administración) solo para admin y superadmin.
   const canManageContent = usePermission('species:create');
+  // Escribir un reporte de avistamiento (HU-18) solo para usuarios registrados.
+  const canCreateSighting = usePermission('sightings:create');
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(drawer)" />
+      {/* Foto de un reporte a pantalla completa (HU-20), abierta para todos los roles. */}
+      <Stack.Screen
+        name="sightings/photo"
+        options={{ presentation: 'transparentModal', animation: 'fade' }}
+      />
 
       {/* Login, registro y recuperación solo sin sesión: al iniciar sesión se retiran de la pila. */}
       <Stack.Protected guard={!isAuthenticated}>
         <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={canCreateSighting}>
+        <Stack.Screen name="sightings/new" />
       </Stack.Protected>
 
       <Stack.Protected guard={canManageContent}>

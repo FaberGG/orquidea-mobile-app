@@ -4,8 +4,9 @@
 
 | Componente previsto | Uso |
 |---|---|
-| `Button` ✅ (`button.tsx`) | Variantes `primary` y `link` implementadas (`secondary`, `danger` pendientes); estado `isLoading` y `disabled` |
+| `Button` ✅ (`button.tsx`) | Variantes `primary`, `secondary` (con borde) y `link` implementadas (`danger` pendiente); estado `isLoading` y `disabled` |
 | `TextField` ✅ (`text-field.tsx`) | Campo redondeado con etiqueta, ícono opcional (`icon`), borde de error (`hasError`) y variante de contraseña con ojo para mostrar/ocultar (`isPassword`) |
+| `ChipButton` ✅ (`chip-button.tsx`) | Chip redondeado, verde cuando está seleccionado; ícono opcional. Rol `tab` (filtros) o `radio` (opciones de formulario). Lo usan fichas y avistamientos |
 | `Checkbox` ✅ (`checkbox.tsx`) | Casilla de 14 px con texto; toda la fila es presionable (44 px) |
 | `Icon` ✅ (`icon.tsx`) | Íconos de Lucide (`lucide-react-native`) con trazo absoluto de 2 px; nombres de la app en `ICONS` (ADR-0010) |
 | `ThemedText` / `ThemedView` | Texto y contenedores con colores del tema |
