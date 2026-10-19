@@ -6,6 +6,7 @@ desde el cliente.
 | Archivo | Contenido |
 |---|---|
 | [`openapi.json`](openapi.json) | Especificación OpenAPI 3.1 generada por el backend (Springdoc). **No se edita a mano**: se reemplaza con cada exportación. Está excluido de Prettier |
+| [`reportes-avistamiento.md`](reportes-avistamiento.md) | Endpoints de reportes ciudadanos de avistamiento (HU-18, HU-19, HU-20), con ejemplos y errores |
 
 Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar la extensión *OpenAPI* de VS Code.
 
@@ -39,6 +40,13 @@ Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar l
 | `GET /api/fichas-taxonomicas/{id}` | — | HU-10 (detalle) | 200 `TaxonDto` · 404 |
 | `POST /api/fichas-taxonomicas` | Admin | HU-7 (`multipart/form-data`) | 201 `TaxonDto` · 400 · 401 · 403 · 409 · 413 |
 | `PUT /api/fichas-taxonomicas/{id}` | Admin | HU-8 (`multipart/form-data`, foto opcional) | 200 `TaxonDto` · 400 · 401 · 403 · 404 · 409 · 413 |
+| `POST /api/reportes-avistamiento` | Usuario registrado | HU-18 (`multipart/form-data`, foto opcional) | 201/200 `OccurrenceDto` · 400 · 401 · 403 · 409 · 413 |
+| `GET /api/reportes-avistamiento?pagina=&tamano=` | — | HU-20 (aprobados, paginado) | 200 `PageResponse<OccurrenceDto>` · 400 |
+| `GET /api/reportes-avistamiento/pendientes` | Admin | HU-19 (cola, paginado) | 200 `PageResponse<OccurrenceDto>` · 401 · 403 |
+| `POST /api/reportes-avistamiento/{id}/aprobar` · `/rechazar` | Admin | HU-19 | 200 `OccurrenceDto` · 401 · 403 · 404 · 409 |
+
+Detalle de los reportes de avistamiento: [`reportes-avistamiento.md`](reportes-avistamiento.md).
+Diferencias con el diseño de HE-07 y pendientes: [`docs/sprints/he-07-pendientes.md`](../sprints/he-07-pendientes.md).
 
 ## 3. Traducción contrato → app
 
@@ -53,6 +61,7 @@ Los DTO se traducen a modelos de la app en la carpeta `api/` de cada feature
 | `nombre`, `apellido`, `correo`, `contrasena` | `firstName`, `lastName`, `email`, `password` |
 | `order`, `family`, `genus`, `scientificName`, `vernacularName` | Mismo nombre |
 | `alimentacion`, `rolEnHumedal`, `urlFoto`, `habilitado` | `diet`, `wetlandRole`, `photoUrl`, `isEnabled` |
+| `occurrenceRemarks`, `recordedBy`, `kingdom` (`ANIMALIA`…`DESCONOCIDO`), `estado` (`PENDIENTE`…) | `remarks`, `author`, `Kingdom` (`animalia`…`unknown`), `SightingStatus` (`pending`…) |
 
 ## 4. Errores
 

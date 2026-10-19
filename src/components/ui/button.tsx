@@ -4,7 +4,7 @@ import { ThemedText } from '@/components/themed-text';
 import { FontFamily, MinTouchSize, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-export type ButtonVariant = 'primary' | 'link';
+export type ButtonVariant = 'primary' | 'secondary' | 'link';
 
 export type ButtonProps = Omit<PressableProps, 'children' | 'style'> & {
   label: string;
@@ -12,7 +12,10 @@ export type ButtonProps = Omit<PressableProps, 'children' | 'style'> & {
   isLoading?: boolean;
 };
 
-/** Botón base. `primary` para la acción principal de una pantalla; `link` para acciones secundarias. */
+/**
+ * Botón base. `primary` para la acción principal de una pantalla; `secondary` (con borde) para la
+ * alternativa junto a ella (p. ej. Cancelar); `link` para acciones de texto.
+ */
 export function Button({
   label,
   variant = 'primary',
@@ -23,15 +26,21 @@ export function Button({
   const theme = useTheme();
   const isDisabled = Boolean(disabled) || isLoading;
   const isPrimary = variant === 'primary';
+  const isSecondary = variant === 'secondary';
 
   return (
     <Pressable
-      accessibilityRole={isPrimary ? 'button' : 'link'}
+      accessibilityRole={variant === 'link' ? 'link' : 'button'}
       accessibilityState={{ disabled: isDisabled, busy: isLoading }}
       disabled={isDisabled}
       style={({ pressed }) => [
         styles.base,
-        isPrimary && [styles.primary, { backgroundColor: theme.primary }],
+        isPrimary && [styles.pill, { backgroundColor: theme.primary }],
+        isSecondary && [
+          styles.pill,
+          styles.secondary,
+          { backgroundColor: theme.background, borderColor: theme.border },
+        ],
         isDisabled && styles.disabled,
         pressed && styles.pressed,
       ]}
@@ -40,10 +49,16 @@ export function Button({
         <ActivityIndicator color={isPrimary ? theme.onPrimary : theme.primary} />
       ) : (
         <ThemedText
-          type={isPrimary ? 'default' : 'small'}
+          type={variant === 'link' ? 'small' : 'default'}
           style={[
-            isPrimary && styles.primaryLabel,
-            { color: isPrimary ? theme.onPrimary : theme.primary },
+            variant !== 'link' && styles.pillLabel,
+            {
+              color: isPrimary
+                ? theme.onPrimary
+                : isSecondary
+                  ? theme.textSecondary
+                  : theme.primary,
+            },
           ]}>
           {label}
         </ThemedText>
@@ -58,12 +73,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  primary: {
+  pill: {
     borderRadius: Radius.pill,
     paddingVertical: 14,
     paddingHorizontal: Spacing.three,
   },
-  primaryLabel: {
+  secondary: {
+    borderWidth: 1,
+  },
+  pillLabel: {
     textAlign: 'center',
     fontFamily: FontFamily.bold,
     // El diseño usa interlineado 1 (16 px): el botón mide 44 px con el padding de 14.

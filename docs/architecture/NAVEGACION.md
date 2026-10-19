@@ -23,6 +23,10 @@ src/app/
 ├── species/
 │   └── [id].tsx                    /species/:id Detalle de ficha (todos) + acciones admin vía <Can> (HU-8, HU-9)
 │
+├── sightings/
+│   ├── new.tsx                     /sightings/new    HU-18 · guard: can('sightings:create') → solo usuario registrado
+│   └── photo.tsx                   /sightings/photo  Foto de un reporte con zoom (todos) · modal transparente
+│
 ├── (auth)/                         guard: SIN sesión
 │   ├── _layout.tsx
 │   ├── login.tsx                   /login            HU-1
@@ -53,6 +57,7 @@ src/app/
 
 Lo que depende del rol dentro de cada pestaña se resuelve con `<Can>` en la propia pantalla
 (p. ej. **Crear ficha** en Inicio, revisar reportes en Comunidad, gestionar estaciones en Mapas).
+Comunidad muestra el título y la campana de anuncios (sin destino hasta HU-17) en el encabezado.
 Los destinos del menú marcados *Próximamente* se enlazan cuando exista su ruta.
 
 ## 2. Guards en el layout raíz (esquema)
@@ -87,6 +92,8 @@ permanece visible para evitar parpadeos entre estados de visitante y logueado.
 | Token vencido (`401` en una petición autenticada) | Se borra el token y la sesión pasa a visitante; los guards redirigen |
 | Cerrar sesión (HU-3) | Se limpia sesión y caché; se va a `/` como visitante |
 | Visitante abre `/species/new` por deep link | El guard lo impide y redirige a la ruta disponible |
+| Visitante toca el botón de reportar en Comunidad | Aviso de que debe iniciar sesión → `/login` |
+| Reporte enviado (HU-18 CA1) | El formulario muestra la confirmación y vuelve a Comunidad |
 | Rol revocado mientras navega (HU-5 CA2) | Al recibir `403` o refrescar `/me`, los guards se reevalúan |
 
 ## 4. Reglas

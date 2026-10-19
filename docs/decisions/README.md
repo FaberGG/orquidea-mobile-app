@@ -31,5 +31,6 @@ se reemplazan con uno nuevo.
 | [0010](0010-iconos-lucide.md) | Íconos con Lucide | Aceptado |
 | [0011](0011-seleccion-de-fotos-expo-image-picker.md) | Selección de fotos con expo-image-picker | Aceptado |
 | [0012](0012-subida-de-fotos-con-expo-file-system.md) | Subida de fotos con expo-file-system | Aceptado |
+| [0013](0013-ubicacion-con-expo-location.md) | Lugar del avistamiento con expo-location | Aceptado |
 
 Los ADR *Propuestos* se aceptan (o se modifican) al ejecutar la tarea del Sprint 1 que instala la dependencia.

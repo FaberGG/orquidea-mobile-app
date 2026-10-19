@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, type AccessibilityRole } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon, type IconName } from '@/components/ui/icon';
@@ -7,17 +7,25 @@ import { useTheme } from '@/hooks/use-theme';
 
 export type ChipButtonProps = {
   label: string;
-  icon: IconName;
+  icon?: IconName;
   selected: boolean;
   onPress: () => void;
+  /** `tab` para filtros (por defecto); `radio` para elegir una opción en un formulario. */
+  accessibilityRole?: Extract<AccessibilityRole, 'tab' | 'radio'>;
 };
 
 /** Chip de filtro: verde de marca cuando está activo (Figma: "Todos"), neutro-100 cuando no. */
-export function ChipButton({ label, icon, selected, onPress }: ChipButtonProps) {
+export function ChipButton({
+  label,
+  icon,
+  selected,
+  onPress,
+  accessibilityRole = 'tab',
+}: ChipButtonProps) {
   const theme = useTheme();
   return (
     <Pressable
-      accessibilityRole="tab"
+      accessibilityRole={accessibilityRole}
       accessibilityLabel={label}
       accessibilityState={{ selected }}
       onPress={onPress}
@@ -26,7 +34,7 @@ export function ChipButton({ label, icon, selected, onPress }: ChipButtonProps) 
         { backgroundColor: selected ? theme.primary : theme.backgroundSelected },
         pressed && styles.pressed,
       ]}>
-      <Icon name={icon} size={18} color={selected ? 'onPrimary' : 'textSecondary'} />
+      {icon && <Icon name={icon} size={18} color={selected ? 'onPrimary' : 'textSecondary'} />}
       <ThemedText
         style={[styles.label, { color: selected ? theme.onPrimary : theme.textSecondary }]}>
         {label}

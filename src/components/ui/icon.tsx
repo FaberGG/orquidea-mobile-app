@@ -2,8 +2,10 @@ import {
   Activity,
   Camera,
   ImagePlus,
+  Info,
   Asterisk,
   AtSign,
+  Bell,
   Bird,
   Bug,
   Check,
@@ -18,9 +20,12 @@ import {
   House,
   Leaf,
   LayoutGrid,
+  LocateFixed,
   LogIn,
   Map as MapIcon,
+  MapPin,
   Pencil,
+  PenLine,
   Plus,
   Save,
   Megaphone,
@@ -81,6 +86,12 @@ const ICONS = {
   delete: Trash,
   // Contenido del humedal (HE-06)
   close: X,
+  // Avistamientos (HE-07)
+  notifications: Bell,
+  writeReport: PenLine,
+  location: MapPin,
+  locate: LocateFixed,
+  info: Info,
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
@@ -89,14 +100,26 @@ export type IconProps = {
   name: IconName;
   size?: number;
   color?: ThemeColor;
+  /**
+   * Color fijo que ignora el tema. Solo para superficies que no cambian con el tema (p. ej. el visor
+   * de fotos, siempre oscuro).
+   */
+  fixedColor?: string;
 };
 
 /**
  * Ícono decorativo; si transmite información, quien lo usa debe darle `accessibilityLabel`.
  * El trazo es absoluto (2 px a cualquier tamaño), como los íconos exportados del Figma.
  */
-export function Icon({ name, size = 24, color = 'primary' }: IconProps) {
+export function Icon({ name, size = 24, color = 'primary', fixedColor }: IconProps) {
   const theme = useTheme();
   const LucideGlyph = ICONS[name];
-  return <LucideGlyph size={size} color={theme[color]} strokeWidth={2} absoluteStrokeWidth />;
+  return (
+    <LucideGlyph
+      size={size}
+      color={fixedColor ?? theme[color]}
+      strokeWidth={2}
+      absoluteStrokeWidth
+    />
+  );
 }
