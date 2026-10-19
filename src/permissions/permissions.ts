@@ -11,21 +11,32 @@ export type Permission =
   | 'admins:read'
   | 'admins:create'
   | 'admins:update'
-  | 'announcements:publish';
+  | 'announcements:publish'
+  | 'content:manage'
+  | 'sightings:create'
+  | 'sightings:review';
 
 /**
  * Permisos que cada rol agrega a los que hereda.
- * `auth:login` es exclusivo del visitante, así que se excluye explícitamente de la herencia.
+ * `auth:login` es exclusivo del visitante y `sightings:create` del usuario registrado (la API responde
+ * `403` si un administrador crea un reporte), así que se excluyen explícitamente de la herencia.
  */
 const OWN_PERMISSIONS: Record<Role, readonly Permission[]> = {
   visitor: ['auth:login', 'species:read'],
-  user: ['auth:logout'],
-  admin: ['species:create', 'species:update', 'species:delete', 'announcements:publish'],
+  user: ['auth:logout', 'sightings:create'],
+  admin: [
+    'species:create',
+    'species:update',
+    'species:delete',
+    'announcements:publish',
+    'content:manage',
+    'sightings:review',
+  ],
   superadmin: ['admins:read', 'admins:create', 'admins:update'],
 };
 
 /** Permisos que no se heredan: solo los tiene el rol que los declara. */
-const NON_INHERITABLE: ReadonlySet<Permission> = new Set(['auth:login']);
+const NON_INHERITABLE: ReadonlySet<Permission> = new Set(['auth:login', 'sightings:create']);
 
 function resolvePermissions(role: Role): Set<Permission> {
   const parent = ROLE_PARENT[role];

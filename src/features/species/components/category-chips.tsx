@@ -1,7 +1,8 @@
 import { ScrollView, StyleSheet } from 'react-native';
 
+import { ChipButton } from '@/components/ui/chip-button';
+
 import { SPECIES_CATEGORY_FILTERS, type CategoryFilter } from '../constants';
-import { ChipButton } from './chip-button';
 
 export type CategoryChipsProps = {
   value: CategoryFilter;

@@ -9,6 +9,7 @@ import { FormMessage } from '@/components/feedback/form-message';
 import { FormScreen } from '@/components/layout/form-screen';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
+import { ChipButton } from '@/components/ui/chip-button';
 import { Icon } from '@/components/ui/icon';
 import { TextField } from '@/components/ui/text-field';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
@@ -22,7 +23,6 @@ import {
 } from '../constants';
 import { speciesFormSchema, type SpeciesFormValues } from '../schemas/species-form.schema';
 import { type ConservationStatus, type SpeciesCategory, type SpeciesInput } from '../types';
-import { ChipButton } from './chip-button';
 import { ConservationBadge } from './conservation';
 import { pickSpeciesPhoto } from './pick-species-photo';
 

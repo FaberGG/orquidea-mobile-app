@@ -4,6 +4,7 @@ import { Tabs } from 'expo-router/tabs';
 import { AppHeader } from '@/components/layout/app-header';
 import { TAB_ICON_SIZE, TabBar } from '@/components/layout/tab-bar';
 import { Icon, type IconName } from '@/components/ui/icon';
+import { AnnouncementsButton } from '@/features/sightings';
 import { CreateSpeciesButton } from '@/features/species';
 
 import { NAVIGATION_LABELS } from '../constants';
@@ -48,7 +49,19 @@ export function AppTabsLayout() {
       />
       <Tabs.Screen
         name="community"
-        options={{ title: NAVIGATION_LABELS.tabCommunity, tabBarIcon: tabIcon('community') }}
+        options={{
+          title: NAVIGATION_LABELS.tabCommunity,
+          tabBarIcon: tabIcon('community'),
+          // Comunidad lleva título y la campana de anuncios a la derecha (Figma: HE-07).
+          header: ({ navigation }) => (
+            <AppHeader
+              title={NAVIGATION_LABELS.tabCommunity}
+              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
+              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              right={<AnnouncementsButton />}
+            />
+          ),
+        }}
       />
       <Tabs.Screen
         name="map"

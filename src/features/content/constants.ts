@@ -16,6 +16,20 @@ export const CONTENT_MESSAGES = {
   networkError: 'No pudimos conectarnos con el servidor. Revisa tu conexión e inténtalo de nuevo.',
   forbidden: 'No tienes permisos para publicar anuncios.',
   unexpectedError: 'Ocurrió un error inesperado. Inténtalo de nuevo.',
+  // HU-14 CA2
+  componentWithoutContent: 'La información de esta sección estará disponible próximamente.',
+  // HU-15 CA1
+  componentUpdated: 'El contenido del componente se actualizó correctamente.',
+  // HU-15: validaciones locales (la HU no define textos)
+  componentRequiredFields: 'Debes completar el nombre y la descripción del componente.',
+  // Mismo texto que devuelve la API con 400 (formato distinto de jpg o png)
+  photoInvalidFormat: 'El formato de la imagen no es válido.',
+  photoTooLarge: 'La imagen supera el tamaño máximo de 10 MB.',
+  photoLimitReached: 'Puedes tener máximo 10 fotos por componente.',
+  componentForbidden: 'No tienes permisos para editar este componente.',
+  componentNotFound: 'No encontramos este componente del humedal.',
+  componentsLoadError: 'No pudimos cargar los componentes del humedal.',
+  componentsEmpty: 'Aún no hay componentes del humedal.',
 } as const;
 
 /** Textos de la interfaz de HE-06. */
@@ -37,7 +51,54 @@ export const CONTENT_LABELS = {
   announcementsRefresh: 'Actualizar anuncios',
 } as const;
 
-/** Límites de longitud del formulario (provisionales hasta que el contrato los defina). */
+/** Textos de la interfaz de HU-14 y HU-15 (sin diseño en Figma). */
+export const WETLAND_LABELS = {
+  listTitle: 'Componentes del humedal',
+  listSubtitle: 'Conoce cómo funciona cada parte del humedal y su papel en el ecosistema.',
+  back: 'Volver',
+  retry: 'Reintentar',
+  photosSection: 'Fotos',
+  photoOf: (name: string) => `Foto de ${name}`,
+  updatedAt: (date: string) => `Actualizado el ${date}`,
+  editButton: 'EDITAR CONTENIDO',
+  editTitle: 'Editar componente',
+  nameLabel: 'Nombre',
+  namePlaceholder: 'Ej.: Aves',
+  descriptionLabel: 'Descripción',
+  descriptionPlaceholder: 'Describe el componente y su funcionamiento ecológico',
+  photosCounter: (count: number, max: number) => `${count} de ${max} fotos`,
+  photosHint: 'Formatos jpg o png, máximo 10 MB cada una.',
+  addPhoto: 'Agregar foto',
+  removePhoto: 'Quitar foto',
+  newPhotoBadge: 'Nueva',
+  // HU-15 CA1: "Clic en el botón GUARDAR CAMBIOS."
+  saveButton: 'GUARDAR CAMBIOS',
+} as const;
+
+/** Límites de HU-15. Fotos: acordados con el backend (409 al pasar de 10, 413 sobre 10 MB). */
+export const WETLAND_COMPONENT_LIMITS = {
+  maxPhotos: 10,
+  photoMaxBytes: 10 * 1024 * 1024,
+  photoMimeTypes: ['image/jpeg', 'image/png'],
+  nameMaxLength: 80,
+  descriptionMaxLength: 4000,
+} as const;
+
+/** Ícono de cada componente conocido; los demás usan el genérico del humedal. */
+export const WETLAND_COMPONENT_ICONS: Record<string, 'bird' | 'plant' | 'insect'> = {
+  AVES: 'bird',
+  FLORA: 'plant',
+  INSECTOS: 'insect',
+};
+
+/** Claves de caché de los componentes del humedal. */
+export const wetlandComponentKeys = {
+  all: ['wetland-components'] as const,
+  list: () => [...wetlandComponentKeys.all, 'list'] as const,
+  detail: (type: string) => [...wetlandComponentKeys.all, 'detail', type] as const,
+};
+
+/** Límites de longitud del formulario de anuncios (provisionales hasta que el contrato los defina). */
 export const ANNOUNCEMENT_LIMITS = {
   titleMaxLength: 120,
   descriptionMaxLength: 2000,

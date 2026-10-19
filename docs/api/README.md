@@ -6,6 +6,7 @@ desde el cliente.
 | Archivo | Contenido |
 |---|---|
 | [`openapi.json`](openapi.json) | Especificación OpenAPI 3.1 generada por el backend (Springdoc). **No se edita a mano**: se reemplaza con cada exportación. Está excluido de Prettier |
+| [`reportes-avistamiento.md`](reportes-avistamiento.md) | Endpoints de reportes ciudadanos de avistamiento (HU-18, HU-19, HU-20), con ejemplos y errores |
 
 Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar la extensión *OpenAPI* de VS Code.
 
@@ -39,6 +40,13 @@ Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar l
 | `GET /api/fichas-taxonomicas/{id}` | — | HU-10 (detalle) | 200 `TaxonDto` · 404 |
 | `POST /api/fichas-taxonomicas` | Admin | HU-7 (`multipart/form-data`) | 201 `TaxonDto` · 400 · 401 · 403 · 409 · 413 |
 | `PUT /api/fichas-taxonomicas/{id}` | Admin | HU-8 (`multipart/form-data`, foto opcional) | 200 `TaxonDto` · 400 · 401 · 403 · 404 · 409 · 413 |
+| `POST /api/reportes-avistamiento` | Usuario registrado | HU-18 (`multipart/form-data`, foto opcional) | 201/200 `OccurrenceDto` · 400 · 401 · 403 · 409 · 413 |
+| `GET /api/reportes-avistamiento?pagina=&tamano=` | — | HU-20 (aprobados, paginado) | 200 `PageResponse<OccurrenceDto>` · 400 |
+| `GET /api/reportes-avistamiento/pendientes` | Admin | HU-19 (cola, paginado) | 200 `PageResponse<OccurrenceDto>` · 401 · 403 |
+| `POST /api/reportes-avistamiento/{id}/aprobar` · `/rechazar` | Admin | HU-19 | 200 `OccurrenceDto` · 401 · 403 · 404 · 409 |
+
+Detalle de los reportes de avistamiento: [`reportes-avistamiento.md`](reportes-avistamiento.md).
+Diferencias con el diseño de HE-07 y pendientes: [`docs/sprints/he-07-pendientes.md`](../sprints/he-07-pendientes.md).
 
 ## 3. Traducción contrato → app
 
@@ -53,6 +61,7 @@ Los DTO se traducen a modelos de la app en la carpeta `api/` de cada feature
 | `nombre`, `apellido`, `correo`, `contrasena` | `firstName`, `lastName`, `email`, `password` |
 | `order`, `family`, `genus`, `scientificName`, `vernacularName` | Mismo nombre |
 | `alimentacion`, `rolEnHumedal`, `urlFoto`, `habilitado` | `diet`, `wetlandRole`, `photoUrl`, `isEnabled` |
+| `occurrenceRemarks`, `recordedBy`, `kingdom` (`ANIMALIA`…`DESCONOCIDO`), `estado` (`PENDIENTE`…) | `remarks`, `author`, `Kingdom` (`animalia`…`unknown`), `SightingStatus` (`pending`…) |
 
 ### Anuncios (HE-06, confirmado en `dev` del backend)
 
@@ -104,5 +113,6 @@ Pendientes de resolver con el equipo de backend / Product Owner:
 | B11 | No se clasifica el **rol de cada especie en el humedal** (`rolEnHumedal` es texto libre) | Se muestra solo como texto en el detalle y el formulario |
 | B12 | El diseño ofrece **quitar foto** al editar; la API conserva la actual si no se envía una nueva | No hay forma de quitar la foto de una ficha |
 | B13 | `POST/GET /api/anuncios` (HU-16/17) ya están confirmados en controladores y DTOs de `dev`, pero faltan en `openapi.json` | HU-16/17 consumen el contrato actual; regenerar el OpenAPI desde el backend para que el archivo refleje las rutas |
+| B14 | `GET/PUT /api/componentes`, `POST/DELETE /api/componentes/{tipo}/fotos` (HU-14/15) se acordaron por chat (`tipo`, `nombre`, `descripcion`, `tieneContenido`, `fotos[{id,url}]`, `fechaActualizacion`; campo `foto` en el multipart) pero aún no están en `openapi.json` | El front de HU-14/15 usa esos nombres (ver `src/features/content/README.md`); confirmar al exportar el contrato |
 
 Al resolver una brecha, actualizar esta tabla y el [plan del sprint](../sprints/sprint-01.md).
