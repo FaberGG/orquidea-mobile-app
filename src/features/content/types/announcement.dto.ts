@@ -5,3 +5,11 @@ export type CreateAnnouncementRequestDto = {
   titulo: string;
   descripcion: string;
 };
+
+/** Forma de un elemento devuelto por `GET /api/anuncios`. */
+export type AnnouncementResponseDto = {
+  id: string;
+  titulo: string;
+  descripcion: string;
+  fechaCreacion: string;
+};

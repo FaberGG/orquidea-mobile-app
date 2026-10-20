@@ -102,10 +102,17 @@ describe('AppDrawerContent (menú lateral)', () => {
     expect(router.navigate).toHaveBeenCalledWith('/wetland');
   });
 
+  it('HU-17: el visitante puede abrir anuncios desde el menú lateral', async () => {
+    await renderAs('visitor');
+    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.announcements));
+    expect(closeDrawer).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith('/announcements');
+  });
+
   it('los destinos sin implementar no son presionables', async () => {
     await renderAs('visitor');
     const item = screen.getByLabelText(
-      `${NAVIGATION_LABELS.announcements}, ${NAVIGATION_LABELS.comingSoon}`,
+      `${NAVIGATION_LABELS.offlineDownloads}, ${NAVIGATION_LABELS.comingSoon}`,
     );
     expect(item.props.accessibilityState).toEqual(expect.objectContaining({ disabled: true }));
   });

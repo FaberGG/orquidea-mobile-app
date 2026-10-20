@@ -10,11 +10,11 @@
 | HU-16 Publicar anuncio | ✅ `feature/publicar-anuncios` — `PublishAnnouncementScreen` en `/announcements/new` |
 | HU-14 Consultar componentes | ✅ `feature/componentes-humedal` — `/wetland` y `/wetland/:type` |
 | HU-15 Editar componentes | ✅ `feature/componentes-humedal` — `/wetland/:type/edit` con `content:manage` |
-| HU-17 Ver anuncios | Pendiente (Andrés): puede reutilizar `announcementKeys` y agregar `listAnnouncements` en `api/` |
+| HU-17 Ver anuncios | ✅ Listado público en `/announcements`, enlazado desde el menú lateral |
 
 ## Contrato (HU-16)
 
-Acordado con el backend por chat; **aún no está en `docs/api/openapi.json`**:
+Confirmado en controladores y DTO de `dev`; **aún no está en `docs/api/openapi.json`**:
 
 | Método y ruta | Quién | Cuerpo |
 |---|---|---|
@@ -62,10 +62,17 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 
 | Carpeta / archivo | Contenido |
 |---|---|
-| `api/announcements.api.ts` | `createAnnouncement` y `toCreateAnnouncementDto` (formulario → `titulo`/`descripcion`) |
+| `api/announcements.api.ts` | `createAnnouncement` y `listAnnouncements`; lectura pública sin token |
+| `api/announcements.mappers.ts` | Validación y traducción DTO → `Announcement` |
 | `components/publish-announcement-screen.tsx` | Formulario con título, contenido y **PUBLICAR**; al publicar limpia el formulario y confirma |
+| `components/announcements-list-screen.tsx` | HU-17: lista con carga, vacío, error y actualización manual |
+| `components/announcement-card.tsx` | Tarjeta con título, fecha de publicación y contenido completo |
 | `hooks/use-create-announcement.ts` | Mutation (invalida `announcementKeys.all`) y `getPublishAnnouncementErrorMessage` |
+| `hooks/use-announcements.ts` | Query pública `announcementKeys.list()` y manejo del error de lectura |
 | `schemas/announcement-form.schema.ts` | Título y contenido obligatorios (CA2), con longitudes máximas provisionales |
+| `schemas/announcement-list.schema.ts` | Validación de la respuesta recibida del backend |
+| `types/` | `AnnouncementInput`, `Announcement` y DTO de respuesta |
+| `constants.ts` | Textos de HU-16/HU-17, `ANNOUNCEMENT_LIMITS` y `announcementKeys` |
 | `api/wetland-components.api.ts` | `listWetlandComponents`, `getWetlandComponent`, `updateWetlandComponentText`, `addWetlandComponentPhoto`, `deleteWetlandComponentPhoto`, `saveWetlandComponentChanges` |
 | `api/wetland-components.mappers.ts` | DTO de la API ↔ `WetlandComponent` (validado con Zod) |
 | `components/wetland-components-screen.tsx` | HU-14: un botón por componente |

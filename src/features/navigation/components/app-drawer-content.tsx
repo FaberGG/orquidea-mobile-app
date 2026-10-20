@@ -115,7 +115,11 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
           label={NAVIGATION_LABELS.wetlandComponents}
           onPress={() => goTo('/wetland')}
         />
-        <DrawerItem icon="announcements" label={NAVIGATION_LABELS.announcements} isComingSoon />
+        <DrawerItem
+          icon="announcements"
+          label={NAVIGATION_LABELS.announcements}
+          onPress={() => goTo('/announcements')}
+        />
         <DrawerItem icon="offline" label={NAVIGATION_LABELS.offlineDownloads} isComingSoon />
       </DrawerSection>
 

@@ -1,6 +1,11 @@
 import { apiClient } from '@/lib/api';
 
-import { type AnnouncementInput, type CreateAnnouncementRequestDto } from '../types';
+import {
+  type Announcement,
+  type AnnouncementInput,
+  type CreateAnnouncementRequestDto,
+} from '../types';
+import { toAnnouncementList } from './announcements.mappers';
 
 const ANNOUNCEMENTS_PATH = '/api/anuncios';
 
@@ -18,4 +23,13 @@ export function toCreateAnnouncementDto({
  */
 export async function createAnnouncement(input: AnnouncementInput): Promise<void> {
   await apiClient.post<unknown>(ANNOUNCEMENTS_PATH, { body: toCreateAnnouncementDto(input) });
+}
+
+/** HU-17: obtiene el listado público más reciente primero, sin adjuntar credenciales. */
+export async function listAnnouncements(signal?: AbortSignal): Promise<Announcement[]> {
+  const response = await apiClient.get<unknown>(ANNOUNCEMENTS_PATH, {
+    authenticated: false,
+    signal,
+  });
+  return toAnnouncementList(response);
 }

@@ -8,9 +8,9 @@ un dominio propio: reúne las pantallas de otras features (solo por su `index.ts
 | Archivo | Contenido |
 |---|---|
 | `components/app-drawer-layout.tsx` | `AppDrawerLayout`: `Drawer` de `expo-router/drawer` (300 px, tipo *front*, velo `scrim`) |
-| `components/app-drawer-content.tsx` | `AppDrawerContent`: identidad (iniciales, nombre, correo, rol / visitante con **INICIAR SESIÓN**), sección Gestión de contenido con **Nueva ficha** (`<Can permission="species:create">`) y **Publicar anuncio** (`<Can permission="announcements:publish">`), sección Humedal (**Componentes del humedal** → `/wetland`; el resto, Próximamente) y sección Administración con `<Can permission="admins:read">` |
+| `components/app-drawer-content.tsx` | `AppDrawerContent`: identidad (iniciales, nombre, correo, rol / visitante con **INICIAR SESIÓN**), sección Gestión de contenido con **Nueva ficha** (`<Can permission="species:create">`) y **Publicar anuncio** (`<Can permission="announcements:publish">`), sección Humedal (**Componentes del humedal** → `/wetland`, **Anuncios** → `/announcements`; **Descargas sin conexión** queda en Próximamente) y sección Administración con `<Can permission="admins:read">` |
 | `components/drawer-item.tsx` | `DrawerItem` (fila con ícono; los destinos sin ruta se marcan *Próximamente* y no son presionables) y `DrawerSection` |
-| `components/app-tabs-layout.tsx` | `AppTabsLayout`: `Tabs` con `TabBar`, `AppHeader` (abre el menú con `DrawerActions.openDrawer()`) y las 4 pestañas |
+| `components/app-tabs-layout.tsx` | `AppTabsLayout`: `Tabs` con `TabBar`, `AppHeader` (abre el menú con `DrawerActions.openDrawer()`), las 4 pestañas y rutas ocultas de anuncios y administración |
 | `constants.ts` | `NAVIGATION_LABELS`: etiquetas de pestañas y textos del menú |
 | `index.ts` | Exporta los layouts y las etiquetas del shell |
 
@@ -28,6 +28,6 @@ tiene esquinas derechas de 24 px, igual que la barra inferior.
 
 | Ítem | HU | Se enlaza cuando… |
 |---|---|---|
-| Componentes del humedal | HU-14 | exista `features/content` |
-| Anuncios | HU-17 | exista `features/content` |
+| Componentes del humedal | HU-14 | ✅ `/wetland`, visitante y todos los roles |
+| Anuncios | HU-17 | ✅ `/announcements`, visitante y todos los roles |
 | Descargas sin conexión | HU-21 | se implemente HE-08 |
