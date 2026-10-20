@@ -19,6 +19,9 @@ export type RequestOptions = {
   authenticated?: boolean;
   timeoutMs?: number;
   signal?: AbortSignal;
+  /** Lectura binaria para archivos; los errores HTTP se siguen leyendo como JSON. */
+  responseType?: 'json' | 'arrayBuffer';
+  accept?: string;
 };
 
 function buildUrl(path: string, query: RequestOptions['query']): string {
@@ -57,9 +60,11 @@ export async function request<T>(
     authenticated = true,
     timeoutMs = APP_CONFIG.requestTimeoutMs,
     signal,
+    responseType = 'json',
+    accept = 'application/json',
   } = options;
 
-  const headers: Record<string, string> = { Accept: 'application/json' };
+  const headers: Record<string, string> = { Accept: accept };
   if (authenticated) Object.assign(headers, await getAuthorizationHeader());
   const hasJsonBody = formData === undefined && body !== undefined;
   // Con FormData no se fija Content-Type: fetch agrega el boundary del multipart.
@@ -72,24 +77,32 @@ export async function request<T>(
     controller.abort();
   }, timeoutMs);
   const abortFromCaller = () => controller.abort();
-  signal?.addEventListener('abort', abortFromCaller);
+  signal?.addEventListener('abort', abortFromCaller, { once: true });
 
   let response: Response;
+  let data: unknown;
   try {
+    if (signal?.aborted) {
+      const cancellation = new Error('Request was cancelled before it started.');
+      cancellation.name = 'AbortError';
+      throw cancellation;
+    }
     response = await fetch(buildUrl(path, query), {
       method,
       headers,
       body: formData ?? (hasJsonBody ? JSON.stringify(body) : undefined),
       signal: controller.signal,
     });
+    data =
+      response.ok && responseType === 'arrayBuffer'
+        ? await response.arrayBuffer()
+        : await readBody(response);
   } catch (cause) {
     throw new ApiError({ status: 0, kind: timedOut ? 'timeout' : 'network', path, cause });
   } finally {
     clearTimeout(timeoutId);
     signal?.removeEventListener('abort', abortFromCaller);
   }
-
-  const data = await readBody(response);
 
   if (!response.ok) {
     if (response.status === 401 && authenticated) await handleUnauthorized();
@@ -108,6 +121,8 @@ export async function request<T>(
 
 /** Cliente HTTP de la app. Las features construyen sus funciones `*.api.ts` sobre él. */
 export const apiClient = {
+  getBinary: (path: string, options?: Omit<RequestOptions, 'body' | 'formData' | 'responseType'>) =>
+    request<ArrayBuffer>('GET', path, { ...options, responseType: 'arrayBuffer' }),
   get: <T>(path: string, options?: Omit<RequestOptions, 'body' | 'formData'>) =>
     request<T>('GET', path, options),
   post: <T>(path: string, options?: RequestOptions) => request<T>('POST', path, options),

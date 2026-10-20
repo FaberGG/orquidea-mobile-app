@@ -10,6 +10,7 @@ const EXPECTED: Record<Permission, readonly Role[]> = {
   'species:create': ['admin', 'superadmin'],
   'species:update': ['admin', 'superadmin'],
   'species:delete': ['admin', 'superadmin'],
+  'species:download-qr': ['admin', 'superadmin'],
   'admins:read': ['superadmin'],
   'admins:create': ['superadmin'],
   'admins:update': ['superadmin'],

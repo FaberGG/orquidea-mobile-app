@@ -32,5 +32,7 @@ se reemplazan con uno nuevo.
 | [0011](0011-seleccion-de-fotos-expo-image-picker.md) | Selección de fotos con expo-image-picker | Aceptado |
 | [0012](0012-subida-de-fotos-con-expo-file-system.md) | Subida de fotos con expo-file-system | Aceptado |
 | [0013](0013-ubicacion-con-expo-location.md) | Lugar del avistamiento con expo-location | Aceptado |
+| [0015](0015-escaneo-qr-y-conectividad.md) | Escaneo QR de fichas y conectividad | Aceptado |
+| [0016](0016-exportar-qr-desde-la-app.md) | Obtener y compartir el PNG QR desde el detalle administrativo | Aceptado |
 
 Los ADR *Propuestos* se aceptan (o se modifican) al ejecutar la tarea del Sprint 1 que instala la dependencia.

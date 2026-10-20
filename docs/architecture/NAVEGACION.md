@@ -4,7 +4,7 @@ La navegación usa **Expo Router** (rutas basadas en archivos dentro de `src/app
 **rutas protegidas** (`Stack.Protected` con la prop `guard`, disponible desde SDK 53).
 Referencia: <https://docs.expo.dev/router/advanced/authentication/>
 
-## 1. Árbol de rutas (Sprint 1)
+## 1. Árbol de rutas
 
 ```
 src/app/
@@ -26,6 +26,7 @@ src/app/
 ├── sightings/
 │   ├── new.tsx                     /sightings/new    HU-18 · guard: can('sightings:create') → solo usuario registrado
 │   └── photo.tsx                   /sightings/photo  Foto de un reporte con zoom (todos) · modal transparente
+├── qr.tsx                           /qr          Escáner QR público de fichas (HE-04, HU-11)
 │
 ├── (auth)/                         guard: SIN sesión
 │   ├── _layout.tsx
@@ -51,7 +52,9 @@ src/app/
 |---|---|---|
 | Barra inferior | Inicio · Comunidad · Mapas · Usuario | Todos los roles (las pestañas no cambian con el rol) |
 | Encabezado de las pestañas | Botón de menú (abre el menú lateral); acción opcional a la derecha (p. ej. buscar en Inicio) | Todos |
+| Inicio | Acción **Escanear QR** junto a Crear ficha | Todos |
 | Menú lateral: identidad | Usuario: iniciales, nombre, correo y rol (lleva a `/account`). Visitante: botón **INICIAR SESIÓN** | Todos |
+| Menú lateral: Gestión de contenido | **Nueva ficha** y **Publicar anuncio** según permisos; **Escanear QR** para todos | Según acción |
 | Menú lateral: Humedal | Componentes del humedal (HU-14), Anuncios (HU-17), Descargas sin conexión (HU-21) — *Próximamente* | Todos |
 | Menú lateral: Administración | Gestionar cuentas abre `/admins`; creación HU-4 y gestión HU-5 | `<Can permission="admins:read">` |
 
@@ -66,6 +69,7 @@ Los destinos del menú marcados *Próximamente* se enlazan cuando exista su ruta
 // src/app/_layout.tsx — esquema ilustrativo, no definitivo
 <Stack>
   <Stack.Screen name="(drawer)" />
+  <Stack.Screen name="qr" />
   <Stack.Screen name="species/[id]" />
 
   <Stack.Protected guard={!isAuthenticated}>
@@ -91,6 +95,8 @@ permanece visible para evitar parpadeos entre estados de visitante y logueado.
 | Contraseña restablecida (HU-1.1) | Redirige a `/login` |
 | Token vencido (`401` en una petición autenticada) | Se borra el token y la sesión pasa a visitante; los guards redirigen |
 | Cerrar sesión (HU-3) | Se limpia sesión y caché; se va a `/` como visitante |
+| Abrir escáner desde Inicio o el menú (HU-11) | Navega a `/qr` sin iniciar sesión; al validar un código consulta y abre `/species/:id` |
+| Cerrar escáner sin ficha | Vuelve a la pantalla anterior; si se abrió como ruta inicial, vuelve a `/` |
 | Visitante abre `/species/new` por deep link | El guard lo impide y redirige a la ruta disponible |
 | Visitante toca el botón de reportar en Comunidad | Aviso de que debe iniciar sesión → `/login` |
 | Reporte enviado (HU-18 CA1) | El formulario muestra la confirmación y vuelve a Comunidad |
@@ -106,3 +112,4 @@ permanece visible para evitar parpadeos entre estados de visitante y logueado.
   export { LoginScreen as default } from '@/features/auth';
   ```
 - Cualquier cambio en el árbol de rutas debe reflejarse en este documento.
+- `/qr` es una pantalla interna; el payload QR no promete abrir la app desde un lector externo ni con la app cerrada.

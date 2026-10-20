@@ -15,6 +15,6 @@ export function useSpeciesList(category: CategoryFilter) {
 export function useSpecies(id: string) {
   return useQuery({
     queryKey: speciesKeys.detail(id),
-    queryFn: () => getSpecies(id),
+    queryFn: ({ signal }) => getSpecies(id, { signal }),
   });
 }

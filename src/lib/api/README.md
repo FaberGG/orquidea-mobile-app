@@ -26,3 +26,7 @@ sobre este cliente; ningún otro lugar usa `fetch` directamente.
 - `ApiError.serverMessage` es el `mensaje` del servidor (puede faltar); `ApiError.message` es técnico y nunca se
   muestra al usuario.
 - Nunca registrar en consola encabezados de autorización ni cuerpos con contraseñas.
+
+`apiClient.getBinary(path, { accept: 'image/png', signal })` descarga un `ArrayBuffer`. Usa los mismos
+encabezados Bearer, timeout (incluida la lectura de bytes) e interceptores 401/403 que JSON. Las
+respuestas HTTP fallidas se leen como JSON para conservar `mensaje`; no se guardan como imágenes.

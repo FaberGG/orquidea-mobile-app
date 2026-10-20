@@ -14,22 +14,24 @@ import { useTheme } from '@/hooks/use-theme';
 import { isApiError } from '@/lib/api';
 import { Can } from '@/permissions';
 
-import { CONSERVATION_STATUSES, SPECIES_LABELS } from '../constants';
+import { CONSERVATION_STATUSES, SPECIES_LABELS, SPECIES_QR_LABELS } from '../constants';
 import { useSpecies } from '../hooks';
 import { type Species } from '../types';
 import { ConservationBadge } from './conservation';
+import { SpeciesQrExport } from './species-qr-export';
 
 const HERO_HEIGHT = 376;
 
 export type SpeciesDetailScreenProps = {
   id: string;
+  source?: string;
 };
 
 /**
  * Detalle de una ficha (Figma: "Detalle ficha"). Es la misma pantalla para todos los roles: las
  * acciones de edición y eliminación aparecen solo con su permiso (`<Can>`, ROLES-Y-PERMISOS §3).
  */
-export function SpeciesDetailScreen({ id }: SpeciesDetailScreenProps) {
+export function SpeciesDetailScreen({ id, source }: SpeciesDetailScreenProps) {
   const { data, isPending, isError, error, refetch } = useSpecies(id);
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -46,11 +48,22 @@ export function SpeciesDetailScreen({ id }: SpeciesDetailScreenProps) {
 
   if (isError) {
     const notFound = isApiError(error) && error.status === 404;
+    const offline = isApiError(error) && error.kind === 'network';
     return (
       <ThemedView style={[styles.flex, { paddingTop: insets.top }]}>
         <EmptyState
           icon="wetland"
-          title={notFound ? SPECIES_LABELS.notFound : SPECIES_LABELS.loadError}>
+          title={
+            notFound && source === 'qr'
+              ? SPECIES_QR_LABELS.notFound
+              : offline && source === 'qr'
+                ? SPECIES_QR_LABELS.offline
+                : source === 'qr'
+                  ? SPECIES_QR_LABELS.loadError
+                  : notFound
+                    ? SPECIES_LABELS.notFound
+                    : SPECIES_LABELS.loadError
+          }>
           <Button label={SPECIES_LABELS.back} onPress={() => router.back()} variant="link" />
           {!notFound && <Button label={SPECIES_LABELS.retry} onPress={() => void refetch()} />}
         </EmptyState>
@@ -140,6 +153,8 @@ function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTo
               {species.wetlandRole || SPECIES_LABELS.noData}
             </ThemedText>
           </Section>
+
+          <SpeciesQrExport id={species.id} name={species.vernacularName} />
 
           <Can permission="species:update">
             <Button

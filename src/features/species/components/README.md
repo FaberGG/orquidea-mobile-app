@@ -6,7 +6,9 @@
 |---|---|---|---|
 | `SpeciesListScreen` | Chips de categoría + listado de `SpeciesCard`; estados de carga, error y vacío | HU-10 | ✅ |
 | `CreateSpeciesButton` | Botón **+** del encabezado del listado (lo ven admin y superadmin) | HU-7 | ✅ |
+| `ScanSpeciesQrButton` / `SpeciesQrScannerScreen` | Entrada universal desde Inicio y lector con permisos contextuales, validación y navegación a detalle | HU-11 | En implementación; pendiente probar dispositivo |
 | `SpeciesDetailScreen` | Hero con foto, insignia UICN, taxonomía, alimentación, rol en el humedal (texto) y acciones con `<Can>` | HU-10, HU-8, HU-9 | ✅ (eliminar deshabilitado) |
+| `SpeciesQrExport` | Panel administrativo al final de la ficha: obtener PNG, previsualizar y abrir el menú nativo para guardar/compartir | HU-11 | Pendiente prueba física |
 | `SpeciesCreateScreen` | Formulario de alta; vuelve al listado al publicar | HU-7 | ✅ |
 | `SpeciesEditScreen` | Carga la ficha en el formulario y guarda los cambios | HU-8 | ✅ |
 | `SpeciesForm` | Formulario compartido: foto, identificación, taxonomía, ecología y estado de conservación | HU-7, HU-8 | ✅ |

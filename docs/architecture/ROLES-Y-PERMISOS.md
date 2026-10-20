@@ -55,6 +55,7 @@ Los permisos se nombran `recurso:acción` en inglés.
 | `species:create` | Crear ficha | HU-7 | — | — | ✔ | ✔ |
 | `species:update` | Editar ficha | HU-8 | — | — | ✔ | ✔ |
 | `species:delete` | Eliminar ficha | HU-9 | — | — | ✔ | ✔ |
+| `species:download-qr` | Ver, guardar o compartir el QR PNG de la ficha | HU-11 | — | — | ✔ | ✔ |
 | `admins:read` | Ver listado de administradores | HU-5 | — | — | — | ✔ |
 | `admins:create` | Crear administrador | HU-4 | — | — | — | ✔ |
 | `admins:update` | Editar / revocar administrador | HU-5 | — | — | — | ✔ |

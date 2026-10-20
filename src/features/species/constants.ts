@@ -24,6 +24,58 @@ export const SPECIES_LABELS = {
   noData: 'Sin información',
 } as const;
 
+/** Textos de escaneo y acceso a fichas por QR (HU-11). */
+export const SPECIES_QR_LABELS = {
+  title: 'Escanear código QR',
+  instruction: 'Enfoca el código de una especie para consultar su ficha.',
+  permissionChecking: 'Comprobando el permiso de cámara…',
+  loading: 'Buscando ficha…',
+  cameraStarting: 'Iniciando cámara…',
+  invalidQr: 'Este código no está asociado a ninguna ficha registrada.',
+  notFound: 'Este código no está asociado a ninguna ficha registrada.',
+  offline: 'Conéctate a internet para acceder a esta ficha.',
+  loadError: 'No pudimos cargar la ficha. Inténtalo de nuevo.',
+  permissionTitle: 'Se necesita acceso a la cámara',
+  permissionDescription: 'Usaremos la cámara únicamente para leer el código QR de la ficha.',
+  permissionBlocked:
+    'El acceso a la cámara está desactivado. Actívalo en la configuración del dispositivo para escanear códigos QR.',
+  cameraError: 'No pudimos iniciar la cámara. Revisa los permisos e inténtalo de nuevo.',
+  settingsError:
+    'No pudimos abrir los ajustes. Activa el permiso de cámara desde los ajustes del dispositivo.',
+  allowCamera: 'PERMITIR CÁMARA',
+  openSettings: 'ABRIR CONFIGURACIÓN',
+  retry: 'REINTENTAR',
+  scanAgain: 'VOLVER A ESCANEAR',
+  flashlightOn: 'Encender linterna',
+  flashlightOff: 'Apagar linterna',
+  close: 'Cerrar escáner',
+  back: 'Volver',
+} as const;
+export const SPECIES_QR_TIMEOUT_MS = 10_000;
+
+/** Gestión administrativa del PNG emitido por el backend. */
+export const SPECIES_QR_EXPORT_LABELS = {
+  title: 'Código QR de la ficha',
+  description:
+    'Obtén el QR de esta ficha para imprimirlo o compartirlo. Los visitantes podrán leerlo desde el escáner de Terravia.',
+  generate: 'VER CÓDIGO QR',
+  loading: 'Preparando código QR…',
+  share: 'GUARDAR O COMPARTIR QR',
+  sharing: 'Abriendo opciones…',
+  shareTitle: 'Guardar o compartir el QR de la ficha',
+  preview: 'Código QR de',
+  exportError: 'No pudimos obtener el código QR. Revisa tu conexión e inténtalo de nuevo.',
+  notFound: 'Esta ficha ya no está disponible. Vuelve al inicio para actualizar el listado.',
+  signIn: 'Tu sesión venció. Inicia sesión de nuevo para obtener el QR.',
+  forbidden: 'No tienes permisos para obtener el QR de esta ficha.',
+  shareError: 'No pudimos abrir las opciones para compartir. Inténtalo de nuevo.',
+  shareUnavailable: 'Este dispositivo no permite compartir archivos desde la aplicación.',
+} as const;
+export const speciesQrKeys = {
+  resolve: (sessionId: string, attempt: number, speciesId: string) =>
+    ['qr', 'resolve', sessionId, attempt, speciesId] as const,
+};
+
 /** Chips de categoría. `apiValue` es el valor de `categoria` en la API; `Todos` no filtra. */
 export const SPECIES_CATEGORY_FILTERS = [
   { id: 'all', label: 'Todos', icon: 'categoryAll' },

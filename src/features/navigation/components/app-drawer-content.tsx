@@ -113,7 +113,12 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
         <DrawerItem
           icon="wetland"
           label={NAVIGATION_LABELS.wetlandComponents}
-          onPress={() => goTo('/wetland')}
+          onPress={() => goTo('/wetland' as Href)}
+        />
+        <DrawerItem
+          icon="camera"
+          label={NAVIGATION_LABELS.scanSpeciesQr}
+          onPress={() => goTo('/qr')}
         />
         <DrawerItem icon="announcements" label={NAVIGATION_LABELS.announcements} isComingSoon />
         <DrawerItem icon="offline" label={NAVIGATION_LABELS.offlineDownloads} isComingSoon />

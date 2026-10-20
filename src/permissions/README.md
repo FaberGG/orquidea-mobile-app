@@ -34,3 +34,6 @@ const canCreate = usePermission('species:create');
 - `superadmin` hereda todo lo de `admin` (HU-6); `admin` hereda de `user`; `user` de `visitor`.
 - Agregar un permiso implica actualizar la matriz, sus pruebas y el documento de roles en el mismo PR.
 - Esto es experiencia de usuario, no seguridad: la API valida siempre.
+
+HU-11 añade `species:download-qr` para administrador y superadministrador. La consulta de fichas y el
+lector QR continúan públicos; ver/compartir el PNG requiere este permiso y autorización del backend.

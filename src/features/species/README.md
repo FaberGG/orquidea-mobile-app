@@ -1,8 +1,9 @@
-# src/features/species/ — Fichas taxonómicas (HE-03)
+# src/features/species/ — Fichas taxonómicas (HE-03, HU-11)
 
 **Responsabilidad:** consulta pública de la biodiversidad del humedal (listado y detalle) y, para
 administradores, su edición y eliminación. Es el ejemplo principal de **una misma interfaz con capacidades
-por rol**. Diseño: Figma, HE-3 → "Listar fichas" y "Detalle ficha".
+por rol**. También resuelve el escaneo público de HU-11 reutilizando el detalle existente. Diseño: Figma,
+HE-3 → "Listar fichas" y "Detalle ficha".
 
 ## Historias
 
@@ -12,6 +13,8 @@ por rol**. Diseño: Figma, HE-3 → "Listar fichas" y "Detalle ficha".
 | HU-7 | Crear ficha | Admin+ | ✅ Formulario de `(admin)/species/new` (Figma "Crear ficha") |
 | HU-8 | Editar ficha | Admin+ | ✅ Formulario de `(admin)/species/[id]/edit` (Figma "Editar ficha") |
 | HU-9 | Eliminar ficha | Admin+ | Botón visible con `<Can>`; deshabilitado: la API no tiene `DELETE` (docs/api B1) |
+| HU-11 | Escanear QR para consultar la ficha | Todos | Escáner interno implementado; pruebas físicas pendientes |
+| HU-11 (gestión QR) | Obtener el PNG de una ficha y guardarlo/compartirlo desde el detalle | Admin y superadmin | Implementado localmente; validación física pendiente |
 
 ## Modelo
 
@@ -36,8 +39,8 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 | Carpeta / archivo | Contenido |
 |---|---|
 | [`api/`](api/README.md) | `listSpecies`, `getSpecies`, mapeo DTO → `Species` |
-| [`components/`](components/README.md) | Listado, detalle, tarjeta, chips y estados de conservación |
-| [`hooks/`](hooks/README.md) | `useSpeciesList`, `useSpecies` |
+| [`components/`](components/README.md) | Listado, detalle, lector QR, tarjeta, chips y estados de conservación |
+| [`hooks/`](hooks/README.md) | `useSpeciesList`, `useSpecies`, resolución aislada de QR |
 | [`schemas/`](schemas/README.md) | Validación de `TaxonDto` |
 | [`types/`](types/README.md) | `Species`, `SpeciesCategory`, `ConservationStatus` |
 | `constants.ts` | `SPECIES_LABELS`, `SPECIES_FORM_LABELS`, `SPECIES_MESSAGES`, filtros, estados y claves de caché |
@@ -61,4 +64,14 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 | Ficha inexistente (404) | `Esta ficha no existe o ya no está disponible.` (local) |
 | Error de carga | `No pudimos cargar las fichas. Revisa tu conexión e inténtalo de nuevo.` (local) |
 
-> HE-04 (QR) y HE-08 (offline) reutilizarán `getSpecies` y la caché de esta feature.
+> HU-11 reutiliza `getSpecies` y la caché de detalle. El almacenamiento de fichas e imágenes offline
+> sigue fuera de alcance y corresponde a HE-08/HU-21.
+# Fichas taxonómicas
+
+Feature de listado, detalle y administración de fichas taxonómicas. El flujo HU-11 vive en
+`components/species-qr-scanner-screen.tsx`: solicita permiso de cámara en contexto, procesa solo QR,
+valida el esquema `orquideamobileapp://species/{uuid}` y abre el detalle público ya existente. El
+parser del contrato QR se mantiene en `utils/parse-species-qr.ts`, con pruebas unitarias junto a él.
+
+El acceso al escáner se expone desde el menú lateral para visitantes y usuarios autenticados. HU-21
+sin conexión sigue fuera de alcance: sin red, la app informa que se requiere conexión para consultar.
