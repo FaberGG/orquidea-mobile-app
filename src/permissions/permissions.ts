@@ -8,6 +8,7 @@ export type Permission =
   | 'species:create'
   | 'species:update'
   | 'species:delete'
+  | 'species:download-qr'
   | 'admins:read'
   | 'admins:create'
   | 'admins:update'
@@ -31,6 +32,7 @@ const OWN_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'announcements:publish',
     'content:manage',
     'sightings:review',
+    'species:download-qr',
   ],
   superadmin: ['admins:read', 'admins:create', 'admins:update'],
 };

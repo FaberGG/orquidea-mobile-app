@@ -33,6 +33,7 @@ function RootNavigator() {
         name="sightings/photo"
         options={{ presentation: 'transparentModal', animation: 'fade' }}
       />
+      <Stack.Screen name="qr" options={{ headerShown: false }} />
 
       {/* Login, registro y recuperación solo sin sesión: al iniciar sesión se retiran de la pila. */}
       <Stack.Protected guard={!isAuthenticated}>

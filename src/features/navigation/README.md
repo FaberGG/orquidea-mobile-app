@@ -8,7 +8,7 @@ un dominio propio: reúne las pantallas de otras features (solo por su `index.ts
 | Archivo | Contenido |
 |---|---|
 | `components/app-drawer-layout.tsx` | `AppDrawerLayout`: `Drawer` de `expo-router/drawer` (300 px, tipo *front*, velo `scrim`) |
-| `components/app-drawer-content.tsx` | `AppDrawerContent`: identidad (iniciales, nombre, correo, rol / visitante con **INICIAR SESIÓN**), sección Gestión de contenido con **Nueva ficha** (`<Can permission="species:create">`) y **Publicar anuncio** (`<Can permission="announcements:publish">`), sección Humedal (**Componentes del humedal** → `/wetland`, **Anuncios** → `/announcements`; **Descargas sin conexión** queda en Próximamente) y sección Administración con `<Can permission="admins:read">` |
+| `components/app-drawer-content.tsx` | `AppDrawerContent`: identidad (iniciales, nombre, correo, rol / visitante con **INICIAR SESIÓN**), sección Gestión de contenido con **Nueva ficha** (`<Can permission="species:create">`) y **Publicar anuncio** (`<Can permission="announcements:publish">`), acceso público **Escanear QR**, sección Humedal (**Componentes del humedal** → `/wetland`, **Anuncios** → `/announcements`; **Descargas sin conexión** queda en Próximamente) y sección Administración con `<Can permission="admins:read">` |
 | `components/drawer-item.tsx` | `DrawerItem` (fila con ícono; los destinos sin ruta se marcan *Próximamente* y no son presionables) y `DrawerSection` |
 | `components/app-tabs-layout.tsx` | `AppTabsLayout`: `Tabs` con `TabBar`, `AppHeader` (abre el menú con `DrawerActions.openDrawer()`), las 4 pestañas y rutas ocultas de anuncios y administración |
 | `constants.ts` | `NAVIGATION_LABELS`: etiquetas de pestañas y textos del menú |
@@ -16,6 +16,9 @@ un dominio propio: reúne las pantallas de otras features (solo por su `index.ts
 
 `Gestionar cuentas` abre `/admins` solo con `admins:read`. La ruta de HE-2 se monta como pestaña oculta:
 permanece el mismo menú lateral y la misma barra inferior de cuatro destinos.
+
+`Escanear QR` está disponible desde el menú y el encabezado de Inicio para visitantes y usuarios con sesión;
+abre la ruta raíz `/qr`, fuera de los guards de autenticación y administración.
 
 ## Diseño del menú lateral
 

@@ -19,6 +19,7 @@ export const NAVIGATION_LABELS = {
   wetlandComponents: 'Componentes del humedal',
   announcements: 'Anuncios',
   offlineDownloads: 'Descargas sin conexión',
+  scanSpeciesQr: 'Escanear QR de especie',
   sectionAdmin: 'Administración',
   manageAccounts: 'Gestionar cuentas',
   comingSoon: 'Próximamente',

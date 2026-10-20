@@ -14,7 +14,15 @@ DTO ⇄ `Species`. Contrato: [`docs/api/`](../../../../docs/api/README.md).
 Listado y detalle son públicos: se llaman con `authenticated: false`. Un `404` en el detalle significa que la
 ficha no existe.
 
+`getSpecies` admite opcionalmente `signal` y `timeoutMs` para cancelar una lectura al abandonar el
+flujo QR y limitarla a 10 segundos. El contrato de listado y el comportamiento actual del detalle se
+mantienen sin cambios para sus llamadores.
+
 `species.mappers.ts` valida la respuesta con `schemas/species-dto.schema.ts` y la traduce a `Species`.
+
+`getSpeciesQr(id, signal?)` obtiene `GET /api/fichas-taxonomicas/{id}/qr` autenticado, solicita PNG y
+comprueba la firma binaria completa antes de devolver los bytes. Solo administrador/superadministrador
+pueden descargarlo. La URL de la API y el token nunca forman parte del contenido QR ni del archivo.
 
 ## Traducción de campos
 

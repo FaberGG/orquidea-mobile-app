@@ -42,14 +42,33 @@ export async function listSpecies(category: CategoryFilter): Promise<Species[]> 
 }
 
 /** HU-10 (detalle): `GET /api/fichas-taxonomicas/{id}`. `404` = la ficha no existe. */
-export async function getSpecies(id: string): Promise<Species> {
+export async function getSpecies(
+  id: string,
+  options: { signal?: AbortSignal; timeoutMs?: number } = {},
+): Promise<Species> {
   const response = await apiClient.get<unknown>(
     `/api/fichas-taxonomicas/${encodeURIComponent(id)}`,
     {
       authenticated: false,
+      signal: options.signal,
+      timeoutMs: options.timeoutMs,
     },
   );
   return toSpecies(response);
+}
+
+/** HU-11: descarga el PNG original; el backend exige permisos administrativos. */
+export async function getSpeciesQr(id: string, signal?: AbortSignal): Promise<Uint8Array> {
+  const data = await apiClient.getBinary(`${SPECIES_PATH}/${encodeURIComponent(id)}/qr`, {
+    accept: 'image/png, application/json',
+    signal,
+  });
+  const bytes = new Uint8Array(data);
+  const signature = [137, 80, 78, 71, 13, 10, 26, 10];
+  if (!signature.every((byte, index) => bytes[index] === byte)) {
+    throw new Error('La respuesta de descarga no es una imagen PNG.');
+  }
+  return bytes;
 }
 
 /** HU-7: `POST /api/fichas-taxonomicas`. `409` = nombre científico duplicado; `413` = foto grande. */

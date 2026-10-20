@@ -1,11 +1,12 @@
 import { DrawerActions } from 'expo-router/react-navigation';
 import { Tabs } from 'expo-router/tabs';
+import { View } from 'react-native';
 
 import { AppHeader } from '@/components/layout/app-header';
 import { TAB_ICON_SIZE, TabBar } from '@/components/layout/tab-bar';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { AnnouncementsButton } from '@/features/sightings';
-import { CreateSpeciesButton } from '@/features/species';
+import { CreateSpeciesButton, ScanSpeciesQrButton } from '@/features/species';
 
 import { NAVIGATION_LABELS } from '../constants';
 
@@ -42,7 +43,12 @@ export function AppTabsLayout() {
             <AppHeader
               menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
               onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              right={<CreateSpeciesButton />}
+              right={
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <ScanSpeciesQrButton />
+                  <CreateSpeciesButton />
+                </View>
+              }
             />
           ),
         }}

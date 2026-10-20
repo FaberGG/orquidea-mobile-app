@@ -10,8 +10,7 @@ pantallas, componentes propios, hooks de datos, llamadas a la API, validaciones 
 | [`auth/`](auth/README.md) | HE-01 | 1 | Login, registro, recuperación de contraseña, sesión, cierre de sesión |
 | [`navigation/`](navigation/README.md) | Shell | 1 | Menú lateral y pestañas inferiores (compone las demás features) |
 | [`admins/`](admins/README.md) | HE-02 | 1 | Crear, editar y revocar administradores |
-| [`species/`](species/README.md) | HE-03 | 1 | Fichas taxonómicas: listado, detalle, crear, editar, eliminar |
-| `qr/` | HE-04 | futuro | Escaneo de QR → ficha |
+| [`species/`](species/README.md) | HE-03, HE-04 | 1–2 | Fichas taxonómicas y flujo HU-11 de escaneo QR → detalle |
 | [`map/`](map/README.md) | HE-05 | futuro (pestaña creada) | Mapa del sendero y estaciones |
 | [`content/`](content/README.md) | HE-06 | 2 | Anuncios (HU-16) y componentes del humedal (HU-14, HU-15) |
 | [`sightings/`](sightings/README.md) | HE-07 | futuro (pestaña creada) | Reportes ciudadanos y moderación (pestaña Comunidad) |

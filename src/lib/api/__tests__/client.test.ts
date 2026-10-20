@@ -153,4 +153,86 @@ describe('apiClient', () => {
 
     await expect(apiClient.get('/api/x')).rejects.toMatchObject({ status: 0, kind: 'timeout' });
   });
+
+  it('no inicia fetch si la señal ya fue cancelada', async () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    await expect(apiClient.get('/api/x', { signal: controller.signal })).rejects.toMatchObject({
+      status: 0,
+      kind: 'network',
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('mantiene el timeout activo mientras lee el cuerpo', async () => {
+    fetchMock.mockImplementation((_url: string, init: RequestInit) =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        text: () =>
+          new Promise((_resolve, reject) => {
+            init.signal?.addEventListener('abort', () => reject(new Error('body aborted')));
+          }),
+      }),
+    );
+
+    await expect(apiClient.get('/api/x', { timeoutMs: 20 })).rejects.toMatchObject({
+      status: 0,
+      kind: 'timeout',
+    });
+  });
+
+  it('descarga bytes sin decodificarlos como texto y conserva la autorización', async () => {
+    const png = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+    mockedGetToken.mockResolvedValue({ token: 'abc', expiresAt: Date.now() + 1000 });
+    fetchMock.mockResolvedValue(new Response(png));
+
+    const data = await apiClient.getBinary('/api/fichas/1/qr', { accept: 'image/png' });
+
+    expect(new Uint8Array(data)).toEqual(png);
+    expect(fetchMock.mock.calls[0][1].headers).toMatchObject({
+      Accept: 'image/png',
+      Authorization: 'Bearer abc',
+    });
+  });
+
+  it.each([401, 403])(
+    'normaliza el error %s y aplica su interceptor al descargar un PNG',
+    async (status) => {
+      const onUnauthorized = jest.fn();
+      const onForbidden = jest.fn();
+      const removeUnauthorized = setUnauthorizedHandler(onUnauthorized);
+      const removeForbidden = setForbiddenHandler(onForbidden);
+      fetchMock.mockResolvedValue(jsonResponse(status, { mensaje: 'Acceso no permitido.' }));
+
+      try {
+        await expect(apiClient.getBinary('/api/fichas/1/qr')).rejects.toMatchObject({
+          status,
+          serverMessage: 'Acceso no permitido.',
+        });
+        expect(onUnauthorized).toHaveBeenCalledTimes(status === 401 ? 1 : 0);
+        expect(onForbidden).toHaveBeenCalledTimes(status === 403 ? 1 : 0);
+      } finally {
+        removeUnauthorized();
+        removeForbidden();
+      }
+    },
+  );
+
+  it('mantiene el timeout activo durante la descarga binaria', async () => {
+    fetchMock.mockImplementation((_url: string, init: RequestInit) =>
+      Promise.resolve({
+        ok: true,
+        arrayBuffer: () =>
+          new Promise((_resolve, reject) => {
+            init.signal?.addEventListener('abort', () => reject(new Error('body aborted')));
+          }),
+      }),
+    );
+
+    await expect(apiClient.getBinary('/api/fichas/1/qr', { timeoutMs: 20 })).rejects.toMatchObject({
+      kind: 'timeout',
+    });
+  });
 });
