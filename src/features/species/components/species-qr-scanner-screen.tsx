@@ -2,6 +2,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useFocusEffect, useIsFocused, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, AppState, Linking, Pressable, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ThemedText } from '@/components/themed-text';
@@ -17,10 +18,13 @@ import { SPECIES_QR_LABELS } from '../constants';
 import { useQrResolution } from '../hooks/use-qr-resolution';
 import { parseSpeciesQr } from '../utils/parse-species-qr';
 
+const ZOOM_STEPS = 5;
+
 export function SpeciesQrScannerScreen() {
   const router = useRouter();
   const focused = useIsFocused();
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const [permission, requestPermission, refreshPermission] = useCameraPermissions();
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -29,6 +33,7 @@ export function SpeciesQrScannerScreen() {
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraKey, setCameraKey] = useState(0);
   const [torchOn, setTorchOn] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(0);
   const [pendingSpeciesId, setPendingSpeciesId] = useState<string | null>(null);
   const [appActive, setAppActive] = useState(AppState.currentState === 'active');
   const handled = useRef(false);
@@ -82,6 +87,7 @@ export function SpeciesQrScannerScreen() {
       setCameraError(false);
       setCameraReady(false);
       setTorchOn(false);
+      setZoomLevel(0);
       setPermissionNotice(null);
       if (interruptedRequestRef.current && pendingSpeciesIdRef.current) {
         setPendingSpeciesId(pendingSpeciesIdRef.current);
@@ -169,6 +175,7 @@ export function SpeciesQrScannerScreen() {
     setCameraError(false);
     setCameraReady(false);
     setTorchOn(false);
+    setZoomLevel(0);
     setCameraKey((key) => key + 1);
   };
 
@@ -215,9 +222,14 @@ export function SpeciesQrScannerScreen() {
     );
   }
 
+  const safeAreaStyle = {
+    paddingTop: insets.top + Spacing.two,
+    paddingBottom: insets.bottom + Spacing.two,
+  };
+
   if (!permission.granted) {
     return (
-      <ThemedView style={styles.screen}>
+      <ThemedView style={[styles.screen, safeAreaStyle]}>
         <EmptyState icon="wetland" title={SPECIES_QR_LABELS.permissionTitle}>
           <ThemedText type="small" themeColor="textSecondary" style={styles.centerText}>
             {permission.canAskAgain
@@ -245,8 +257,13 @@ export function SpeciesQrScannerScreen() {
   }
 
   return (
-    <ThemedView style={styles.screen}>
-      <ThemedText type="title" style={styles.title} accessibilityRole="header">
+    <ThemedView style={[styles.screen, safeAreaStyle]}>
+      <ThemedText
+        type="title"
+        style={styles.title}
+        accessibilityRole="header"
+        numberOfLines={1}
+        adjustsFontSizeToFit>
         {SPECIES_QR_LABELS.title}
       </ThemedText>
       <ThemedText type="small" themeColor="textSecondary" style={styles.instruction}>
@@ -258,6 +275,7 @@ export function SpeciesQrScannerScreen() {
             key={cameraKey}
             style={StyleSheet.absoluteFill}
             facing="back"
+            zoom={zoomLevel / ZOOM_STEPS}
             enableTorch={torchOn}
             barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
             onBarcodeScanned={onBarcodeScanned}
@@ -273,6 +291,61 @@ export function SpeciesQrScannerScreen() {
           <View pointerEvents="none" style={styles.scanWindow} />
         ) : null}
       </View>
+      {cameraReady && !loading && !message && !cameraError ? (
+        <View style={styles.zoomControls}>
+          <ThemedText type="captionBold" themeColor="textSecondary">
+            Zoom
+          </ThemedText>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Alejar cámara"
+            accessibilityState={{ disabled: zoomLevel === 0 }}
+            disabled={zoomLevel === 0}
+            onPress={() => setZoomLevel((level) => Math.max(0, level - 1))}
+            style={({ pressed }) => [
+              styles.zoomButton,
+              { borderColor: theme.border, backgroundColor: theme.backgroundElement },
+              pressed && styles.pressed,
+              zoomLevel === 0 && styles.disabled,
+            ]}>
+            <ThemedText type="subtitle" themeColor="textSecondary" style={styles.zoomButtonText}>
+              −
+            </ThemedText>
+          </Pressable>
+          <View
+            accessible
+            accessibilityRole="progressbar"
+            accessibilityLabel="Nivel de zoom"
+            accessibilityValue={{ min: 0, max: ZOOM_STEPS, now: zoomLevel }}
+            style={styles.zoomMeter}>
+            {Array.from({ length: ZOOM_STEPS }, (_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.zoomSegment,
+                  { backgroundColor: index < zoomLevel ? theme.primary : theme.border },
+                ]}
+              />
+            ))}
+          </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Acercar cámara"
+            accessibilityState={{ disabled: zoomLevel === ZOOM_STEPS }}
+            disabled={zoomLevel === ZOOM_STEPS}
+            onPress={() => setZoomLevel((level) => Math.min(ZOOM_STEPS, level + 1))}
+            style={({ pressed }) => [
+              styles.zoomButton,
+              { borderColor: theme.border, backgroundColor: theme.backgroundElement },
+              pressed && styles.pressed,
+              zoomLevel === ZOOM_STEPS && styles.disabled,
+            ]}>
+            <ThemedText type="subtitle" themeColor="textSecondary" style={styles.zoomButtonText}>
+              +
+            </ThemedText>
+          </Pressable>
+        </View>
+      ) : null}
       {cameraError ? (
         <View style={styles.message} accessibilityRole="alert" accessibilityLiveRegion="polite">
           <ThemedText type="small" themeColor="textLabel" style={styles.centerText}>
@@ -347,10 +420,30 @@ export function SpeciesQrScannerScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, padding: Spacing.four, gap: Spacing.three },
+  screen: { flex: 1, paddingHorizontal: Spacing.four, gap: Spacing.three },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { textAlign: 'center' },
+  title: { textAlign: 'center', fontSize: 28, lineHeight: 34 },
   instruction: { textAlign: 'center' },
+  zoomControls: {
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.two,
+  },
+  zoomButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: Radius.full,
+  },
+  zoomButtonText: { fontSize: 25, lineHeight: 30 },
+  zoomMeter: { width: 88, flexDirection: 'row', alignItems: 'center', gap: 4 },
+  zoomSegment: { flex: 1, height: 5, borderRadius: Radius.full },
+  pressed: { opacity: 0.7 },
+  disabled: { opacity: 0.35 },
   flashlight: {
     minHeight: 44,
     flexDirection: 'row',
@@ -361,7 +454,7 @@ const styles = StyleSheet.create({
   centerText: { textAlign: 'center' },
   cameraFrame: {
     flex: 1,
-    minHeight: 280,
+    minHeight: 240,
     overflow: 'hidden',
     borderRadius: Radius.card,
     backgroundColor: '#111',
