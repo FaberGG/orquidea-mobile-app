@@ -63,9 +63,10 @@ Los permisos se nombran `recurso:acción` en inglés.
 | `content:manage` | Editar el texto y las fotos de los componentes del humedal | HU-15 | — | — | ✔ | ✔ |
 | `sightings:create` | Crear un reporte de avistamiento (**no se hereda**: la API responde `403` a los administradores) | HU-18 | — | ✔ | — | — |
 | `sightings:review` | Revisar la cola de reportes y aprobarlos o rechazarlos | HU-19 | — | — | ✔ | ✔ |
+| `stations:manage` | Crear, editar y eliminar estaciones del sendero | HU-13 | — | — | ✔ | ✔ |
 
-El foro de avistamientos (HU-20) es público y no necesita permiso. Permisos previstos para sprints futuros
-(no implementar aún): `map:manage`.
+El foro de avistamientos (HU-20) y las estaciones (listado y "Ver estación", HU-13) son públicos y no
+necesitan permiso. `stations:manage` reemplaza al `map:manage` que se había previsto para HE-05.
 
 `auth:login` y `sightings:create` son **no heredables**: solo los tiene el rol que los declara.
 

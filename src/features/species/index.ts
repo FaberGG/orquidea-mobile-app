@@ -7,3 +7,6 @@ export { SpeciesListScreen } from './components/species-list-screen';
 export { SpeciesQrScannerScreen } from './components/species-qr-scanner-screen';
 export { ScanSpeciesQrButton } from './components/scan-species-qr-button';
 export { SPECIES_LABELS } from './constants';
+// Lo usan otras features (p. ej. el selector de fichas de una estación, HU-13).
+export { useSpeciesList } from './hooks';
+export { type Species } from './types';

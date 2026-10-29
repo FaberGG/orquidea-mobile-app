@@ -115,6 +115,12 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
           label={NAVIGATION_LABELS.wetlandComponents}
           onPress={() => goTo('/wetland' as Href)}
         />
+        {/* Provisional hasta que el mapa (HU-12) sea la entrada a las estaciones. */}
+        <DrawerItem
+          icon="location"
+          label={NAVIGATION_LABELS.stations}
+          onPress={() => goTo('/stations')}
+        />
         <DrawerItem
           icon="camera"
           label={NAVIGATION_LABELS.scanSpeciesQr}

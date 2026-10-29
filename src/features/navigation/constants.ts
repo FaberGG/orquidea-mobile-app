@@ -17,6 +17,7 @@ export const NAVIGATION_LABELS = {
   publishAnnouncement: 'Publicar anuncio',
   sectionWetland: 'Humedal',
   wetlandComponents: 'Componentes del humedal',
+  stations: 'Estaciones del sendero',
   announcements: 'Anuncios',
   offlineDownloads: 'Descargas sin conexión',
   scanSpeciesQr: 'Escanear QR de especie',

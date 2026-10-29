@@ -14,6 +14,8 @@ se declaran las rutas.
 | [`species/[id]/edit.tsx`](species/README.md) | `/species/:id/edit` | `SpeciesEditScreen` | HU-8 | ✅ |
 | `announcements/new.tsx` | `/announcements/new` | `PublishAnnouncementScreen` (`@/features/content`) | HU-16 | ✅ |
 | `wetland/[type]/edit.tsx` | `/wetland/:type/edit` | `EditWetlandComponentScreen` (`@/features/content`), con `content:manage` | HU-15 | ✅ |
+| `stations/new.tsx` | `/stations/new` | `StationCreateScreen` (`@/features/map`), con `stations:manage` | HU-13 | ✅ (contrato inferido) |
+| `stations/[id]/edit.tsx` | `/stations/:id/edit` | `StationEditScreen` (`@/features/map`), con `stations:manage` | HU-13 | ✅ (contrato inferido) |
 
 La HE-2 se implementa bajo [`(drawer)/(tabs)/admins/`](../(drawer)/(tabs)/admins/README.md) para conservar
 el menú y las cuatro opciones inferiores del layout compartido.

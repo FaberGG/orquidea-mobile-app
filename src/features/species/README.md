@@ -44,7 +44,7 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 | [`schemas/`](schemas/README.md) | Validación de `TaxonDto` |
 | [`types/`](types/README.md) | `Species`, `SpeciesCategory`, `ConservationStatus` |
 | `constants.ts` | `SPECIES_LABELS`, `SPECIES_FORM_LABELS`, `SPECIES_MESSAGES`, filtros, estados y claves de caché |
-| `index.ts` | Exporta `SpeciesListScreen`, `SpeciesDetailScreen` y `SPECIES_LABELS` |
+| `index.ts` | Exporta las pantallas, `SPECIES_LABELS`, `useSpeciesList` y el tipo `Species` (los usa el selector de fichas de las estaciones, HU-13) |
 
 ## Visibilidad por rol
 

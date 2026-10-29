@@ -7,6 +7,7 @@ desde el cliente.
 |---|---|
 | [`openapi.json`](openapi.json) | Especificación OpenAPI 3.1 generada por el backend (Springdoc). **No se edita a mano**: se reemplaza con cada exportación. Está excluido de Prettier |
 | [`reportes-avistamiento.md`](reportes-avistamiento.md) | Endpoints de reportes ciudadanos de avistamiento (HU-18, HU-19, HU-20), con ejemplos y errores |
+| [`estaciones.md`](estaciones.md) | **Contrato inferido** de las estaciones del sendero (HU-13, SCRUM-40/54): qué espera la app y qué cambiar si el backend lo implementa distinto |
 
 Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar la extensión *OpenAPI* de VS Code.
 

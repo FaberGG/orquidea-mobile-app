@@ -27,6 +27,9 @@ src/app/
 ├── sightings/
 │   ├── new.tsx                     /sightings/new    HU-18 · guard: can('sightings:create') → solo usuario registrado
 │   └── photo.tsx                   /sightings/photo  Foto de un reporte con zoom (todos) · modal transparente
+├── stations/
+│   ├── index.tsx                   /stations       Estaciones del sendero (todos) · provisional desde el menú lateral
+│   └── [id].tsx                    /stations/:id   "Ver estación" (todos) + Editar/ELIMINAR vía <Can> (HU-13)
 ├── qr.tsx                           /qr          Escáner QR público de fichas (HE-04, HU-11)
 │
 ├── (auth)/                         guard: SIN sesión
@@ -41,6 +44,9 @@ src/app/
     ├── species/
     │   ├── new.tsx                 /species/new         HU-7
     │   └── [id]/edit.tsx           /species/:id/edit    HU-8
+    ├── stations/
+    │   ├── new.tsx                 /stations/new        HU-13 (stations:manage)
+    │   └── [id]/edit.tsx           /stations/:id/edit   HU-13 (stations:manage)
     └── admins/                     reservado en la arquitectura; HE-2 vive actualmente bajo (drawer)/(tabs)
 ```
 
@@ -56,7 +62,7 @@ src/app/
 | Inicio | Acción **Escanear QR** junto a Crear ficha | Todos |
 | Menú lateral: identidad | Usuario: iniciales, nombre, correo y rol (lleva a `/account`). Visitante: botón **INICIAR SESIÓN** | Todos |
 | Menú lateral: Gestión de contenido | **Nueva ficha** y **Publicar anuncio** según permisos; **Escanear QR** para todos | Según acción |
-| Menú lateral: Humedal | Componentes del humedal (HU-14), Anuncios (HU-17) abre `/announcements`, Descargas sin conexión (HU-21) — *Próximamente* | Todos |
+| Menú lateral: Humedal | Componentes del humedal (HU-14), **Estaciones del sendero** (HU-13, `/stations`; provisional hasta que el mapa HU-12 sea la entrada), Anuncios (HU-17) abre `/announcements`, Descargas sin conexión (HU-21) — *Próximamente* | Todos |
 | Menú lateral: Administración | Gestionar cuentas abre `/admins`; creación HU-4 y gestión HU-5 | `<Can permission="admins:read">` |
 
 Lo que depende del rol dentro de cada pestaña se resuelve con `<Can>` en la propia pantalla
