@@ -14,7 +14,7 @@ mapa, pero el mapa del sendero (HE-05) aún no existe en la app.
   actual** del teléfono con el botón "Usar mi ubicación actual". Quien reporta suele estar en el humedal.
 - Solo se pide permiso **en primer plano** (`requestForegroundPermissionsAsync`). El texto del permiso en iOS se
   configura con el *config plugin* en `app.json`.
-- La lógica vive en `src/features/sightings/components/get-current-location.ts`; si el permiso se niega o falla
+- La lógica vive en `src/lib/location/get-current-location.ts` (la comparten avistamientos y estaciones); si el permiso se niega o falla
   el GPS, el campo queda vacío con un mensaje y el reporte se puede enviar sin lugar.
 - En el foro, las coordenadas abren la app de mapas con un enlace de Google Maps (sin SDK de mapas).
 

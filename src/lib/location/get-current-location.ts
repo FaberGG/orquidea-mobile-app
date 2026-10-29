@@ -1,14 +1,17 @@
 import * as Location from 'expo-location';
 
-import { type Coordinates } from '../types';
+/** Posición en grados decimales (WGS84), como `decimalLatitude` / `decimalLongitude` de la API. */
+export type Coordinates = {
+  latitude: number;
+  longitude: number;
+};
 
 export type GetCurrentLocationResult =
   { status: 'located'; coordinates: Coordinates } | { status: 'denied' } | { status: 'error' };
 
 /**
- * Pide permiso de ubicación (solo en primer plano) y lee la posición actual. Se usa como "lugar del
- * avistamiento": quien reporta suele estar en el humedal. El selector en un mapa queda pendiente hasta
- * que exista el mapa del sendero (HE-05).
+ * Pide permiso de ubicación (solo en primer plano) y lee la posición actual (ADR-0013). La usan el lugar
+ * de un avistamiento (HU-18) y las coordenadas de una estación (HU-13).
  */
 export async function getCurrentLocation(): Promise<GetCurrentLocationResult> {
   try {
@@ -23,7 +26,7 @@ export async function getCurrentLocation(): Promise<GetCurrentLocationResult> {
     };
   } catch (error) {
     // GPS apagado o sin señal: quien llama muestra un mensaje genérico y el campo queda vacío.
-    if (__DEV__) console.warn('[avistamientos] no se pudo obtener la ubicación', error);
+    if (__DEV__) console.warn('[ubicación] no se pudo obtener la posición actual', error);
     return { status: 'error' };
   }
 }
