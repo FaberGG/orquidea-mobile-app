@@ -1,12 +1,25 @@
 import { router } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet } from 'react-native';
 
-import { SPECIES_FORM_CONSERVATION_CODES, SPECIES_FORM_LABELS } from '../constants';
+import { EmptyState } from '@/components/feedback/empty-state';
+import { ThemedView } from '@/components/themed-view';
+import { Button } from '@/components/ui/button';
+
+import { type CreateSpeciesResult } from '../api';
+import {
+  SPECIES_FORM_CONSERVATION_CODES,
+  SPECIES_FORM_LABELS,
+  SPECIES_LABELS,
+  SPECIES_MESSAGES,
+} from '../constants';
 import { getSpeciesSaveErrorMessage, useCreateSpecies } from '../hooks';
 import { SpeciesForm } from './species-form';
 import { type SpeciesFormValues } from '../schemas/species-form.schema';
 
 export const EMPTY_SPECIES_FORM_VALUES: SpeciesFormValues = {
-  photo: null,
+  newPhotos: [],
+  removedPhotoIds: [],
   category: null,
   vernacularName: '',
   scientificName: '',
@@ -20,10 +33,33 @@ export const EMPTY_SPECIES_FORM_VALUES: SpeciesFormValues = {
 
 /**
  * HU-7: crear una ficha (Figma: "Crear ficha"). Solo se llega aquí con `species:create`, y la ruta
- * `(admin)` ya lo exige. Al publicarla, vuelve al listado.
+ * `(admin)` ya lo exige. Al publicarla, vuelve al listado. Si la ficha se creó pero alguna foto adicional
+ * no se subió, lo avisa y ofrece completarla desde Editar ficha (no se puede reintentar la creación).
  */
 export function SpeciesCreateScreen() {
   const create = useCreateSpecies();
+  const [partial, setPartial] = useState<CreateSpeciesResult | null>(null);
+
+  if (partial) {
+    const { id } = partial.species;
+    return (
+      <ThemedView style={styles.flex}>
+        <EmptyState
+          icon="imagePlus"
+          title={SPECIES_MESSAGES.photosPartiallySaved(partial.pendingPhotos.length)}>
+          <Button
+            label={SPECIES_LABELS.editButton}
+            onPress={() => router.replace({ pathname: '/species/[id]/edit', params: { id } })}
+          />
+          <Button
+            label={SPECIES_LABELS.backToList}
+            variant="link"
+            onPress={() => router.replace('/')}
+          />
+        </EmptyState>
+      </ThemedView>
+    );
+  }
 
   return (
     <SpeciesForm
@@ -31,15 +67,24 @@ export function SpeciesCreateScreen() {
       title={SPECIES_FORM_LABELS.createTitle}
       submitLabel={SPECIES_FORM_LABELS.createSubmit}
       defaultValues={EMPTY_SPECIES_FORM_VALUES}
-      existingPhotoUrl={null}
+      savedPhotos={[]}
       conservationOptions={SPECIES_FORM_CONSERVATION_CODES}
       isSubmitting={create.isPending}
       errorMessage={create.isError ? getSpeciesSaveErrorMessage(create.error) : undefined}
       onSubmit={(input) =>
         create.mutate(input, {
-          onSuccess: () => router.replace('/'),
+          onSuccess: (result) => {
+            if (result.pendingPhotos.length > 0) setPartial(result);
+            else router.replace('/');
+          },
         })
       }
     />
   );
 }
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+});

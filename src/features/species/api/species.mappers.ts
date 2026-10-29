@@ -21,8 +21,21 @@ export function toSpecies(dto: unknown): Species {
     diet: parsed.alimentacion || null,
     wetlandRole: parsed.rolEnHumedal || null,
     conservationStatus: parsed.estadoConservacion,
-    photoUrl: parsed.urlFoto || null,
+    photoUrl: parsed.fotos?.[0]?.url || parsed.urlFoto || null,
+    photos: toSpeciesPhotos(parsed.fotos, parsed.urlFoto),
   };
+}
+
+/**
+ * `fotos` (v2.0) en orden. Si la API aún no la envía, se usa `urlFoto` como única foto, sin id (no se puede
+ * quitar por separado).
+ */
+function toSpeciesPhotos(
+  photos: { id: string; url: string }[] | null | undefined,
+  principalUrl: string | null | undefined,
+): Species['photos'] {
+  if (photos) return photos.map((photo) => ({ id: photo.id, url: photo.url }));
+  return principalUrl ? [{ id: null, url: principalUrl }] : [];
 }
 
 /** Valida y traduce la lista de `GET /api/fichas-taxonomicas`. */
@@ -51,7 +64,7 @@ export function toSpeciesFields(input: SpeciesInput): Record<string, string> {
   };
 }
 
-/** `multipart/form-data` solo de texto, para editar sin cambiar la foto. */
+/** `multipart/form-data` solo de texto (`PUT` de HU-8): las fotos tienen sus propios endpoints. */
 export function toSpeciesFormData(input: SpeciesInput): FormData {
   const data = new FormData();
   for (const [name, value] of Object.entries(toSpeciesFields(input))) data.append(name, value);

@@ -1,31 +1,11 @@
 import { apiClient, uploadMultipart } from '@/lib/api';
 
 import { SPECIES_CATEGORY_FILTERS, type CategoryFilter } from '../constants';
+import { type SpeciesPhoto } from '../schemas/species-form.schema';
 import { type Species, type SpeciesInput } from '../types';
 import { toSpecies, toSpeciesFields, toSpeciesFormData, toSpeciesList } from './species.mappers';
 
 const SPECIES_PATH = '/api/fichas-taxonomicas';
-
-/** Envía la ficha: con foto por subida nativa; sin foto, como `multipart` de texto. */
-async function sendSpecies(
-  method: 'POST' | 'PUT',
-  path: string,
-  input: SpeciesInput,
-): Promise<unknown> {
-  if (input.photo) {
-    return uploadMultipart(
-      method,
-      path,
-      toSpeciesFields(input),
-      { uri: input.photo.uri, mimeType: input.photo.mimeType },
-      'foto',
-    );
-  }
-  const formData = toSpeciesFormData(input);
-  return method === 'POST'
-    ? apiClient.post<unknown>(path, { formData })
-    : apiClient.put<unknown>(path, { formData });
-}
 
 /**
  * HU-10: `GET /api/fichas-taxonomicas?categoria=`. Público (sin token) y sin paginación.
@@ -71,13 +51,94 @@ export async function getSpeciesQr(id: string, signal?: AbortSignal): Promise<Ui
   return bytes;
 }
 
-/** HU-7: `POST /api/fichas-taxonomicas`. `409` = nombre científico duplicado; `413` = foto grande. */
-export async function createSpecies(input: SpeciesInput): Promise<Species> {
-  return toSpecies(await sendSpecies('POST', SPECIES_PATH, input));
+const speciesPath = (id: string) => `${SPECIES_PATH}/${encodeURIComponent(id)}`;
+
+/** Resultado de crear: si alguna foto adicional no se subió, la ficha ya existe y quedan pendientes. */
+export type CreateSpeciesResult = {
+  species: Species;
+  /** Fotos que no se subieron (la que falló y las siguientes). Vacío si todo se guardó. */
+  pendingPhotos: SpeciesPhoto[];
+};
+
+/**
+ * HU-7 (v2.0, SCRUM-47; contrato inferido en docs/api/fichas-varias-fotos.md).
+ *
+ * `uploadMultipart` (subida nativa de Expo) envía un archivo por petición, así que la ficha se crea con la
+ * primera foto en el campo `fotos` y el resto se agrega en orden con `POST /{id}/fotos`. Si una foto
+ * adicional falla, la ficha ya existe: se devuelve con las fotos pendientes en lugar de lanzar el error, para
+ * no reintentar la creación (respondería `409` por nombre científico duplicado).
+ * `409` = nombre científico duplicado; `413` = foto grande.
+ */
+export async function createSpecies(input: SpeciesInput): Promise<CreateSpeciesResult> {
+  const [principal, ...others] = input.newPhotos;
+  if (!principal) throw new Error('Crear una ficha requiere al menos una foto.');
+
+  let species = toSpecies(
+    await uploadMultipart(
+      'POST',
+      SPECIES_PATH,
+      toSpeciesFields(input),
+      { uri: principal.uri, mimeType: principal.mimeType },
+      'fotos',
+    ),
+  );
+  for (const [index, photo] of others.entries()) {
+    try {
+      species = await addSpeciesPhoto(species.id, photo);
+    } catch {
+      return { species, pendingPhotos: others.slice(index) };
+    }
+  }
+  return { species, pendingPhotos: [] };
 }
 
-/** HU-8: `PUT /api/fichas-taxonomicas/{id}`. Sin foto nueva se conserva la actual. */
-export async function updateSpecies(id: string, input: SpeciesInput): Promise<Species> {
-  const path = `${SPECIES_PATH}/${encodeURIComponent(id)}`;
-  return toSpecies(await sendSpecies('PUT', path, input));
+/**
+ * HU-7 v2.0: `POST /api/fichas-taxonomicas/{id}/fotos` (`multipart/form-data`, campo `foto`), como en los
+ * componentes del humedal. Agrega la foto al final y devuelve la ficha. `409` = ya tiene 10 fotos.
+ */
+export async function addSpeciesPhoto(id: string, photo: SpeciesPhoto): Promise<Species> {
+  return toSpecies(
+    await uploadMultipart(
+      'POST',
+      `${speciesPath(id)}/fotos`,
+      {},
+      { uri: photo.uri, mimeType: photo.mimeType },
+      'foto',
+    ),
+  );
+}
+
+/** HU-7 v2.0: `DELETE /api/fichas-taxonomicas/{id}/fotos/{idFoto}`. `409` = es la única foto. */
+export async function deleteSpeciesPhoto(id: string, photoId: string): Promise<void> {
+  await apiClient.delete<unknown>(`${speciesPath(id)}/fotos/${encodeURIComponent(photoId)}`);
+}
+
+export type SaveSpeciesProgress = {
+  /** Una foto guardada ya se quitó en el servidor. */
+  onPhotoRemoved?: (photoId: string) => void;
+  /** Una foto nueva ya se subió. */
+  onPhotoAdded?: (photo: SpeciesPhoto) => void;
+};
+
+/**
+ * HU-8 (GUARDAR CAMBIOS). La API recibe el texto y cada foto por separado, así que se aplican en orden:
+ * texto (`PUT`, sin archivos), fotos quitadas (primero, para no chocar con el límite de 10) y fotos nuevas.
+ * Si un paso falla, los anteriores ya quedaron guardados: `progress` avisa cuáles, para no repetirlos al
+ * reintentar. Al final se vuelve a leer la ficha para mostrar su estado real.
+ */
+export async function updateSpecies(
+  id: string,
+  input: SpeciesInput,
+  progress: SaveSpeciesProgress = {},
+): Promise<Species> {
+  await apiClient.put<unknown>(speciesPath(id), { formData: toSpeciesFormData(input) });
+  for (const photoId of input.removedPhotoIds) {
+    await deleteSpeciesPhoto(id, photoId);
+    progress.onPhotoRemoved?.(photoId);
+  }
+  for (const photo of input.newPhotos) {
+    await addSpeciesPhoto(id, photo);
+    progress.onPhotoAdded?.(photo);
+  }
+  return getSpecies(id);
 }

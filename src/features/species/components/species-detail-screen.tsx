@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { type ReactNode } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -18,6 +17,7 @@ import { CONSERVATION_STATUSES, SPECIES_LABELS, SPECIES_QR_LABELS } from '../con
 import { useSpecies } from '../hooks';
 import { type Species } from '../types';
 import { ConservationBadge } from './conservation';
+import { SpeciesPhotoCarousel } from './species-photo-carousel';
 import { SpeciesQrExport } from './species-qr-export';
 
 const HERO_HEIGHT = 376;
@@ -82,18 +82,8 @@ function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTo
     <ThemedView style={styles.flex}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          {species.photoUrl ? (
-            <Image
-              source={{ uri: species.photoUrl }}
-              style={StyleSheet.absoluteFill}
-              contentFit="cover"
-            />
-          ) : (
-            <View
-              style={[StyleSheet.absoluteFill, { backgroundColor: theme.backgroundSelected }]}
-            />
-          )}
-          <View style={styles.scrim} />
+          <SpeciesPhotoCarousel photos={species.photos} name={species.vernacularName} />
+          <View style={styles.scrim} pointerEvents="none" />
 
           <Pressable
             accessibilityRole="button"
@@ -103,7 +93,7 @@ function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTo
             <Icon name="chevronLeft" size={20} color="onPrimary" />
           </Pressable>
 
-          <View style={styles.heroLabel}>
+          <View style={styles.heroLabel} pointerEvents="none">
             <ThemedText style={styles.heroName} accessibilityRole="header">
               {species.vernacularName}
             </ThemedText>
