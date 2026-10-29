@@ -5,7 +5,7 @@ DTO ⇄ `Species`. Contrato: [`docs/api/`](../../../../docs/api/README.md).
 
 | Archivo | Función | Endpoint | HU | Estado |
 |---|---|---|---|---|
-| `species.api.ts` | `listSpecies(category)` | `GET /api/fichas-taxonomicas?categoria=AVE\|PLANTA\|INSECTO` (sin `categoria` con *Todos*) | HU-10 | ✅ |
+| `species.api.ts` | `listSpecies(category)` | `GET /api/fichas-taxonomicas?categoria=AVE\|PLANTA\|INSECTO\|MAMIFERO\|REPTIL\|ANFIBIO\|HONGO` (sin `categoria` con *Todos*) | HU-10 | ✅ |
 | `species.api.ts` | `getSpecies(id)` | `GET /api/fichas-taxonomicas/{id}` | HU-10 | ✅ |
 | — | `createSpecies(input)` | `POST /api/fichas-taxonomicas` (`multipart/form-data`) | HU-7 | Pendiente |
 | — | `updateSpecies(id, input)` | `PUT /api/fichas-taxonomicas/{id}` | HU-8 | Pendiente |
@@ -28,7 +28,7 @@ pueden descargarlo. La URL de la API y el token nunca forman parte del contenido
 
 | API (`TaxonDto`) | App (`Species`) |
 |---|---|
-| `categoria: AVE \| PLANTA \| INSECTO` | `category: bird \| plant \| insect` |
+| `categoria: AVE \| PLANTA \| INSECTO \| MAMIFERO \| REPTIL \| ANFIBIO \| HONGO` | `category: bird \| plant \| insect \| mammal \| reptile \| amphibian \| fungus` |
 | `order`, `family`, `genus`, `scientificName`, `vernacularName` | Mismo nombre |
 | `alimentacion`, `rolEnHumedal` | `diet`, `wetlandRole` |
 | `estadoConservacion` (UICN: `EX`…`NE`) | `conservationStatus` (mismos códigos) |

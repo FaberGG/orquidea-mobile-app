@@ -1,8 +1,12 @@
 import { type CONSERVATION_CODES } from '../constants';
 import { type SpeciesPhoto } from '../schemas/species-form.schema';
 
-/** Categorías que la API publica hoy (`AVE`, `PLANTA`, `INSECTO`); ver docs/api §3. */
-export type SpeciesCategory = 'bird' | 'plant' | 'insect';
+/**
+ * Categorías de la API (v2.0, SCRUM-49): `AVE`, `PLANTA`, `INSECTO`, `MAMIFERO`, `REPTIL`, `ANFIBIO` y
+ * `HONGO`; ver docs/api §3.
+ */
+export type SpeciesCategory =
+  'bird' | 'plant' | 'insect' | 'mammal' | 'reptile' | 'amphibian' | 'fungus';
 
 /** Códigos UICN que acepta la API. Todos están modelados; ver `CONSERVATION_STATUSES`. */
 export type ConservationStatus = (typeof CONSERVATION_CODES)[number];

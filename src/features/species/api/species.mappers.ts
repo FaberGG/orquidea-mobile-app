@@ -1,10 +1,15 @@
+import { type SpeciesCategoryCode } from '../constants';
 import { taxonDtoSchema, taxonListDtoSchema } from '../schemas/species-dto.schema';
 import { type Species, type SpeciesCategory, type SpeciesInput } from '../types';
 
-const CATEGORY_FROM_API: Record<'AVE' | 'PLANTA' | 'INSECTO', SpeciesCategory> = {
+const CATEGORY_FROM_API: Record<SpeciesCategoryCode, SpeciesCategory> = {
   AVE: 'bird',
   PLANTA: 'plant',
   INSECTO: 'insect',
+  MAMIFERO: 'mammal',
+  REPTIL: 'reptile',
+  ANFIBIO: 'amphibian',
+  HONGO: 'fungus',
 };
 
 /** Valida y traduce un `TaxonDto` a `Species`. Lanza si la respuesta no cumple el contrato. */
@@ -30,10 +35,14 @@ export function toSpeciesList(dto: unknown): Species[] {
   return taxonListDtoSchema.parse(dto).map(toSpecies);
 }
 
-const CATEGORY_TO_API: Record<SpeciesCategory, 'AVE' | 'PLANTA' | 'INSECTO'> = {
+const CATEGORY_TO_API: Record<SpeciesCategory, SpeciesCategoryCode> = {
   bird: 'AVE',
   plant: 'PLANTA',
   insect: 'INSECTO',
+  mammal: 'MAMIFERO',
+  reptile: 'REPTIL',
+  amphibian: 'ANFIBIO',
+  fungus: 'HONGO',
 };
 
 /** Campos de texto de `TaxonRequest`, ya sin espacios sobrantes. */
