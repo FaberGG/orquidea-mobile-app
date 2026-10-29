@@ -32,7 +32,7 @@ Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar l
 | `POST /api/autenticacion/recuperar-contrasena` | — | HU-1.1 paso 1: envía código de 6 dígitos | 204 · 400 |
 | `POST /api/autenticacion/restablecer-contrasena` | — | HU-1.1 paso 2: correo + código + nueva contraseña | 204 · 400 (código incorrecto o vencido) |
 | `POST /api/autenticacion/registro` | — | HU-2 | 201 `RegisterResponse` · 400 · 409 |
-| `POST /api/administradores/registrarAdmin` | Superadmin | HU-4 | 201 `RegisterResponse` · 400 · 401 · 403 · 409 |
+| `POST /api/administradores/registrarAdmin` | Superadmin | HU-4 (`400` también por contraseña insegura, CA4 v2.0: mínimo 8 caracteres con mayúscula, minúscula y número) | 201 `RegisterResponse` · 400 · 401 · 403 · 409 |
 | `GET /api/administradores` | Superadmin | HU-5 (listado, incluye inhabilitados) | 200 `AdministratorDto[]` · 401 · 403 |
 | `PUT /api/administradores/{id}` | Superadmin | HU-5 (editar / inhabilitar con `habilitado`) | 200 `AdministratorDto` · 400 · 401 · 403 · 404 · 409 |
 | `POST /api/administradores/{id}/revocar-acceso` | Superadmin | HU-5 (revocar) | 200 `AdministratorDto` · 401 · 403 · 404 · 409 |
