@@ -2,6 +2,7 @@
 // "@/features/content".
 export {
   AnnouncementsListScreen,
+  CreateAnnouncementButton,
   EditWetlandComponentScreen,
   PublishAnnouncementScreen,
   WetlandComponentDetailScreen,

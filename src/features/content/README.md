@@ -67,6 +67,7 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 | `components/publish-announcement-screen.tsx` | Formulario con título, contenido y **PUBLICAR**; al publicar limpia el formulario y confirma |
 | `components/announcements-list-screen.tsx` | HU-17: lista con carga, vacío, error y actualización manual |
 | `components/announcement-card.tsx` | Tarjeta con título, fecha de publicación y contenido completo |
+| `components/create-announcement-button.tsx` | Botón "+" del encabezado de Anuncios que abre `/announcements/new` (Acta 17); solo con `announcements:publish` |
 | `hooks/use-create-announcement.ts` | Mutation (invalida `announcementKeys.all`) y `getPublishAnnouncementErrorMessage` |
 | `hooks/use-announcements.ts` | Query pública `announcementKeys.list()` y manejo del error de lectura |
 | `schemas/announcement-form.schema.ts` | Título y contenido obligatorios (CA2), con longitudes máximas provisionales |

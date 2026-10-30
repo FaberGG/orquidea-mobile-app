@@ -1,3 +1,4 @@
+export { CreateAnnouncementButton } from './create-announcement-button';
 export { EditWetlandComponentScreen } from './edit-wetland-component-screen';
 export { PublishAnnouncementScreen } from './publish-announcement-screen';
 export { AnnouncementsListScreen } from './announcements-list-screen';
