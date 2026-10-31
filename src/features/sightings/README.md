@@ -9,7 +9,7 @@ Diferencias con el diseño y pendientes: [`docs/sprints/he-07-pendientes.md`](..
 | HU | Descripción | Rol | Estado |
 |---|---|---|---|
 | HU-20 | Foro de avistamientos aprobados | Todos (incluido visitante) | ✅ Feed paginado con foto de borde a borde y visor con zoom |
-| HU-18 | Crear reporte | Solo usuario registrado (`sightings:create`) | ✅ `/sightings/new`; el visitante ve un aviso para iniciar sesión |
+| HU-18 | Crear reporte | Usuario registrado, administrador y superadministrador (`sightings:create`, v2.0) | ✅ `/sightings/new`; el visitante ve un aviso para iniciar sesión |
 | HU-19 | Revisar y aprobar / rechazar reportes | Admin+ (`sightings:review`) | ✅ Pestaña "Moderación" con la cola de pendientes |
 | HU-22 | Crear reporte sin conexión | Usuario registrado | Pendiente (HE-08) |
 
@@ -18,12 +18,13 @@ Diferencias con el diseño y pendientes: [`docs/sprints/he-07-pendientes.md`](..
 | Elemento de Comunidad | Visitante | Usuario | Admin | Superadmin |
 |---|:-:|:-:|:-:|:-:|
 | Foro de aprobados | ✔ | ✔ | ✔ | ✔ |
-| Botón flotante → formulario | — | ✔ | — | — |
+| Botón flotante → formulario | — | ✔ | ✔ | ✔ |
 | Botón flotante → aviso de iniciar sesión | ✔ | — | — | — |
 | Pestañas Comunidad / Moderación | — | — | ✔ | ✔ |
 
-Los administradores no crean reportes porque la API lo prohíbe (`403`); por eso `sightings:create` no se
-hereda (ver `docs/architecture/ROLES-Y-PERMISOS.md`).
+Desde HU-18 v2.0 (SCRUM-60) los administradores también crean reportes, así que `sightings:create` se
+hereda (ver `docs/architecture/ROLES-Y-PERMISOS.md`). La API debe aceptarlos (backend SCRUM-48); mientras
+no lo haga, responde `403` y el formulario muestra el mensaje de permisos.
 
 ## Archivos
 
