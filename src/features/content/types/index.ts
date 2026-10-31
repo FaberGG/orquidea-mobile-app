@@ -1,5 +1,9 @@
-export type { Announcement, AnnouncementInput } from './announcement';
-export type { AnnouncementResponseDto, CreateAnnouncementRequestDto } from './announcement.dto';
+export type { Announcement, AnnouncementInput, AnnouncementPriority } from './announcement';
+export type {
+  AnnouncementPriorityDto,
+  AnnouncementResponseDto,
+  CreateAnnouncementRequestDto,
+} from './announcement.dto';
 export type {
   NewComponentPhoto,
   WetlandComponent,

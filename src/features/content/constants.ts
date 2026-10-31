@@ -5,6 +5,9 @@
 export const CONTENT_MESSAGES = {
   // HU-16 CA2
   announcementRequiredFields: 'Debes completar el título y el contenido del anuncio.',
+  // HU-16 CA3 y HU-23 CA3: mismos textos que devuelve la API (AnnouncementRequest)
+  announcementPriorityRequired: 'Debes seleccionar la prioridad del anuncio.',
+  announcementExpirationInvalid: 'La fecha de finalización debe ser posterior a la fecha actual.',
   // HU-16 CA1 (la HU no define texto: confirmación local)
   announcementPublished: 'El anuncio se publicó correctamente.',
   // HU-17 CA2
@@ -42,6 +45,16 @@ export const CONTENT_LABELS = {
   titlePlaceholder: 'Ej.: Jornada de avistamiento de aves',
   descriptionLabel: 'Contenido',
   descriptionPlaceholder: 'Escribe el anuncio o la información educativa',
+  // HU-16 CA3
+  priorityLabel: 'Prioridad',
+  // HU-23
+  expirationLabel: 'Fecha de finalización (opcional)',
+  expirationEmpty: 'Sin fecha de finalización',
+  expirationHint:
+    'Si no eliges una fecha, el anuncio se mostrará hasta que un administrador lo oculte.',
+  expirationPick: 'Elegir fecha y hora de finalización',
+  expirationClear: 'Quitar fecha de finalización',
+  expirationDone: 'Listo',
   // HU-16 CA1 y CA2: "Clic en el botón PUBLICAR."
   publishButton: 'PUBLICAR',
   announcementsTitle: 'Anuncios',
@@ -98,10 +111,17 @@ export const wetlandComponentKeys = {
   detail: (type: string) => [...wetlandComponentKeys.all, 'detail', type] as const,
 };
 
-/** Límites de longitud del formulario de anuncios (provisionales hasta que el contrato los defina). */
+/** Opciones de prioridad en el orden en que se muestran (HU-16 CA3). */
+export const ANNOUNCEMENT_PRIORITY_OPTIONS = [
+  { id: 'high', label: 'Alta', apiValue: 'ALTA' },
+  { id: 'medium', label: 'Media', apiValue: 'MEDIA' },
+  { id: 'low', label: 'Baja', apiValue: 'BAJA' },
+] as const;
+
+/** Límites de longitud del formulario de anuncios: los mismos que valida la API (AnnouncementRequest). */
 export const ANNOUNCEMENT_LIMITS = {
-  titleMaxLength: 120,
-  descriptionMaxLength: 2000,
+  titleMaxLength: 150,
+  descriptionMaxLength: 1000,
 } as const;
 
 /** Claves de caché de la feature (HU-17 lista los anuncios con `announcementKeys.list()`). */
