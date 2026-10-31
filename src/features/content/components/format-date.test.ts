@@ -15,9 +15,15 @@ describe('formatDateTime y getDefaultExpiration', () => {
     expect(formatDateTime(new Date(2026, 10, 5, 18, 7))).toBe('05/11/2026 18:07');
   });
 
-  it('propone mañana a la misma hora, sin segundos', () => {
+  it('propone hoy, una hora más tarde, sin segundos', () => {
     expect(getDefaultExpiration(new Date(2026, 9, 30, 12, 30, 45))).toEqual(
-      new Date(2026, 9, 31, 12, 30, 0, 0),
+      new Date(2026, 9, 30, 13, 30, 0, 0),
+    );
+  });
+
+  it('cerca de la medianoche no pasa al día siguiente', () => {
+    expect(getDefaultExpiration(new Date(2026, 9, 30, 23, 20, 0))).toEqual(
+      new Date(2026, 9, 30, 23, 59, 0, 0),
     );
   });
 });
