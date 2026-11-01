@@ -4,6 +4,7 @@ export {
   AnnouncementsListScreen,
   CreateAnnouncementButton,
   EditWetlandComponentScreen,
+  ManageAnnouncementsScreen,
   PublishAnnouncementScreen,
   WetlandComponentDetailScreen,
   WetlandComponentsScreen,

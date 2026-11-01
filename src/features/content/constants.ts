@@ -8,6 +8,11 @@ export const CONTENT_MESSAGES = {
   // HU-16 CA3 y HU-23 CA3: mismos textos que devuelve la API (AnnouncementRequest)
   announcementPriorityRequired: 'Debes seleccionar la prioridad del anuncio.',
   announcementExpirationInvalid: 'La fecha de finalización debe ser posterior a la fecha actual.',
+  // HU-24: respaldos locales (la API envía su propio mensaje en 404 y 409)
+  announcementExpiredCannotShow: 'No puedes mostrar un anuncio que ya expiró.',
+  announcementNotFound: 'El anuncio no existe.',
+  announcementsManageForbidden: 'No tienes permisos para gestionar anuncios.',
+  announcementsAdminEmpty: 'Aún no hay anuncios publicados.',
   // HU-16 CA1 (la HU no define texto: confirmación local)
   announcementPublished: 'El anuncio se publicó correctamente.',
   // HU-17 CA2
@@ -57,6 +62,23 @@ export const CONTENT_LABELS = {
   expirationDone: 'Listo',
   // HU-16 CA1 y CA2: "Clic en el botón PUBLICAR."
   publishButton: 'PUBLICAR',
+  // HU-24 (vista del administrador)
+  manageTitle: 'Gestionar anuncios',
+  manageSubtitle:
+    'Oculta un anuncio para retirarlo de la sección de anuncios sin eliminarlo, o vuelve a mostrarlo.',
+  visibilityVisible: 'Visible',
+  // HU-24 CA1: "se marca como 'Oculto' en la vista del administrador"
+  visibilityHidden: 'Oculto',
+  // HU-23 CA4: "se marca como 'Expirado' en la vista del administrador"
+  visibilityExpired: 'Expirado',
+  priorityPrefix: 'Prioridad',
+  expiresPrefix: 'Vence el',
+  expiredPrefix: 'Venció el',
+  noExpiration: 'Sin fecha de finalización',
+  // HU-24 CA1 y CA2: "clic OCULTAR" / "clic MOSTRAR"
+  hideButton: 'OCULTAR',
+  showButton: 'MOSTRAR',
+  manageRetry: 'REINTENTAR',
   announcementsTitle: 'Anuncios',
   announcementsRetry: 'REINTENTAR',
   announcementsRefreshButton: 'ACTUALIZAR',
@@ -128,4 +150,6 @@ export const ANNOUNCEMENT_LIMITS = {
 export const announcementKeys = {
   all: ['announcements'] as const,
   list: () => [...announcementKeys.all, 'list'] as const,
+  /** HU-24: todos los anuncios, para el administrador. */
+  admin: () => [...announcementKeys.all, 'admin'] as const,
 };

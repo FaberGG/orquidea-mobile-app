@@ -1,4 +1,10 @@
-export type { Announcement, AnnouncementInput, AnnouncementPriority } from './announcement';
+export type {
+  AdminAnnouncement,
+  Announcement,
+  AnnouncementInput,
+  AnnouncementPriority,
+  AnnouncementVisibility,
+} from './announcement';
 export type {
   AnnouncementPriorityDto,
   AnnouncementResponseDto,

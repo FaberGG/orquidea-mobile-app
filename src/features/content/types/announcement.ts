@@ -10,6 +10,21 @@ export type AnnouncementInput = {
   expiresAt: Date | null;
 };
 
+/** Cómo ve el administrador un anuncio (HU-24): visible, oculto por un admin o vencido (HU-23). */
+export type AnnouncementVisibility = 'visible' | 'hidden' | 'expired';
+
+/** Anuncio en la vista del administrador (HU-24). */
+export type AdminAnnouncement = {
+  id: string;
+  title: string;
+  description: string;
+  publishedAt: string;
+  priority: AnnouncementPriority;
+  /** Fecha ISO de finalización, o `null` si no se vence. */
+  expiresAt: string | null;
+  visibility: AnnouncementVisibility;
+};
+
 /** Modelo de lectura de HU-17, independiente de los nombres del contrato en español. */
 export type Announcement = {
   id: string;

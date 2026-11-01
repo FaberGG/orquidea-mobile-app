@@ -8,3 +8,8 @@ export {
   useSaveWetlandComponent,
 } from './use-save-wetland-component';
 export { useWetlandComponent, useWetlandComponents } from './use-wetland-components';
+export {
+  getAnnouncementVisibilityErrorMessage,
+  useAdminAnnouncements,
+  useChangeAnnouncementVisibility,
+} from './use-manage-announcements';

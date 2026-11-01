@@ -23,9 +23,13 @@ Confirmado en controladores y DTO de `dev` del backend (Santiago, 30/10/2026); *
 | `GET /api/anuncios` | Público | Solo los activos y no vencidos (HU-17) |
 | `GET /api/anuncios/administracion` | Admin y superadmin | Todos, también inactivos y vencidos (para HU-24) |
 
+| `PATCH /api/anuncios/{id}/ocultar` | Admin y superadmin | Pasa el anuncio a `INACTIVO` (HU-24 CA1); `404` si no existe |
+| `PATCH /api/anuncios/{id}/mostrar` | Admin y superadmin | Pasa el anuncio a `ACTIVO` (HU-24 CA2); `409` "No puedes mostrar un anuncio que ya expiró." |
+
 Cada anuncio responde además `estado` (`ACTIVO` / `INACTIVO`), `expirado` (lo calcula el back) y
-`fechaCreacion` (inicio de la vigencia). Aún no hay ruta para ocultar / mostrar (HU-24). La app no usa la
-respuesta del `POST`.
+`fechaCreacion` (inicio de la vigencia). En la vista del administrador se muestra **Expirado** si
+`expirado` es `true`, **Oculto** si está `INACTIVO` y **Visible** en otro caso. La app no usa la respuesta del
+`POST` ni de los `PATCH`: refresca las listas.
 
 ## Contrato (HU-14 y HU-15)
 
@@ -69,6 +73,8 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 | `api/announcements.api.ts` | `createAnnouncement` y `listAnnouncements`; lectura pública sin token |
 | `api/announcements.mappers.ts` | Validación y traducción DTO → `Announcement` |
 | `components/publish-announcement-screen.tsx` | Formulario con título, contenido, prioridad (Alta / Media / Baja), fecha de finalización opcional y **PUBLICAR**; al publicar limpia el formulario y confirma |
+| `components/manage-announcements-screen.tsx` | HU-24: todos los anuncios con su estado (Visible / Oculto / Expirado), prioridad y vigencia; **OCULTAR** y **MOSTRAR**. Ruta `/announcements/manage`, desde Gestión de contenido |
+| `hooks/use-manage-announcements.ts` | Query de la vista del administrador, mutation de ocultar / mostrar y `getAnnouncementVisibilityErrorMessage` |
 | `components/expiration-field.tsx` / `.web.tsx` | Fecha y hora de finalización (HU-23): diálogos de fecha y hora en Android, selector en línea en iOS y `datetime-local` en web |
 | `components/announcements-list-screen.tsx` | HU-17: lista con carga, vacío, error y actualización manual |
 | `components/announcement-card.tsx` | Tarjeta con título, fecha de publicación y contenido completo |
