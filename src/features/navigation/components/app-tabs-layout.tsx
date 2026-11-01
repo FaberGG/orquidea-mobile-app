@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { AppHeader } from '@/components/layout/app-header';
 import { TAB_ICON_SIZE, TabBar } from '@/components/layout/tab-bar';
 import { Icon, type IconName } from '@/components/ui/icon';
+import { CreateAnnouncementButton } from '@/features/content';
 import { AnnouncementsButton } from '@/features/sightings';
 import { CreateSpeciesButton, ScanSpeciesQrButton } from '@/features/species';
 
@@ -87,6 +88,8 @@ export function AppTabsLayout() {
               menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
               onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
               title={NAVIGATION_LABELS.announcements}
+              // Acta 17: nuevo anuncio desde la lista (solo con announcements:publish).
+              right={<CreateAnnouncementButton />}
             />
           ),
         }}
