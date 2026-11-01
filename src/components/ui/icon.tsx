@@ -7,6 +7,7 @@ import {
   AtSign,
   Bell,
   Bird,
+  CalendarClock,
   Bug,
   Check,
   ChevronDown,
@@ -88,6 +89,7 @@ const ICONS = {
   delete: Trash,
   // Contenido del humedal (HE-06)
   close: X,
+  calendar: CalendarClock,
   // Avistamientos (HE-07)
   notifications: Bell,
   writeReport: PenLine,

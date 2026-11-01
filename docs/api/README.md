@@ -68,7 +68,7 @@ Los DTO se traducen a modelos de la app en la carpeta `api/` de cada feature
 | Método y ruta | Auth | HU | Respuesta |
 |---|---|---|---|
 | `GET /api/anuncios` | Público | HU-17 | `200 AnnouncementResponse[]`, orden descendente por `fechaCreacion`; arreglo vacío si no hay anuncios |
-| `POST /api/anuncios` | Admin y superadmin | HU-16 | `201 AnnouncementResponse` |
+| `POST /api/anuncios` | Admin y superadmin | HU-16, HU-23 | `201 AnnouncementResponse` (incluye `prioridad`, `estado`, `fechaExpiracion` y `expirado`) |
 
 `AnnouncementResponse`: `id` (UUID), `titulo`, `descripcion`, `fechaCreacion` (UTC ISO-8601). El archivo
 generado `openapi.json` aún debe regenerarse desde el backend para reflejar estas rutas; el cliente valida

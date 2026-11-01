@@ -12,16 +12,20 @@
 | HU-15 Editar componentes | ✅ `feature/componentes-humedal` — `/wetland/:type/edit` con `content:manage` |
 | HU-17 Ver anuncios | ✅ Listado público en `/announcements`, enlazado desde el menú lateral |
 
-## Contrato (HU-16)
+## Contrato (HU-16, HU-17 y HU-23)
 
-Confirmado en controladores y DTO de `dev`; **aún no está en `docs/api/openapi.json`**:
+Confirmado en controladores y DTO de `dev` del backend (Santiago, 30/10/2026); **aún no está en
+`docs/api/openapi.json`**:
 
-| Método y ruta | Quién | Cuerpo |
+| Método y ruta | Quién | Cuerpo / respuesta |
 |---|---|---|
-| `POST /api/anuncios` | Admin y superadmin | `{ "titulo": string, "descripcion": string }`, ambos obligatorios |
-| `GET /api/anuncios` | Público | — (HU-17) |
+| `POST /api/anuncios` | Admin y superadmin | `{ "titulo", "descripcion", "prioridad": "ALTA" \| "MEDIA" \| "BAJA", "fechaExpiracion"?: instante ISO }`; título (máx. 150), contenido (máx. 1000) y prioridad obligatorios |
+| `GET /api/anuncios` | Público | Solo los activos y no vencidos (HU-17) |
+| `GET /api/anuncios/administracion` | Admin y superadmin | Todos, también inactivos y vencidos (para HU-24) |
 
-No se pueden editar ni eliminar anuncios (las HU no lo piden). La app no usa la respuesta del `POST`.
+Cada anuncio responde además `estado` (`ACTIVO` / `INACTIVO`), `expirado` (lo calcula el back) y
+`fechaCreacion` (inicio de la vigencia). Aún no hay ruta para ocultar / mostrar (HU-24). La app no usa la
+respuesta del `POST`.
 
 ## Contrato (HU-14 y HU-15)
 
@@ -64,13 +68,14 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 |---|---|
 | `api/announcements.api.ts` | `createAnnouncement` y `listAnnouncements`; lectura pública sin token |
 | `api/announcements.mappers.ts` | Validación y traducción DTO → `Announcement` |
-| `components/publish-announcement-screen.tsx` | Formulario con título, contenido y **PUBLICAR**; al publicar limpia el formulario y confirma |
+| `components/publish-announcement-screen.tsx` | Formulario con título, contenido, prioridad (Alta / Media / Baja), fecha de finalización opcional y **PUBLICAR**; al publicar limpia el formulario y confirma |
+| `components/expiration-field.tsx` / `.web.tsx` | Fecha y hora de finalización (HU-23): diálogos de fecha y hora en Android, selector en línea en iOS y `datetime-local` en web |
 | `components/announcements-list-screen.tsx` | HU-17: lista con carga, vacío, error y actualización manual |
 | `components/announcement-card.tsx` | Tarjeta con título, fecha de publicación y contenido completo |
 | `components/create-announcement-button.tsx` | Botón "+" del encabezado de Anuncios que abre `/announcements/new` (Acta 17); solo con `announcements:publish` |
 | `hooks/use-create-announcement.ts` | Mutation (invalida `announcementKeys.all`) y `getPublishAnnouncementErrorMessage` |
 | `hooks/use-announcements.ts` | Query pública `announcementKeys.list()` y manejo del error de lectura |
-| `schemas/announcement-form.schema.ts` | Título y contenido obligatorios (CA2), con longitudes máximas provisionales |
+| `schemas/announcement-form.schema.ts` | Título y contenido obligatorios (CA2), prioridad obligatoria (CA3) y fecha de finalización posterior a la actual (HU-23 CA3) |
 | `schemas/announcement-list.schema.ts` | Validación de la respuesta recibida del backend |
 | `types/` | `AnnouncementInput`, `Announcement` y DTO de respuesta |
 | `constants.ts` | Textos de HU-16/HU-17, `ANNOUNCEMENT_LIMITS` y `announcementKeys` |
@@ -93,6 +98,8 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 |---|---|
 | HU-16 CA2 (falta título o contenido) | `Debes completar el título y el contenido del anuncio.` |
 | HU-16 CA1 (local, la HU no define texto) | `El anuncio se publicó correctamente.` |
+| HU-16 CA3 (sin prioridad; igual al de la API) | `Debes seleccionar la prioridad del anuncio.` |
+| HU-23 CA3 (fecha pasada o actual; igual al de la API) | `La fecha de finalización debe ser posterior a la fecha actual.` |
 | Respaldo `403` sin mensaje | `No tienes permisos para publicar anuncios.` |
 | HU-14 CA2 (sin información publicada, `tieneContenido: false`) | `La información de esta sección estará disponible próximamente.` |
 | HU-15 CA1 | `El contenido del componente se actualizó correctamente.` |

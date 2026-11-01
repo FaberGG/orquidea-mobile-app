@@ -1,4 +1,4 @@
-import { formatDate } from './format-date';
+import { formatDate, formatDateTime, getDefaultExpiration } from './format-date';
 
 describe('formatDate', () => {
   it('muestra día, mes y año', () => {
@@ -7,5 +7,23 @@ describe('formatDate', () => {
 
   it('devuelve null si la fecha no es válida', () => {
     expect(formatDate('ayer')).toBeNull();
+  });
+});
+
+describe('formatDateTime y getDefaultExpiration', () => {
+  it('muestra fecha y hora en 24 h', () => {
+    expect(formatDateTime(new Date(2026, 10, 5, 18, 7))).toBe('05/11/2026 18:07');
+  });
+
+  it('propone hoy, una hora más tarde, sin segundos', () => {
+    expect(getDefaultExpiration(new Date(2026, 9, 30, 12, 30, 45))).toEqual(
+      new Date(2026, 9, 30, 13, 30, 0, 0),
+    );
+  });
+
+  it('cerca de la medianoche no pasa al día siguiente', () => {
+    expect(getDefaultExpiration(new Date(2026, 9, 30, 23, 20, 0))).toEqual(
+      new Date(2026, 9, 30, 23, 59, 0, 0),
+    );
   });
 });
