@@ -19,7 +19,7 @@
 
 - **Autocompletar por nombre científico** ("Auto" en Editar, sugerencias en Crear): no hay fuente de datos en la API.
 - **Reino, filo y clase:** la API no los envía; el formulario solo pide orden, familia y género.
-- **Grupo taxonómico** del diseño de Editar: se elige con chips de Aves, Plantas e Insectos (la API no acepta más).
+- **Grupo taxonómico** del diseño de Editar: se elige con chips de las siete categorías de la API (aves, plantas, insectos, mamíferos, reptiles, anfibios y hongos).
 - **Estados ofrecidos:** CR, EN, VU, NT y LC, como en el diseño. Al editar una ficha con otro estado, ese se conserva.
 - **Quitar foto:** el diseño lo muestra, pero la API conserva la foto actual si no se envía una nueva.
 - **Iconos de botones:** los botones aún no muestran ícono (el componente `Button` no lo admite).
