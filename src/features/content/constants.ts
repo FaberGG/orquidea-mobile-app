@@ -8,6 +8,11 @@ export const CONTENT_MESSAGES = {
   // HU-16 CA3 y HU-23 CA3: mismos textos que devuelve la API (AnnouncementRequest)
   announcementPriorityRequired: 'Debes seleccionar la prioridad del anuncio.',
   announcementExpirationInvalid: 'La fecha de finalización debe ser posterior a la fecha actual.',
+  // HU-24: respaldos locales (la API envía su propio mensaje en 404 y 409)
+  announcementExpiredCannotShow: 'No puedes mostrar un anuncio que ya expiró.',
+  announcementNotFound: 'El anuncio no existe.',
+  announcementsManageForbidden: 'No tienes permisos para gestionar anuncios.',
+  announcementsAdminEmpty: 'Aún no hay anuncios publicados.',
   // HU-16 CA1 (la HU no define texto: confirmación local)
   announcementPublished: 'El anuncio se publicó correctamente.',
   // HU-17 CA2
@@ -33,6 +38,13 @@ export const CONTENT_MESSAGES = {
   componentNotFound: 'No encontramos este componente del humedal.',
   componentsLoadError: 'No pudimos cargar los componentes del humedal.',
   componentsEmpty: 'Aún no hay componentes del humedal.',
+  // HU-25 CA3 (mismo texto que la API con 409)
+  componentNameDuplicated: 'Ya existe un componente con ese nombre.',
+  // HU-25 CA1 (la HU no define texto: confirmación local)
+  componentCreated: 'El componente se creó correctamente.',
+  componentCreatedWithoutSomePhotos:
+    'El componente se creó, pero algunas fotos no se pudieron subir. Puedes agregarlas desde EDITAR CONTENIDO.',
+  componentCreateForbidden: 'No tienes permisos para crear componentes.',
 } as const;
 
 /** Textos de la interfaz de HE-06. */
@@ -57,6 +69,23 @@ export const CONTENT_LABELS = {
   expirationDone: 'Listo',
   // HU-16 CA1 y CA2: "Clic en el botón PUBLICAR."
   publishButton: 'PUBLICAR',
+  // HU-24 (vista del administrador)
+  manageTitle: 'Gestionar anuncios',
+  manageSubtitle:
+    'Oculta un anuncio para retirarlo de la sección de anuncios sin eliminarlo, o vuelve a mostrarlo.',
+  visibilityVisible: 'Visible',
+  // HU-24 CA1: "se marca como 'Oculto' en la vista del administrador"
+  visibilityHidden: 'Oculto',
+  // HU-23 CA4: "se marca como 'Expirado' en la vista del administrador"
+  visibilityExpired: 'Expirado',
+  priorityPrefix: 'Prioridad',
+  expiresPrefix: 'Vence el',
+  expiredPrefix: 'Venció el',
+  noExpiration: 'Sin fecha de finalización',
+  // HU-24 CA1 y CA2: "clic OCULTAR" / "clic MOSTRAR"
+  hideButton: 'OCULTAR',
+  showButton: 'MOSTRAR',
+  manageRetry: 'REINTENTAR',
   announcementsTitle: 'Anuncios',
   announcementsRetry: 'REINTENTAR',
   announcementsRefreshButton: 'ACTUALIZAR',
@@ -86,6 +115,13 @@ export const WETLAND_LABELS = {
   newPhotoBadge: 'Nueva',
   // HU-15 CA1: "Clic en el botón GUARDAR CAMBIOS."
   saveButton: 'GUARDAR CAMBIOS',
+  // HU-25
+  createTitle: 'Nuevo componente',
+  createSubtitle:
+    'Agrega un componente del humedal con su nombre, descripción y fotos. Aparecerá en la sección de componentes.',
+  newComponentButton: 'NUEVO COMPONENTE',
+  // HU-25 CA1: "Clic en el botón GUARDAR COMPONENTE."
+  createButton: 'GUARDAR COMPONENTE',
 } as const;
 
 /** Límites de HU-15. Fotos: acordados con el backend (409 al pasar de 10, 413 sobre 10 MB). */
@@ -93,8 +129,9 @@ export const WETLAND_COMPONENT_LIMITS = {
   maxPhotos: 10,
   photoMaxBytes: 10 * 1024 * 1024,
   photoMimeTypes: ['image/jpeg', 'image/png'],
-  nameMaxLength: 80,
-  descriptionMaxLength: 4000,
+  // Los mismos que valida la API (ComponentCreateRequest / ComponentUpdateRequest)
+  nameMaxLength: 100,
+  descriptionMaxLength: 5000,
 } as const;
 
 /** Ícono de cada componente conocido; los demás usan el genérico del humedal. */
@@ -128,4 +165,6 @@ export const ANNOUNCEMENT_LIMITS = {
 export const announcementKeys = {
   all: ['announcements'] as const,
   list: () => [...announcementKeys.all, 'list'] as const,
+  /** HU-24: todos los anuncios, para el administrador. */
+  admin: () => [...announcementKeys.all, 'admin'] as const,
 };

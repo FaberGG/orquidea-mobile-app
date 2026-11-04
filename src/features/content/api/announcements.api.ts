@@ -2,13 +2,14 @@ import { apiClient } from '@/lib/api';
 
 import { ANNOUNCEMENT_PRIORITY_OPTIONS } from '../constants';
 import {
+  type AdminAnnouncement,
   type Announcement,
   type AnnouncementInput,
   type AnnouncementPriority,
   type AnnouncementPriorityDto,
   type CreateAnnouncementRequestDto,
 } from '../types';
-import { toAnnouncementList } from './announcements.mappers';
+import { toAdminAnnouncementList, toAnnouncementList } from './announcements.mappers';
 
 const ANNOUNCEMENTS_PATH = '/api/anuncios';
 
@@ -51,4 +52,20 @@ export async function listAnnouncements(signal?: AbortSignal): Promise<Announcem
     signal,
   });
   return toAnnouncementList(response);
+}
+
+/** HU-24: `GET /api/anuncios/administracion`. Todos los anuncios, también ocultos y vencidos. */
+export async function listAdminAnnouncements(signal?: AbortSignal): Promise<AdminAnnouncement[]> {
+  const response = await apiClient.get<unknown>(`${ANNOUNCEMENTS_PATH}/administracion`, { signal });
+  return toAdminAnnouncementList(response);
+}
+
+/** HU-24 CA1: `PATCH /api/anuncios/{id}/ocultar`. Deja de verse para los visitantes. */
+export async function hideAnnouncement(id: string): Promise<void> {
+  await apiClient.patch<unknown>(`${ANNOUNCEMENTS_PATH}/${encodeURIComponent(id)}/ocultar`);
+}
+
+/** HU-24 CA2: `PATCH /api/anuncios/{id}/mostrar`. `409` si el anuncio ya expiró. */
+export async function showAnnouncement(id: string): Promise<void> {
+  await apiClient.patch<unknown>(`${ANNOUNCEMENTS_PATH}/${encodeURIComponent(id)}/mostrar`);
 }

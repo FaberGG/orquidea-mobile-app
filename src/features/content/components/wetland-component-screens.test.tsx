@@ -7,9 +7,15 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ApiError } from '@/lib/api';
 import { RoleProvider, type Role } from '@/permissions';
 
-import { getWetlandComponent, listWetlandComponents, saveWetlandComponentChanges } from '../api';
+import {
+  createWetlandComponent,
+  getWetlandComponent,
+  listWetlandComponents,
+  saveWetlandComponentChanges,
+} from '../api';
 import { CONTENT_MESSAGES, WETLAND_LABELS } from '../constants';
 import { type WetlandComponent } from '../types';
+import { CreateWetlandComponentScreen } from './create-wetland-component-screen';
 import { EditWetlandComponentScreen } from './edit-wetland-component-screen';
 import { pickComponentPhoto } from './pick-component-photo';
 import { WetlandComponentDetailScreen } from './wetland-component-detail-screen';
@@ -20,6 +26,7 @@ jest.mock('../api', () => ({
   listWetlandComponents: jest.fn(),
   getWetlandComponent: jest.fn(),
   saveWetlandComponentChanges: jest.fn(),
+  createWetlandComponent: jest.fn(),
 }));
 jest.mock('./pick-component-photo', () => ({ pickComponentPhoto: jest.fn() }));
 
@@ -112,6 +119,116 @@ describe('WetlandComponentsScreen (HU-14)', () => {
     expect(await screen.findByText(CONTENT_MESSAGES.componentsLoadError)).toBeTruthy();
     await fireEvent.press(screen.getByText(WETLAND_LABELS.retry));
     expect(await screen.findByRole('button', { name: 'Aves' })).toBeTruthy();
+  });
+});
+
+describe('WetlandComponentsScreen — NUEVO COMPONENTE (HU-25)', () => {
+  it('el administrador ve NUEVO COMPONENTE y lleva al formulario', async () => {
+    jest.mocked(listWetlandComponents).mockResolvedValue([AVES]);
+    await render(<WetlandComponentsScreen />, { wrapper: wrapperFor('admin') });
+
+    await fireEvent.press(await screen.findByText(WETLAND_LABELS.newComponentButton));
+    expect(router.push).toHaveBeenCalledWith('/wetland/new');
+  });
+
+  it.each(['visitor', 'user'] as const)('%s no ve NUEVO COMPONENTE', async (role) => {
+    jest.mocked(listWetlandComponents).mockResolvedValue([AVES]);
+    await render(<WetlandComponentsScreen />, { wrapper: wrapperFor(role) });
+
+    expect(await screen.findByRole('button', { name: 'Aves' })).toBeTruthy();
+    expect(screen.queryByText(WETLAND_LABELS.newComponentButton)).toBeNull();
+  });
+});
+
+describe('CreateWetlandComponentScreen (HU-25)', () => {
+  const HIDRICO: WetlandComponent = {
+    ...AVES,
+    type: 'COMPONENTE_HIDRICO',
+    name: 'Componente hídrico',
+    photos: [],
+  };
+
+  async function renderCreate() {
+    await render(<CreateWetlandComponentScreen />, { wrapper: wrapperFor('admin') });
+  }
+
+  async function fillAndSave(name: string, description: string) {
+    await fireEvent.changeText(screen.getByLabelText(WETLAND_LABELS.nameLabel), name);
+    await fireEvent.changeText(screen.getByLabelText(WETLAND_LABELS.descriptionLabel), description);
+    await fireEvent.press(screen.getByText(WETLAND_LABELS.createButton));
+  }
+
+  it('CA1: con nombre, descripción y fotos crea el componente y limpia el formulario', async () => {
+    jest.mocked(pickComponentPhoto).mockResolvedValue({ status: 'picked', photo: NEW_PHOTO });
+    jest.mocked(createWetlandComponent).mockResolvedValue({ component: HIDRICO, photoError: null });
+    await renderCreate();
+
+    await fireEvent.press(screen.getByLabelText(WETLAND_LABELS.addPhoto));
+    expect(await screen.findByText(WETLAND_LABELS.newPhotoBadge)).toBeTruthy();
+    await fillAndSave('Componente hídrico', 'El agua del humedal');
+
+    expect(await screen.findByText(CONTENT_MESSAGES.componentCreated)).toBeTruthy();
+    expect(createWetlandComponent).toHaveBeenCalledWith({
+      name: 'Componente hídrico',
+      description: 'El agua del humedal',
+      photos: [NEW_PHOTO],
+    });
+    expect(screen.getByLabelText(WETLAND_LABELS.nameLabel).props.value).toBe('');
+    expect(screen.queryByText(WETLAND_LABELS.newPhotoBadge)).toBeNull();
+  });
+
+  it.each([
+    ['falta el nombre', '', 'Descripción'],
+    ['falta la descripción', 'Nombre', ''],
+  ])(
+    'CA2: si %s muestra "Debes completar el nombre y la descripción del componente."',
+    async (_c, name, description) => {
+      await renderCreate();
+      await fillAndSave(name, description);
+
+      expect(await screen.findByText(CONTENT_MESSAGES.componentRequiredFields)).toBeTruthy();
+      expect(createWetlandComponent).not.toHaveBeenCalled();
+    },
+  );
+
+  it('CA3: nombre duplicado muestra "Ya existe un componente con ese nombre."', async () => {
+    jest.mocked(createWetlandComponent).mockRejectedValue(
+      new ApiError({
+        status: 409,
+        kind: 'http',
+        path: '/api/componentes',
+        serverMessage: 'Ya existe un componente con ese nombre.',
+      }),
+    );
+    await renderCreate();
+    await fillAndSave('Aves', 'Otra descripción');
+
+    expect(await screen.findByText(CONTENT_MESSAGES.componentNameDuplicated)).toBeTruthy();
+    expect(screen.getByLabelText(WETLAND_LABELS.nameLabel).props.value).toBe('Aves');
+  });
+
+  it('CA4: una imagen que no es jpg ni png muestra "El formato de la imagen no es válido."', async () => {
+    jest.mocked(pickComponentPhoto).mockResolvedValue({ status: 'invalid' });
+    await renderCreate();
+
+    await fireEvent.press(screen.getByLabelText(WETLAND_LABELS.addPhoto));
+
+    expect(await screen.findByText(CONTENT_MESSAGES.photoInvalidFormat)).toBeTruthy();
+  });
+
+  it('si el componente se crea pero una foto falla, lo avisa', async () => {
+    jest.mocked(pickComponentPhoto).mockResolvedValue({ status: 'picked', photo: NEW_PHOTO });
+    jest
+      .mocked(createWetlandComponent)
+      .mockResolvedValue({ component: HIDRICO, photoError: new Error('413') });
+    await renderCreate();
+
+    await fireEvent.press(screen.getByLabelText(WETLAND_LABELS.addPhoto));
+    await fillAndSave('Componente hídrico', 'El agua del humedal');
+
+    expect(
+      await screen.findByText(CONTENT_MESSAGES.componentCreatedWithoutSomePhotos),
+    ).toBeTruthy();
   });
 });
 
