@@ -105,6 +105,11 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
               label={NAVIGATION_LABELS.publishAnnouncement}
               onPress={() => goTo('/announcements/new')}
             />
+            <DrawerItem
+              icon="visibility"
+              label={NAVIGATION_LABELS.manageAnnouncements}
+              onPress={() => goTo('/announcements/manage')}
+            />
           </Can>
         </DrawerSection>
       </Can>

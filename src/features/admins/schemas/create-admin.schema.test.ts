@@ -40,6 +40,24 @@ describe('HU-4: validación de creación de administrador', () => {
       expect(result.error.issues[0].message).toBe(ADMIN_MESSAGES.passwordMismatch);
   });
 
+  it.each([
+    ['menos de 8 caracteres', 'Clave12'],
+    ['sin mayúscula', 'clave123'],
+    ['sin minúscula', 'CLAVE123'],
+    ['sin número', 'ClaveSegura'],
+  ])('rechaza una contraseña insegura: %s (CA4)', (_, password) => {
+    const result = createAdminSchema.safeParse({ ...valid, password, confirmPassword: password });
+    expect(result.success).toBe(false);
+    if (!result.success) expect(result.error.issues[0].message).toBe(ADMIN_MESSAGES.weakPassword);
+  });
+
+  it('acepta una contraseña de 8 caracteres con mayúscula, minúscula y número', () => {
+    const password = 'Abcdefg1';
+    expect(
+      createAdminSchema.safeParse({ ...valid, password, confirmPassword: password }).success,
+    ).toBe(true);
+  });
+
   it('rechaza los nombres y correos que superan los límites de la API', () => {
     expect(createAdminSchema.safeParse({ ...valid, firstName: 'A'.repeat(101) })).toMatchObject({
       success: false,

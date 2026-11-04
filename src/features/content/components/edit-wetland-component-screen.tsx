@@ -1,17 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { FormMessage } from '@/components/feedback/form-message';
 import { FormScreen } from '@/components/layout/form-screen';
-import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon';
 import { TextField } from '@/components/ui/text-field';
-import { FontFamily, Radius, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 import { CONTENT_MESSAGES, WETLAND_COMPONENT_LIMITS, WETLAND_LABELS } from '../constants';
@@ -22,10 +19,9 @@ import {
 } from '../hooks';
 import { wetlandComponentFormSchema, type WetlandComponentFormValues } from '../schemas';
 import { type NewComponentPhoto, type WetlandComponent } from '../types';
+import { ComponentPhotosField } from './component-photos-field';
 import { ContentScreenHeader } from './content-screen-header';
 import { pickComponentPhoto } from './pick-component-photo';
-
-const TILE_SIZE = 96;
 
 /**
  * HU-15: editar el texto y las fotos de un componente. Requiere `content:manage` (el grupo `(admin)`
@@ -175,48 +171,19 @@ function EditWetlandComponentForm({ component }: { component: WetlandComponent }
         />
       </View>
 
-      <View style={styles.photosSection}>
-        <View style={styles.photosHeader}>
-          <ThemedText type="label" themeColor="textLabel">
-            {WETLAND_LABELS.photosSection}
-          </ThemedText>
-          <ThemedText type="caption" themeColor="textMuted">
-            {WETLAND_LABELS.photosCounter(photoCount, WETLAND_COMPONENT_LIMITS.maxPhotos)}
-          </ThemedText>
-        </View>
-        <ThemedText type="caption" themeColor="textMuted">
-          {WETLAND_LABELS.photosHint}
-        </ThemedText>
-        <View style={styles.grid}>
-          {keptPhotos.map((photo) => (
-            <PhotoTile
-              key={photo.id}
-              uri={photo.url}
-              onRemove={() => {
-                markChanged();
-                setRemovedPhotoIds((current) => [...current, photo.id]);
-              }}
-            />
-          ))}
-          {newPhotos.map((photo) => (
-            <PhotoTile
-              key={photo.uri}
-              uri={photo.uri}
-              isNew
-              onRemove={() => {
-                markChanged();
-                setNewPhotos((current) => current.filter((item) => item.uri !== photo.uri));
-              }}
-            />
-          ))}
-          {!isFull && <AddPhotoTile onPress={() => void addPhoto()} />}
-        </View>
-        {isFull && (
-          <ThemedText type="caption" themeColor="textSecondary">
-            {CONTENT_MESSAGES.photoLimitReached}
-          </ThemedText>
-        )}
-      </View>
+      <ComponentPhotosField
+        savedPhotos={keptPhotos}
+        newPhotos={newPhotos}
+        onAdd={() => void addPhoto()}
+        onRemoveSaved={(photoId) => {
+          markChanged();
+          setRemovedPhotoIds((current) => [...current, photoId]);
+        }}
+        onRemoveNew={(removed) => {
+          markChanged();
+          setNewPhotos((current) => current.filter((item) => item.uri !== removed.uri));
+        }}
+      />
 
       {errorMessage !== undefined ? (
         <FormMessage message={errorMessage} />
@@ -229,59 +196,6 @@ function EditWetlandComponentForm({ component }: { component: WetlandComponent }
   );
 }
 
-function PhotoTile({
-  uri,
-  isNew = false,
-  onRemove,
-}: {
-  uri: string;
-  isNew?: boolean;
-  onRemove: () => void;
-}) {
-  const theme = useTheme();
-  return (
-    <View style={[styles.tile, { backgroundColor: theme.backgroundSelected }]}>
-      <Image source={{ uri }} style={StyleSheet.absoluteFill} contentFit="cover" />
-      {isNew && (
-        <View style={[styles.newBadge, { backgroundColor: theme.primary }]}>
-          <ThemedText type="captionBold" themeColor="onPrimary">
-            {WETLAND_LABELS.newPhotoBadge}
-          </ThemedText>
-        </View>
-      )}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={WETLAND_LABELS.removePhoto}
-        onPress={onRemove}
-        hitSlop={Spacing.one}
-        style={styles.removeButton}>
-        <Icon name="close" size={14} color="onPrimary" />
-      </Pressable>
-    </View>
-  );
-}
-
-function AddPhotoTile({ onPress }: { onPress: () => void }) {
-  const theme = useTheme();
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={WETLAND_LABELS.addPhoto}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.tile,
-        styles.addTile,
-        { borderColor: theme.primary, backgroundColor: theme.primarySoft },
-        pressed && styles.pressed,
-      ]}>
-      <Icon name="imagePlus" size={24} color="primary" />
-      <ThemedText type="captionBold" themeColor="primary" style={styles.addLabel}>
-        {WETLAND_LABELS.addPhoto}
-      </ThemedText>
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center',
@@ -289,58 +203,5 @@ const styles = StyleSheet.create({
   },
   fields: {
     gap: Spacing.three,
-  },
-  photosSection: {
-    gap: Spacing.two,
-  },
-  photosHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.two,
-    marginTop: Spacing.one,
-  },
-  tile: {
-    width: TILE_SIZE,
-    height: TILE_SIZE,
-    borderRadius: Radius.medium,
-    overflow: 'hidden',
-  },
-  addTile: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.one,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-  },
-  addLabel: {
-    fontFamily: FontFamily.bold,
-    textAlign: 'center',
-  },
-  newBadge: {
-    position: 'absolute',
-    left: Spacing.one,
-    bottom: Spacing.one,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: Radius.full,
-  },
-  removeButton: {
-    position: 'absolute',
-    top: Spacing.one,
-    right: Spacing.one,
-    width: 24,
-    height: 24,
-    borderRadius: Radius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 15, 10, 0.6)',
-  },
-  pressed: {
-    opacity: 0.7,
   },
 });

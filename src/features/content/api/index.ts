@@ -1,11 +1,17 @@
 export {
   createAnnouncement,
+  hideAnnouncement,
+  listAdminAnnouncements,
   listAnnouncements,
+  showAnnouncement,
   toCreateAnnouncementDto,
 } from './announcements.api';
-export { toAnnouncementList } from './announcements.mappers';
+export { toAdminAnnouncementList, toAnnouncementList } from './announcements.mappers';
 export {
   addWetlandComponentPhoto,
+  createWetlandComponent,
+  type CreateWetlandComponentInput,
+  type CreateWetlandComponentResult,
   deleteWetlandComponentPhoto,
   getWetlandComponent,
   listWetlandComponents,

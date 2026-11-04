@@ -98,6 +98,26 @@ describe('SpeciesListScreen (HU-10)', () => {
     ).toBeTruthy();
   });
 
+  it.each([
+    ['Mamíferos', 'mammal'],
+    ['Reptiles', 'reptile'],
+    ['Anfibios', 'amphibian'],
+    ['Hongos', 'fungus'],
+  ])('filtra por la categoría nueva %s (v2.0)', async (label, category) => {
+    jest.mocked(listSpecies).mockResolvedValueOnce([AZULEJO]).mockResolvedValueOnce([]);
+    await render(<SpeciesListScreen />, {
+      wrapper: (props) => <Providers role="visitor" {...props} />,
+    });
+    await screen.findByText('Azulejo');
+
+    fireEvent.press(screen.getByRole('tab', { name: label }));
+
+    await waitFor(() => expect(listSpecies).toHaveBeenLastCalledWith(category));
+    expect(
+      await screen.findByText('Aún no hay especies registradas en esta categoría.'),
+    ).toBeTruthy();
+  });
+
   it('no incluye búsqueda mientras la API no la tenga', async () => {
     jest.mocked(listSpecies).mockResolvedValue([]);
     await render(<SpeciesListScreen />, {

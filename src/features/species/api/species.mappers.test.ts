@@ -69,8 +69,17 @@ describe('species mappers', () => {
     expect(toSpecies({ ...DTO, categoria: 'INSECTO' }).category).toBe('insect');
   });
 
+  it.each([
+    ['MAMIFERO', 'mammal'],
+    ['REPTIL', 'reptile'],
+    ['ANFIBIO', 'amphibian'],
+    ['HONGO', 'fungus'],
+  ] as const)('mapea la categoría nueva %s (v2.0)', (categoria, category) => {
+    expect(toSpecies({ ...DTO, categoria }).category).toBe(category);
+  });
+
   it('rechaza una respuesta que no cumple el contrato', () => {
-    expect(() => toSpecies({ ...DTO, categoria: 'MAMIFERO' })).toThrow();
+    expect(() => toSpecies({ ...DTO, categoria: 'PEZ' })).toThrow();
     expect(() => toSpecies({ ...DTO, estadoConservacion: 'XX' })).toThrow();
   });
 

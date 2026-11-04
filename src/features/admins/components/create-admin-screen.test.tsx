@@ -75,6 +75,31 @@ describe('CreateAdminScreen (HU-4)', () => {
     expect(mockedCreateAdmin).not.toHaveBeenCalled();
   });
 
+  it('no envía una contraseña insegura (CA4)', async () => {
+    await render(<CreateAdminScreen />, { wrapper: Providers });
+    await fillValidForm();
+    await fireEvent.changeText(screen.getByLabelText('Contraseña'), 'clave123');
+    await fireEvent.changeText(screen.getByLabelText('Confirmar contraseña'), 'clave123');
+    await fireEvent.press(screen.getByText('CREAR ADMINISTRADOR'));
+    expect(await screen.findByText(ADMIN_MESSAGES.weakPassword)).toBeTruthy();
+    expect(mockedCreateAdmin).not.toHaveBeenCalled();
+  });
+
+  it('muestra el 400 de contraseña insegura que devuelve el backend', async () => {
+    mockedCreateAdmin.mockRejectedValue(
+      new ApiError({
+        status: 400,
+        kind: 'http',
+        path: '/api/administradores/registrarAdmin',
+        serverMessage: ADMIN_MESSAGES.weakPassword,
+      }),
+    );
+    await render(<CreateAdminScreen />, { wrapper: Providers });
+    await fillValidForm();
+    await fireEvent.press(screen.getByText('CREAR ADMINISTRADOR'));
+    expect(await screen.findByText(ADMIN_MESSAGES.weakPassword)).toBeTruthy();
+  });
+
   it('muestra el límite comunicado por el backend', async () => {
     mockedCreateAdmin.mockRejectedValue(
       new ApiError({

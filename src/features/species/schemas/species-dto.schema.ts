@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { CONSERVATION_CODES } from '../constants';
+import { CONSERVATION_CODES, SPECIES_CATEGORY_CODES } from '../constants';
 
 // Validación de `TaxonDto` antes de mapearlo (CODIGO §2: los datos externos se validan).
 // Los textos opcionales llegan como `null` o vacíos cuando el backend no los tiene.
@@ -16,7 +16,7 @@ export const taxonPhotoDtoSchema = z.object({
 
 export const taxonDtoSchema = z.object({
   id: z.string().min(1),
-  categoria: z.enum(['AVE', 'PLANTA', 'INSECTO']),
+  categoria: z.enum(SPECIES_CATEGORY_CODES),
   order: z.string().nullish(),
   family: z.string().nullish(),
   genus: z.string().nullish(),

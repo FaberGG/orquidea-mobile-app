@@ -130,6 +130,39 @@ describe('SpeciesEditScreen (HU-8)', () => {
     expect(await screen.findByText(SPECIES_MESSAGES.updateSuccess)).toBeTruthy();
   });
 
+  it('ofrece las siete categorías y guarda una de las nuevas (v2.0)', async () => {
+    jest.mocked(getSpecies).mockResolvedValue(AZULEJO);
+    jest.mocked(updateSpecies).mockResolvedValue(AZULEJO);
+    await render(<SpeciesEditScreen id="ave-1" />, {
+      wrapper: (props) => <Providers role="admin" {...props} />,
+    });
+    await waitFor(() => expect(screen.getByLabelText('Nombre común').props.value).toBe('Azulejo'), {
+      timeout: 5000,
+    });
+
+    for (const label of [
+      'Aves',
+      'Plantas',
+      'Insectos',
+      'Mamíferos',
+      'Reptiles',
+      'Anfibios',
+      'Hongos',
+    ]) {
+      expect(screen.getByRole('tab', { name: label })).toBeTruthy();
+    }
+    await fireEvent.press(screen.getByRole('tab', { name: 'Mamíferos' }));
+    await fireEvent.press(screen.getByText('Guardar cambios'));
+
+    await waitFor(() =>
+      expect(updateSpecies).toHaveBeenCalledWith(
+        'ave-1',
+        expect.objectContaining({ category: 'mammal' }),
+      ),
+    );
+    expect(await screen.findByText(SPECIES_MESSAGES.updateSuccess)).toBeTruthy();
+  });
+
   it('muestra el mensaje del servidor si el nombre científico ya existe (409)', async () => {
     const { ApiError } = jest.requireActual('@/lib/api');
     jest.mocked(getSpecies).mockResolvedValue(AZULEJO);

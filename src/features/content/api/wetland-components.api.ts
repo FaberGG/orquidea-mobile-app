@@ -88,3 +88,39 @@ export async function saveWetlandComponentChanges(
   }
   return getWetlandComponent(type);
 }
+
+export type CreateWetlandComponentInput = {
+  name: string;
+  description: string;
+  photos: NewComponentPhoto[];
+};
+
+export type CreateWetlandComponentResult = {
+  component: WetlandComponent;
+  /** Error de la primera foto que no se pudo subir, o `null` si se subieron todas. */
+  photoError: unknown;
+};
+
+/**
+ * HU-25: `POST /api/componentes` con `{ nombre, descripcion }` y luego las fotos con la ruta de
+ * siempre. `409` = ya existe un componente con ese nombre (CA3). Si el componente se crea pero una
+ * foto falla, no se pierde lo creado: se devuelve el componente con el error de la foto.
+ */
+export async function createWetlandComponent({
+  name,
+  description,
+  photos,
+}: CreateWetlandComponentInput): Promise<CreateWetlandComponentResult> {
+  const response = await apiClient.post<unknown>(COMPONENTS_PATH, {
+    body: toUpdateWetlandComponentDto({ name, description }),
+  });
+  const component = toWetlandComponent(response);
+  try {
+    for (const photo of photos) {
+      await addWetlandComponentPhoto(component.type, photo);
+    }
+  } catch (photoError) {
+    return { component, photoError };
+  }
+  return { component, photoError: null };
+}

@@ -18,7 +18,7 @@ HE-3 → "Listar fichas" y "Detalle ficha".
 
 ## Modelo
 
-`Species`: `id`, `category` (`bird` | `plant` | `insect`), `order`, `family`, `genus`, `scientificName`,
+`Species`: `id`, `category` (`bird` | `plant` | `insect` | `mammal` | `reptile` | `amphibian` | `fungus`), `order`, `family`, `genus`, `scientificName`,
 `vernacularName`, `diet`, `wetlandRole`, `conservationStatus`, `photoUrl` (principal) y `photos` (todas, en orden). Los campos opcionales son `null`
 cuando la API los envía vacíos.
 
@@ -26,9 +26,10 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 
 ## Categorías y estados de conservación
 
-- **Chips de categoría:** Todos, Aves (`AVE`), Plantas (`PLANTA`), Insectos (`INSECTO`). Cada chip tiene su
-  ícono (`LayoutGrid`, `Bird`, `Sprout`, `Bug`). Mamíferos, Reptiles y Anfibios del Figma **no** están: la API
-  no los acepta (`categoria` solo admite `AVE`, `PLANTA`, `INSECTO`).
+- **Chips de categoría (v2.0, SCRUM-53):** Todos, Aves (`AVE`), Plantas (`PLANTA`), Insectos (`INSECTO`),
+  Mamíferos (`MAMIFERO`), Reptiles (`REPTIL`), Anfibios (`ANFIBIO`) y Hongos (`HONGO`). La fila se desplaza en
+  horizontal. Íconos: `LayoutGrid`, `Bird`, `Sprout`, `Bug`, `PawPrint`, `Turtle`, `Droplets` y `Umbrella`
+  (Lucide no tiene rana ni hongo; se validan con diseño). Los valores viven en `SPECIES_CATEGORY_CODES`.
 - **Estados de conservación:** los nueve códigos de la API (`EX`, `EW`, `CR`, `EN`, `VU`, `NT`, `LC`, `DD`,
   `NE`) están modelados en `CONSERVATION_STATUSES` con etiqueta y colores. Los siete del diseño usan los
   colores de la leyenda "Riesgo de extinción de especies". `DD` y `NE` no tienen color en el diseño: son

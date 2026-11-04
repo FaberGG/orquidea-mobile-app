@@ -47,5 +47,6 @@ muestran con su `mensaje`, que coincide con estos textos (ver [CODIGO §10](../.
 |---|---|
 | HU-4 límite alcanzado | `Has alcanzado el número de administradores configurado. Contacta al equipo de desarrollo si necesitas ampliarlo.` |
 | HU-4 correo registrado | `Este correo ya está registrado.` |
+| HU-4 contraseña insegura (CA4, v2.0) | `La contraseña debe tener mínimo 8 caracteres e incluir al menos una mayúscula, una minúscula y un número.` (se valida antes de enviar y la API responde `400` con el mismo texto) |
 | HU-5 edición exitosa | `Los cambios se guardaron correctamente.` |
 | HU-5 autorrevocación del único superadmin | `No puedes revocar el único superadministrador de la plataforma.` |
