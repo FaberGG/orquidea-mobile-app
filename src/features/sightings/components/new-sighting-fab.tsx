@@ -13,9 +13,9 @@ import { LoginRequiredDialog } from './login-required-dialog';
 const FAB_SIZE = 56;
 
 /**
- * Botón flotante "Escribir un reporte" (Figma: "Publicar reporte"). El usuario registrado va al
- * formulario (HU-18); el visitante ve el aviso para iniciar sesión. Los administradores no lo ven: la
- * API no les permite crear reportes (responde `403`).
+ * Botón flotante "Escribir un reporte" (Figma: "Publicar reporte"). El usuario registrado, el
+ * administrador y el superadministrador van al formulario (HU-18 v2.0); el visitante ve el aviso para
+ * iniciar sesión.
  */
 export function NewSightingFab() {
   const theme = useTheme();

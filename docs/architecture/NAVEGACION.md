@@ -25,7 +25,7 @@ src/app/
 │   └── [id].tsx                    /species/:id Detalle de ficha (todos) + acciones admin vía <Can> (HU-8, HU-9)
 │
 ├── sightings/
-│   ├── new.tsx                     /sightings/new    HU-18 · guard: can('sightings:create') → solo usuario registrado
+│   ├── new.tsx                     /sightings/new    HU-18 · guard: can('sightings:create') → usuario registrado, admin y superadmin
 │   └── photo.tsx                   /sightings/photo  Foto de un reporte con zoom (todos) · modal transparente
 ├── qr.tsx                           /qr          Escáner QR público de fichas (HE-04, HU-11)
 │

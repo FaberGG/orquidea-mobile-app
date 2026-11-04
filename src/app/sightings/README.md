@@ -5,7 +5,7 @@ en la pestaña [`(drawer)/(tabs)/community.tsx`](../%28drawer%29/%28tabs%29/READ
 
 | Archivo | URL | Pantalla | Acceso | HU |
 |---|---|---|---|---|
-| `new.tsx` | `/sightings/new` | `NewSightingScreen` | `Stack.Protected` con `sightings:create` (solo usuario registrado) | HU-18 |
+| `new.tsx` | `/sightings/new` | `NewSightingScreen` | `Stack.Protected` con `sightings:create` (usuario registrado, administrador y superadministrador) | HU-18 |
 | `photo.tsx` | `/sightings/photo?uri=` | `PhotoViewerScreen` (modal transparente con fundido) | Todos | HU-20 |
 
 Ambas se declaran en el `Stack` raíz (`src/app/_layout.tsx`). Sin `uri`, `photo.tsx` redirige a `/community`.
