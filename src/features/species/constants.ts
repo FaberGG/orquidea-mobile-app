@@ -22,6 +22,9 @@ export const SPECIES_LABELS = {
   deleteButton: 'Eliminar ficha',
   back: 'Volver',
   noData: 'Sin información',
+  backToList: 'Volver al listado',
+  photoOf: (name: string, position: number, total: number) =>
+    `Foto ${position} de ${total} de ${name}`,
 } as const;
 
 /** Textos de escaneo y acceso a fichas por QR (HU-11). */
@@ -76,15 +79,32 @@ export const speciesQrKeys = {
     ['qr', 'resolve', sessionId, attempt, speciesId] as const,
 };
 
+/** Valores de `categoria` en la API (`TaxonRequest`, `TaxonDto` y `?categoria=`). */
+export const SPECIES_CATEGORY_CODES = [
+  'AVE',
+  'PLANTA',
+  'INSECTO',
+  'MAMIFERO',
+  'REPTIL',
+  'ANFIBIO',
+  'HONGO',
+] as const;
+
+export type SpeciesCategoryCode = (typeof SPECIES_CATEGORY_CODES)[number];
+
 /** Chips de categoría. `apiValue` es el valor de `categoria` en la API; `Todos` no filtra. */
 export const SPECIES_CATEGORY_FILTERS = [
   { id: 'all', label: 'Todos', icon: 'categoryAll' },
   { id: 'bird', apiValue: 'AVE', label: 'Aves', icon: 'bird' },
   { id: 'plant', apiValue: 'PLANTA', label: 'Plantas', icon: 'plant' },
   { id: 'insect', apiValue: 'INSECTO', label: 'Insectos', icon: 'insect' },
+  { id: 'mammal', apiValue: 'MAMIFERO', label: 'Mamíferos', icon: 'mammal' },
+  { id: 'reptile', apiValue: 'REPTIL', label: 'Reptiles', icon: 'reptile' },
+  { id: 'amphibian', apiValue: 'ANFIBIO', label: 'Anfibios', icon: 'amphibian' },
+  { id: 'fungus', apiValue: 'HONGO', label: 'Hongos', icon: 'fungus' },
 ] as const satisfies readonly {
   id: 'all' | SpeciesCategory;
-  apiValue?: string;
+  apiValue?: SpeciesCategoryCode;
   label: string;
   icon: IconName;
 }[];
@@ -95,6 +115,10 @@ export const SPECIES_CATEGORY_LABELS: Record<SpeciesCategory, string> = {
   bird: 'Ave',
   plant: 'Planta',
   insect: 'Insecto',
+  mammal: 'Mamífero',
+  reptile: 'Reptil',
+  amphibian: 'Anfibio',
+  fungus: 'Hongo',
 };
 
 /** Códigos de la API, en el orden de la escala UICN (de más a menos amenazada). */
@@ -132,13 +156,25 @@ export const speciesKeys = {
   detail: (id: string) => [...speciesKeys.all, 'detail', id] as const,
 };
 
-/** Categorías que se pueden elegir al crear o editar (la API solo acepta estas tres). */
-export const SPECIES_FORM_CATEGORIES = ['bird', 'plant', 'insect'] as const;
+/** Categorías que se pueden elegir al crear o editar (todas las de la API). */
+export const SPECIES_FORM_CATEGORIES = [
+  'bird',
+  'plant',
+  'insect',
+  'mammal',
+  'reptile',
+  'amphibian',
+  'fungus',
+] as const;
 
 export const SPECIES_FORM_CATEGORY_OPTIONS = [
   { id: 'bird', label: 'Aves', icon: 'bird' },
   { id: 'plant', label: 'Plantas', icon: 'plant' },
   { id: 'insect', label: 'Insectos', icon: 'insect' },
+  { id: 'mammal', label: 'Mamíferos', icon: 'mammal' },
+  { id: 'reptile', label: 'Reptiles', icon: 'reptile' },
+  { id: 'amphibian', label: 'Anfibios', icon: 'amphibian' },
+  { id: 'fungus', label: 'Hongos', icon: 'fungus' },
 ] as const satisfies readonly {
   id: (typeof SPECIES_FORM_CATEGORIES)[number];
   label: string;
@@ -165,6 +201,13 @@ export const SPECIES_MESSAGES = {
   saveError: 'No pudimos guardar la ficha. Inténtalo de nuevo.',
   // Contrato: nombre científico duplicado (409); se muestra el mensaje del servidor si llega.
   duplicateScientificName: 'Ya existe una ficha con ese nombre científico.',
+  // HU-7 v2.0: límite de fotos por ficha (SCRUM-47, igual que los componentes del humedal).
+  photoLimitReached: 'Puedes agregar hasta 10 fotos por ficha.',
+  // HU-7 v2.0: la ficha se creó, pero falló la subida de alguna foto adicional.
+  photosPartiallySaved: (pending: number) =>
+    pending === 1
+      ? 'La ficha se creó, pero no pudimos subir 1 foto. Puedes agregarla desde Editar ficha.'
+      : `La ficha se creó, pero no pudimos subir ${pending} fotos. Puedes agregarlas desde Editar ficha.`,
 } as const;
 
 export const SPECIES_FORM_LABELS = {
@@ -173,10 +216,15 @@ export const SPECIES_FORM_LABELS = {
   createSubmit: 'Crear ficha',
   editSubmit: 'Guardar cambios',
   cancel: 'Cancelar',
-  photoSection: 'Fotografía',
-  photoUpload: 'Subir fotografía',
-  photoChange: 'Cambiar foto',
-  photoHint: 'JPG, PNG · máx. 10 MB',
+  photoSection: 'Fotografías',
+  photoUpload: 'Subir fotografías',
+  photoAdd: 'Agregar',
+  photoPrincipal: 'Principal',
+  photoHint: 'JPG, PNG · máx. 10 MB cada una',
+  photosOrderHint: 'La primera foto es la principal del listado.',
+  photosCounter: (count: number, max: number) => `${count}/${max}`,
+  photoNumber: (position: number) => `Foto ${position}`,
+  photoRemove: (position: number) => `Quitar foto ${position}`,
   identificationSection: 'Identificación',
   taxonomySection: 'Taxonomía',
   ecologySection: 'Ecología',

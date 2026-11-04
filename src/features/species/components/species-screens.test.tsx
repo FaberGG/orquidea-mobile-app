@@ -31,6 +31,7 @@ const AZULEJO: Species = {
   wetlandRole: 'Dispersor de semillas',
   conservationStatus: 'LC',
   photoUrl: null,
+  photos: [],
 };
 
 const CARACOL: Species = {
@@ -97,6 +98,26 @@ describe('SpeciesListScreen (HU-10)', () => {
     ).toBeTruthy();
   });
 
+  it.each([
+    ['Mamíferos', 'mammal'],
+    ['Reptiles', 'reptile'],
+    ['Anfibios', 'amphibian'],
+    ['Hongos', 'fungus'],
+  ])('filtra por la categoría nueva %s (v2.0)', async (label, category) => {
+    jest.mocked(listSpecies).mockResolvedValueOnce([AZULEJO]).mockResolvedValueOnce([]);
+    await render(<SpeciesListScreen />, {
+      wrapper: (props) => <Providers role="visitor" {...props} />,
+    });
+    await screen.findByText('Azulejo');
+
+    fireEvent.press(screen.getByRole('tab', { name: label }));
+
+    await waitFor(() => expect(listSpecies).toHaveBeenLastCalledWith(category));
+    expect(
+      await screen.findByText('Aún no hay especies registradas en esta categoría.'),
+    ).toBeTruthy();
+  });
+
   it('no incluye búsqueda mientras la API no la tenga', async () => {
     jest.mocked(listSpecies).mockResolvedValue([]);
     await render(<SpeciesListScreen />, {
@@ -115,6 +136,24 @@ describe('SpeciesDetailScreen (HU-10 detalle, HU-8 y HU-9 por rol)', () => {
     });
     expect(await screen.findByText('Azulejo')).toBeTruthy();
   }
+
+  it('muestra todas las fotos de la ficha con su posición (HU-7 v2.0)', async () => {
+    jest.mocked(getSpecies).mockResolvedValue({
+      ...AZULEJO,
+      photoUrl: 'http://localhost:9000/f1.jpg',
+      photos: [
+        { id: 'f1', url: 'http://localhost:9000/f1.jpg' },
+        { id: 'f2', url: 'http://localhost:9000/f2.jpg' },
+      ],
+    });
+    await render(<SpeciesDetailScreen id="ave-1" />, {
+      wrapper: (props) => <Providers role="visitor" {...props} />,
+    });
+
+    expect(await screen.findByText('1/2')).toBeTruthy();
+    expect(screen.getByLabelText('Foto 1 de 2 de Azulejo')).toBeTruthy();
+    expect(screen.getByLabelText('Foto 2 de 2 de Azulejo')).toBeTruthy();
+  });
 
   it('muestra la taxonomía y el rol en el humedal solo como texto', async () => {
     await renderDetail('visitor');

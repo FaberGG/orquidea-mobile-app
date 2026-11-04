@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { isApiError } from '@/lib/api';
 
-import { createSpecies, updateSpecies } from '../api';
+import { createSpecies, type SaveSpeciesProgress, updateSpecies } from '../api';
 import { SPECIES_MESSAGES, speciesKeys } from '../constants';
 import { type SpeciesInput } from '../types';
 
@@ -12,14 +12,12 @@ import { type SpeciesInput } from '../types';
  */
 function logSaveFailure(action: string, error: unknown, input: SpeciesInput) {
   if (!__DEV__) return;
-  const photo = input.photo
-    ? {
-        uri: input.photo.uri,
-        fileName: input.photo.fileName,
-        mimeType: input.photo.mimeType,
-        fileSize: input.photo.fileSize,
-      }
-    : null;
+  const photos = input.newPhotos.map((photo) => ({
+    uri: photo.uri,
+    fileName: photo.fileName,
+    mimeType: photo.mimeType,
+    fileSize: photo.fileSize,
+  }));
   if (isApiError(error)) {
     console.error(`[fichas] ${action} falló`, {
       status: error.status,
@@ -27,14 +25,18 @@ function logSaveFailure(action: string, error: unknown, input: SpeciesInput) {
       path: error.path,
       serverMessage: error.serverMessage,
       body: error.body,
-      photo,
+      photos,
+      removedPhotoIds: input.removedPhotoIds,
     });
     return;
   }
-  console.error(`[fichas] ${action} falló (sin respuesta del servidor)`, error, { photo });
+  console.error(`[fichas] ${action} falló (sin respuesta del servidor)`, error, { photos });
 }
 
-/** HU-7: crea la ficha; al terminar, el listado de su categoría debe reflejarla. */
+/**
+ * HU-7: crea la ficha; al terminar, el listado de su categoría debe reflejarla. Resuelve con las fotos que
+ * no se pudieron subir (`pendingPhotos`), porque la ficha ya existe aunque falle una foto adicional.
+ */
 export function useCreateSpecies() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -44,13 +46,22 @@ export function useCreateSpecies() {
   });
 }
 
-/** HU-8: edita la ficha; invalida el detalle y los listados. */
+export type UpdateSpeciesVariables = {
+  input: SpeciesInput;
+  /** Avisa qué fotos ya se guardaron, para no repetirlas si un paso posterior falla. */
+  progress?: SaveSpeciesProgress;
+};
+
+/**
+ * HU-8: edita la ficha; invalida el detalle y los listados. También al fallar, porque los pasos previos
+ * (texto, fotos quitadas o agregadas) pudieron quedar guardados.
+ */
 export function useUpdateSpecies(id: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: SpeciesInput) => updateSpecies(id, input),
-    onError: (error, input) => logSaveFailure('editar', error, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: speciesKeys.all }),
+    mutationFn: ({ input, progress }: UpdateSpeciesVariables) => updateSpecies(id, input, progress),
+    onError: (error, { input }) => logSaveFailure('editar', error, input),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: speciesKeys.all }),
   });
 }
 

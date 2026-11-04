@@ -9,3 +9,13 @@ export const announcementDtoSchema = z.object({
 });
 
 export const announcementListDtoSchema = z.array(announcementDtoSchema);
+
+/** Contrato de `GET /api/anuncios/administracion` (HU-24): todos los anuncios con su estado. */
+export const adminAnnouncementDtoSchema = announcementDtoSchema.extend({
+  prioridad: z.enum(['ALTA', 'MEDIA', 'BAJA']),
+  estado: z.enum(['ACTIVO', 'INACTIVO']),
+  expirado: z.boolean(),
+  fechaExpiracion: z.iso.datetime().nullish(),
+});
+
+export const adminAnnouncementListDtoSchema = z.array(adminAnnouncementDtoSchema);

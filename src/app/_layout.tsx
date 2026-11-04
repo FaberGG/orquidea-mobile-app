@@ -22,7 +22,7 @@ function RootNavigator() {
   const { isAuthenticated } = useSession();
   // Gestión de contenido (fichas, y el resto de administración) solo para admin y superadmin.
   const canManageContent = usePermission('species:create');
-  // Escribir un reporte de avistamiento (HU-18) solo para usuarios registrados.
+  // Escribir un reporte de avistamiento (HU-18): usuario registrado, administrador y superadministrador.
   const canCreateSighting = usePermission('sightings:create');
 
   return (

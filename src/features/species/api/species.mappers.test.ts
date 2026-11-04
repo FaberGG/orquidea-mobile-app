@@ -29,7 +29,24 @@ describe('species mappers', () => {
       wetlandRole: 'Dispersor de semillas',
       conservationStatus: 'LC',
       photoUrl: DTO.urlFoto,
+      photos: [{ id: null, url: DTO.urlFoto }],
     });
+  });
+
+  it('traduce las fotos de v2.0 en orden y toma la primera como principal', () => {
+    const fotos = [
+      { id: 'f1', url: 'http://localhost:9000/orquidea/fichas/f1.jpg' },
+      { id: 'f2', url: 'http://localhost:9000/orquidea/fichas/f2.jpg' },
+    ];
+    const species = toSpecies({ ...DTO, urlFoto: fotos[0].url, fotos });
+    expect(species.photos).toEqual(fotos);
+    expect(species.photoUrl).toBe(fotos[0].url);
+  });
+
+  it('sin fotos deja la lista vacía y sin principal', () => {
+    const species = toSpecies({ ...DTO, urlFoto: null, fotos: [] });
+    expect(species.photos).toEqual([]);
+    expect(species.photoUrl).toBeNull();
   });
 
   it('mapea PLANTA e INSECTO y deja null los campos opcionales vacíos', () => {
@@ -48,11 +65,21 @@ describe('species mappers', () => {
     expect(plant.diet).toBeNull();
     expect(plant.wetlandRole).toBeNull();
     expect(plant.photoUrl).toBeNull();
+    expect(plant.photos).toEqual([]);
     expect(toSpecies({ ...DTO, categoria: 'INSECTO' }).category).toBe('insect');
   });
 
+  it.each([
+    ['MAMIFERO', 'mammal'],
+    ['REPTIL', 'reptile'],
+    ['ANFIBIO', 'amphibian'],
+    ['HONGO', 'fungus'],
+  ] as const)('mapea la categoría nueva %s (v2.0)', (categoria, category) => {
+    expect(toSpecies({ ...DTO, categoria }).category).toBe(category);
+  });
+
   it('rechaza una respuesta que no cumple el contrato', () => {
-    expect(() => toSpecies({ ...DTO, categoria: 'MAMIFERO' })).toThrow();
+    expect(() => toSpecies({ ...DTO, categoria: 'PEZ' })).toThrow();
     expect(() => toSpecies({ ...DTO, estadoConservacion: 'XX' })).toThrow();
   });
 

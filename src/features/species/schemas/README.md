@@ -6,4 +6,4 @@
 |---|---|
 | `species-dto.schema.ts` | `taxonDtoSchema` y `taxonListDtoSchema`: forma de `TaxonDto`; `estadoConservacion` acepta solo los nueve códigos de la API |
 
-Los formularios de HU-7 y HU-8 agregarán aquí sus esquemas de validación.
+`species-form.schema.ts`: formulario de HU-7 y HU-8. Fotos nuevas (`newPhotos`, máximo `SPECIES_PHOTO_LIMIT` = 10, jpg/png ≤ 10 MB) y fotos guardadas que se quitan (`removedPhotoIds`).

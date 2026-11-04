@@ -8,20 +8,36 @@ import { FormMessage } from '@/components/feedback/form-message';
 import { FormScreen } from '@/components/layout/form-screen';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
+import { ChipButton } from '@/components/ui/chip-button';
 import { Icon } from '@/components/ui/icon';
 import { TextField } from '@/components/ui/text-field';
 import { FontFamily, Spacing } from '@/constants/theme';
 
-import { ANNOUNCEMENT_LIMITS, CONTENT_LABELS, CONTENT_MESSAGES } from '../constants';
+import {
+  ANNOUNCEMENT_LIMITS,
+  ANNOUNCEMENT_PRIORITY_OPTIONS,
+  CONTENT_LABELS,
+  CONTENT_MESSAGES,
+} from '../constants';
 import { getPublishAnnouncementErrorMessage, useCreateAnnouncement } from '../hooks';
 import { announcementFormSchema, type AnnouncementFormValues } from '../schemas';
+import { ExpirationField } from './expiration-field';
 
-const EMPTY_VALUES: AnnouncementFormValues = { title: '', description: '' };
+const EMPTY_VALUES: AnnouncementFormValues = {
+  title: '',
+  description: '',
+  priority: null,
+  expiresAt: null,
+};
+
+// El esquema produce un error por envío; se muestra uno solo, en el orden del formulario.
+const FIELD_ORDER = ['title', 'description', 'priority', 'expiresAt'] as const;
 
 /**
- * HU-16: publicar un anuncio o información educativa. Solo se llega con `announcements:publish`
- * (el grupo `(admin)` ya exige permisos de administrador). Sin diseño en Figma: sigue el estilo del
- * formulario de fichas. Al publicar, limpia el formulario y muestra la confirmación.
+ * HU-16 y HU-23: publicar un anuncio o información educativa con su prioridad (CA3) y, si se quiere,
+ * una fecha y hora de finalización. Solo se llega con `announcements:publish` (el grupo `(admin)` ya
+ * exige permisos de administrador). Sin diseño en Figma: sigue el estilo del formulario de fichas.
+ * Al publicar, limpia el formulario y muestra la confirmación.
  */
 export function PublishAnnouncementScreen() {
   const {
@@ -36,18 +52,23 @@ export function PublishAnnouncementScreen() {
   const publish = useCreateAnnouncement();
   const [hasPublished, setHasPublished] = useState(false);
 
-  const onSubmit = handleSubmit((values) => {
+  const onSubmit = handleSubmit(({ title, description, priority, expiresAt }) => {
     setHasPublished(false);
-    publish.mutate(values, {
-      onSuccess: () => {
-        reset(EMPTY_VALUES);
-        setHasPublished(true);
+    // El esquema ya exige la prioridad; esto solo le confirma el tipo a TypeScript.
+    if (priority === null) return;
+    publish.mutate(
+      { title, description, priority, expiresAt },
+      {
+        onSuccess: () => {
+          reset(EMPTY_VALUES);
+          setHasPublished(true);
+        },
       },
-    });
+    );
   });
 
-  // CA2 tiene un único mensaje para ambos campos: se muestra una sola vez.
-  const validationMessage = errors.title?.message ?? errors.description?.message;
+  // CA2 tiene un único mensaje para título y contenido: se muestra una sola vez.
+  const validationMessage = FIELD_ORDER.map((field) => errors[field]?.message).find(Boolean);
   const errorMessage =
     validationMessage ??
     (publish.isError ? getPublishAnnouncementErrorMessage(publish.error) : undefined);
@@ -114,6 +135,47 @@ export function PublishAnnouncementScreen() {
             />
           )}
         />
+
+        <Controller
+          control={control}
+          name="priority"
+          render={({ field: { onChange, value } }) => (
+            <View style={styles.group}>
+              <ThemedText type="label" themeColor="textLabel">
+                {CONTENT_LABELS.priorityLabel}
+              </ThemedText>
+              <View style={styles.chipRow} accessibilityRole="radiogroup">
+                {ANNOUNCEMENT_PRIORITY_OPTIONS.map((option) => (
+                  <ChipButton
+                    key={option.id}
+                    label={option.label}
+                    accessibilityRole="radio"
+                    selected={value === option.id}
+                    onPress={() => {
+                      setHasPublished(false);
+                      onChange(option.id);
+                    }}
+                  />
+                ))}
+              </View>
+            </View>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="expiresAt"
+          render={({ field: { onChange, value } }) => (
+            <ExpirationField
+              value={value}
+              onChange={(date) => {
+                setHasPublished(false);
+                onChange(date);
+              }}
+              hasError={Boolean(errors.expiresAt)}
+            />
+          )}
+        />
       </View>
 
       {errorMessage !== undefined ? (
@@ -152,5 +214,13 @@ const styles = StyleSheet.create({
   },
   fields: {
     gap: Spacing.three,
+  },
+  group: {
+    gap: 10,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.two,
   },
 });

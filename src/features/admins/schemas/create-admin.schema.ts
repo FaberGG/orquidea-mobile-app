@@ -2,6 +2,12 @@ import { z } from 'zod';
 
 import { ADMIN_MESSAGES } from '../constants';
 
+/**
+ * HU-4 CA4: misma regla que la API (`SCRUM-43`). Solo aplica a crear administrador; el registro de
+ * usuarios (`register.schema.ts`) no la exige.
+ */
+export const SECURE_PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 export const createAdminSchema = z
   .object({
     firstName: z
@@ -22,7 +28,10 @@ export const createAdminSchema = z
       .min(1, ADMIN_MESSAGES.requiredFields)
       .email(ADMIN_MESSAGES.invalidEmail)
       .max(254, ADMIN_MESSAGES.emailTooLong),
-    password: z.string().min(1, ADMIN_MESSAGES.requiredFields),
+    password: z
+      .string()
+      .min(1, ADMIN_MESSAGES.requiredFields)
+      .regex(SECURE_PASSWORD_PATTERN, ADMIN_MESSAGES.weakPassword),
     confirmPassword: z.string().min(1, ADMIN_MESSAGES.requiredFields),
   })
   .refine((values) => values.password === values.confirmPassword, {

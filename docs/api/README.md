@@ -8,6 +8,7 @@ desde el cliente.
 | [`openapi.json`](openapi.json) | Especificación OpenAPI 3.1 generada por el backend (Springdoc). **No se edita a mano**: se reemplaza con cada exportación. Está excluido de Prettier |
 | [`reportes-avistamiento.md`](reportes-avistamiento.md) | Endpoints de reportes ciudadanos de avistamiento (HU-18, HU-19, HU-20), con ejemplos y errores |
 | [`estaciones.md`](estaciones.md) | **Contrato inferido** de las estaciones del sendero (HU-13, SCRUM-40/54): qué espera la app y qué cambiar si el backend lo implementa distinto |
+| [`fichas-varias-fotos.md`](fichas-varias-fotos.md) | **Contrato inferido** de varias fotos por ficha (HU-7 v2.0, SCRUM-47/51): qué espera la app y qué cambiar si el backend lo implementa distinto |
 
 Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar la extensión *OpenAPI* de VS Code.
 
@@ -33,7 +34,7 @@ Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar l
 | `POST /api/autenticacion/recuperar-contrasena` | — | HU-1.1 paso 1: envía código de 6 dígitos | 204 · 400 |
 | `POST /api/autenticacion/restablecer-contrasena` | — | HU-1.1 paso 2: correo + código + nueva contraseña | 204 · 400 (código incorrecto o vencido) |
 | `POST /api/autenticacion/registro` | — | HU-2 | 201 `RegisterResponse` · 400 · 409 |
-| `POST /api/administradores/registrarAdmin` | Superadmin | HU-4 | 201 `RegisterResponse` · 400 · 401 · 403 · 409 |
+| `POST /api/administradores/registrarAdmin` | Superadmin | HU-4 (`400` también por contraseña insegura, CA4 v2.0: mínimo 8 caracteres con mayúscula, minúscula y número) | 201 `RegisterResponse` · 400 · 401 · 403 · 409 |
 | `GET /api/administradores` | Superadmin | HU-5 (listado, incluye inhabilitados) | 200 `AdministratorDto[]` · 401 · 403 |
 | `PUT /api/administradores/{id}` | Superadmin | HU-5 (editar / inhabilitar con `habilitado`) | 200 `AdministratorDto` · 400 · 401 · 403 · 404 · 409 |
 | `POST /api/administradores/{id}/revocar-acceso` | Superadmin | HU-5 (revocar) | 200 `AdministratorDto` · 401 · 403 · 404 · 409 |
@@ -57,7 +58,7 @@ Los DTO se traducen a modelos de la app en la carpeta `api/` de cada feature
 | API | App |
 |---|---|
 | `rol: USUARIO_REGISTRADO` / `ADMINISTRADOR` / `SUPERADMINISTRADOR` | `Role`: `user` / `admin` / `superadmin` (sin sesión: `visitor`) |
-| `categoria: AVE` / `PLANTA` / `INSECTO` | `SpeciesCategory`: `bird` / `plant` / `insect` |
+| `categoria: AVE` / `PLANTA` / `INSECTO` / `MAMIFERO` / `REPTIL` / `ANFIBIO` / `HONGO` (v2.0, SCRUM-49) | `SpeciesCategory`: `bird` / `plant` / `insect` / `mammal` / `reptile` / `amphibian` / `fungus` |
 | `estadoConservacion: EX, EW, CR, EN, VU, NT, LC, DD, NE` (UICN) | `ConservationStatus` con los mismos códigos; etiquetas en español en la UI |
 | `nombre`, `apellido`, `correo`, `contrasena` | `firstName`, `lastName`, `email`, `password` |
 | `order`, `family`, `genus`, `scientificName`, `vernacularName` | Mismo nombre |
@@ -69,7 +70,7 @@ Los DTO se traducen a modelos de la app en la carpeta `api/` de cada feature
 | Método y ruta | Auth | HU | Respuesta |
 |---|---|---|---|
 | `GET /api/anuncios` | Público | HU-17 | `200 AnnouncementResponse[]`, orden descendente por `fechaCreacion`; arreglo vacío si no hay anuncios |
-| `POST /api/anuncios` | Admin y superadmin | HU-16 | `201 AnnouncementResponse` |
+| `POST /api/anuncios` | Admin y superadmin | HU-16, HU-23 | `201 AnnouncementResponse` (incluye `prioridad`, `estado`, `fechaExpiracion` y `expirado`) |
 
 `AnnouncementResponse`: `id` (UUID), `titulo`, `descripcion`, `fechaCreacion` (UTC ISO-8601). El archivo
 generado `openapi.json` aún debe regenerarse desde el backend para reflejar estas rutas; el cliente valida
@@ -108,7 +109,7 @@ Pendientes de resolver con el equipo de backend / Product Owner:
 | B5 | HU-1.1 dice "correo con instrucciones", pero la API usa un **código de 6 dígitos** que se ingresa en la app | Alinear el texto de la HU con el Product Owner; la app implementa el flujo de dos pasos |
 | B6 | Campos con nombres en dos idiomas (Darwin Core en inglés, el resto en español) | Sin impacto funcional; decisión del backend |
 | B7 | `TaxonRequest` / `TaxonDto` no tienen **reino, filo (división) y clase**, que el diseño de Crear y Editar ficha muestra como taxonomía | El formulario y el detalle solo piden y muestran orden, familia y género. Falta decidir si el backend los agrega (y si son obligatorios) |
-| B8 | `categoria` solo acepta `AVE`, `PLANTA` e `INSECTO`; el diseño trae también **Mamíferos, Reptiles y Anfibios** | Esos chips de filtro y la opción "Grupo taxonómico" de Editar no se implementan. Las fichas de esas especies no se pueden registrar |
+| B8 | ~~`categoria` solo acepta `AVE`, `PLANTA` e `INSECTO`~~ | **Resuelto en v2.0** (SCRUM-49 / SCRUM-53): el enum agrega `MAMIFERO`, `REPTIL`, `ANFIBIO` y `HONGO`, y la app los ofrece en el listado y en el formulario |
 | B9 | No hay búsqueda de fichas (ni por nombre) | Se omite el buscador del encabezado hasta que exista el endpoint |
 | B10 | No hay fuente de autocompletado por nombre científico (el diseño muestra sugerencias y "Auto" en la taxonomía) | Los campos de taxonomía se llenan a mano. Requiere un endpoint o un servicio externo de taxonomía, a decidir |
 | B11 | No se clasifica el **rol de cada especie en el humedal** (`rolEnHumedal` es texto libre) | Se muestra solo como texto en el detalle y el formulario |

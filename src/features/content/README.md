@@ -12,16 +12,24 @@
 | HU-15 Editar componentes | ✅ `feature/componentes-humedal` — `/wetland/:type/edit` con `content:manage` |
 | HU-17 Ver anuncios | ✅ Listado público en `/announcements`, enlazado desde el menú lateral |
 
-## Contrato (HU-16)
+## Contrato (HU-16, HU-17 y HU-23)
 
-Confirmado en controladores y DTO de `dev`; **aún no está en `docs/api/openapi.json`**:
+Confirmado en controladores y DTO de `dev` del backend (Santiago, 30/10/2026); **aún no está en
+`docs/api/openapi.json`**:
 
-| Método y ruta | Quién | Cuerpo |
+| Método y ruta | Quién | Cuerpo / respuesta |
 |---|---|---|
-| `POST /api/anuncios` | Admin y superadmin | `{ "titulo": string, "descripcion": string }`, ambos obligatorios |
-| `GET /api/anuncios` | Público | — (HU-17) |
+| `POST /api/anuncios` | Admin y superadmin | `{ "titulo", "descripcion", "prioridad": "ALTA" \| "MEDIA" \| "BAJA", "fechaExpiracion"?: instante ISO }`; título (máx. 150), contenido (máx. 1000) y prioridad obligatorios |
+| `GET /api/anuncios` | Público | Solo los activos y no vencidos (HU-17) |
+| `GET /api/anuncios/administracion` | Admin y superadmin | Todos, también inactivos y vencidos (para HU-24) |
 
-No se pueden editar ni eliminar anuncios (las HU no lo piden). La app no usa la respuesta del `POST`.
+| `PATCH /api/anuncios/{id}/ocultar` | Admin y superadmin | Pasa el anuncio a `INACTIVO` (HU-24 CA1); `404` si no existe |
+| `PATCH /api/anuncios/{id}/mostrar` | Admin y superadmin | Pasa el anuncio a `ACTIVO` (HU-24 CA2); `409` "No puedes mostrar un anuncio que ya expiró." |
+
+Cada anuncio responde además `estado` (`ACTIVO` / `INACTIVO`), `expirado` (lo calcula el back) y
+`fechaCreacion` (inicio de la vigencia). En la vista del administrador se muestra **Expirado** si
+`expirado` es `true`, **Oculto** si está `INACTIVO` y **Visible** en otro caso. La app no usa la respuesta del
+`POST` ni de los `PATCH`: refresca las listas.
 
 ## Contrato (HU-14 y HU-15)
 
@@ -31,6 +39,7 @@ Acordado con Juan Sebastián (backend) por chat; **aún no está en `docs/api/op
 |---|---|---|
 | `GET /api/componentes` | Público | Lista de componentes |
 | `GET /api/componentes/{tipo}` | Público | Ej. `/api/componentes/AVES`; un tipo inexistente responde error |
+| `POST /api/componentes` | Admin y superadmin | HU-25: `{ "nombre", "descripcion" }` (máx. 100 / 5000); responde 201 con el componente y su `tipo` (código generado del nombre, p. ej. `COMPONENTE_HIDRICO`); 409 "Ya existe un componente con ese nombre." |
 | `PUT /api/componentes/{tipo}` | Admin y superadmin | `{ "nombre": string, "descripcion": string }` |
 | `POST /api/componentes/{tipo}/fotos` | Admin y superadmin | `multipart/form-data`, campo `foto`; jpg o png (400 "El formato de la imagen no es válido."), máx. 10 MB (413), máx. 10 fotos (409); responde 201 con el componente |
 | `DELETE /api/componentes/{tipo}/fotos/{idFoto}` | Admin y superadmin | — |
@@ -64,12 +73,16 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 |---|---|
 | `api/announcements.api.ts` | `createAnnouncement` y `listAnnouncements`; lectura pública sin token |
 | `api/announcements.mappers.ts` | Validación y traducción DTO → `Announcement` |
-| `components/publish-announcement-screen.tsx` | Formulario con título, contenido y **PUBLICAR**; al publicar limpia el formulario y confirma |
+| `components/publish-announcement-screen.tsx` | Formulario con título, contenido, prioridad (Alta / Media / Baja), fecha de finalización opcional y **PUBLICAR**; al publicar limpia el formulario y confirma |
+| `components/manage-announcements-screen.tsx` | HU-24: todos los anuncios con su estado (Visible / Oculto / Expirado), prioridad y vigencia; **OCULTAR** y **MOSTRAR**. Ruta `/announcements/manage`, desde Gestión de contenido |
+| `hooks/use-manage-announcements.ts` | Query de la vista del administrador, mutation de ocultar / mostrar y `getAnnouncementVisibilityErrorMessage` |
+| `components/expiration-field.tsx` / `.web.tsx` | Fecha y hora de finalización (HU-23): diálogos de fecha y hora en Android, selector en línea en iOS y `datetime-local` en web |
 | `components/announcements-list-screen.tsx` | HU-17: lista con carga, vacío, error y actualización manual |
 | `components/announcement-card.tsx` | Tarjeta con título, fecha de publicación y contenido completo |
+| `components/create-announcement-button.tsx` | Botón "+" del encabezado de Anuncios que abre `/announcements/new` (Acta 17); solo con `announcements:publish` |
 | `hooks/use-create-announcement.ts` | Mutation (invalida `announcementKeys.all`) y `getPublishAnnouncementErrorMessage` |
 | `hooks/use-announcements.ts` | Query pública `announcementKeys.list()` y manejo del error de lectura |
-| `schemas/announcement-form.schema.ts` | Título y contenido obligatorios (CA2), con longitudes máximas provisionales |
+| `schemas/announcement-form.schema.ts` | Título y contenido obligatorios (CA2), prioridad obligatoria (CA3) y fecha de finalización posterior a la actual (HU-23 CA3) |
 | `schemas/announcement-list.schema.ts` | Validación de la respuesta recibida del backend |
 | `types/` | `AnnouncementInput`, `Announcement` y DTO de respuesta |
 | `constants.ts` | Textos de HU-16/HU-17, `ANNOUNCEMENT_LIMITS` y `announcementKeys` |
@@ -77,6 +90,8 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 | `api/wetland-components.mappers.ts` | DTO de la API ↔ `WetlandComponent` (validado con Zod) |
 | `components/wetland-components-screen.tsx` | HU-14: un botón por componente |
 | `components/wetland-component-detail-screen.tsx` | HU-14: descripción, fotos y fecha (CA1) o mensaje "disponible próximamente" (CA2); **EDITAR CONTENIDO** con `content:manage` |
+| `components/create-wetland-component-screen.tsx` | HU-25: nombre, descripción y fotos; **GUARDAR COMPONENTE** crea el componente (`POST /api/componentes`) y luego sube las fotos. Se abre con **NUEVO COMPONENTE** en la lista de componentes |
+| `components/component-photos-field.tsx` | Fotos compartidas por HU-15 y HU-25: miniaturas, quitar, agregar y contador x de 10 |
 | `components/edit-wetland-component-screen.tsx` | HU-15: nombre, descripción, fotos (agregar / quitar, contador x de 10) y **GUARDAR CAMBIOS** |
 | `components/content-screen-header.tsx` | Encabezado con volver y título centrado |
 | `components/pick-component-photo.ts` | Galería con validación local de jpg/png y 10 MB |
@@ -92,6 +107,8 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 |---|---|
 | HU-16 CA2 (falta título o contenido) | `Debes completar el título y el contenido del anuncio.` |
 | HU-16 CA1 (local, la HU no define texto) | `El anuncio se publicó correctamente.` |
+| HU-16 CA3 (sin prioridad; igual al de la API) | `Debes seleccionar la prioridad del anuncio.` |
+| HU-23 CA3 (fecha pasada o actual; igual al de la API) | `La fecha de finalización debe ser posterior a la fecha actual.` |
 | Respaldo `403` sin mensaje | `No tienes permisos para publicar anuncios.` |
 | HU-14 CA2 (sin información publicada, `tieneContenido: false`) | `La información de esta sección estará disponible próximamente.` |
 | HU-15 CA1 | `El contenido del componente se actualizó correctamente.` |

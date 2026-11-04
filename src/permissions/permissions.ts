@@ -20,8 +20,9 @@ export type Permission =
 
 /**
  * Permisos que cada rol agrega a los que hereda.
- * `auth:login` es exclusivo del visitante y `sightings:create` del usuario registrado (la API responde
- * `403` si un administrador crea un reporte), así que se excluyen explícitamente de la herencia.
+ * `auth:login` es exclusivo del visitante, así que se excluye explícitamente de la herencia.
+ * `sightings:create` sí se hereda: desde HU-18 v2.0 también crean reportes el administrador y el
+ * superadministrador.
  */
 const OWN_PERMISSIONS: Record<Role, readonly Permission[]> = {
   visitor: ['auth:login', 'species:read'],
@@ -40,7 +41,7 @@ const OWN_PERMISSIONS: Record<Role, readonly Permission[]> = {
 };
 
 /** Permisos que no se heredan: solo los tiene el rol que los declara. */
-const NON_INHERITABLE: ReadonlySet<Permission> = new Set(['auth:login', 'sightings:create']);
+const NON_INHERITABLE: ReadonlySet<Permission> = new Set(['auth:login']);
 
 function resolvePermissions(role: Role): Set<Permission> {
   const parent = ROLE_PARENT[role];

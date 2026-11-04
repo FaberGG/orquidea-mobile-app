@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { type ReactNode, useState } from 'react';
 import { type Control, Controller, useForm, useWatch } from 'react-hook-form';
@@ -15,30 +14,48 @@ import { TextField } from '@/components/ui/text-field';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
+import { type SaveSpeciesProgress } from '../api';
 import {
   CONSERVATION_STATUSES,
   SPECIES_FORM_CATEGORY_OPTIONS,
   SPECIES_FORM_LABELS,
   SPECIES_MESSAGES,
 } from '../constants';
-import { speciesFormSchema, type SpeciesFormValues } from '../schemas/species-form.schema';
-import { type ConservationStatus, type SpeciesCategory, type SpeciesInput } from '../types';
+import {
+  SPECIES_PHOTO_LIMIT,
+  speciesFormSchema,
+  type SpeciesFormValues,
+} from '../schemas/species-form.schema';
+import {
+  type ConservationStatus,
+  type SpeciesCategory,
+  type SpeciesInput,
+  type SpeciesPhotoItem,
+} from '../types';
 import { ConservationBadge } from './conservation';
-import { pickSpeciesPhoto } from './pick-species-photo';
+import { pickSpeciesPhotos, type RejectedPhotoReason } from './pick-species-photo';
+import { SpeciesPhotosField } from './species-photos-field';
 
 export type SpeciesFormProps = {
   mode: 'create' | 'edit';
   title: string;
   submitLabel: string;
   defaultValues: SpeciesFormValues;
-  /** Foto que ya tiene la ficha (solo al editar). */
-  existingPhotoUrl: string | null;
+  /** Fotos que ya tiene la ficha, en orden (solo al editar). */
+  savedPhotos: SpeciesPhotoItem[];
   /** Estados que se ofrecen; al editar incluye el de la ficha aunque no esté en el diseño. */
   conservationOptions: readonly ConservationStatus[];
   isSubmitting: boolean;
   errorMessage?: string;
   successMessage?: string;
-  onSubmit: (input: SpeciesInput) => void;
+  /** `progress` avisa qué fotos ya se guardaron, para no repetirlas si el guardado falla a medias. */
+  onSubmit: (input: SpeciesInput, progress: SaveSpeciesProgress) => void;
+};
+
+const REJECTED_PHOTO_MESSAGES: Record<RejectedPhotoReason, string> = {
+  invalid: SPECIES_MESSAGES.invalidImage,
+  tooLarge: SPECIES_MESSAGES.imageTooLarge,
+  overLimit: SPECIES_MESSAGES.photoLimitReached,
 };
 
 const FIELD_ORDER = [
@@ -55,14 +72,15 @@ const FIELD_ORDER = [
 
 /**
  * Formulario compartido de HU-7 (crear) y HU-8 (editar), según el diseño de Figma "Crear ficha" y
- * "Editar ficha". Valida con el mismo esquema en ambos casos; la foto es obligatoria solo al crear.
+ * "Editar ficha". Valida con el mismo esquema en ambos casos. La ficha tiene siempre al menos una foto y
+ * hasta `SPECIES_PHOTO_LIMIT` (HU-7 v2.0); la primera es la principal.
  */
 export function SpeciesForm({
   mode,
   title,
   submitLabel,
   defaultValues,
-  existingPhotoUrl,
+  savedPhotos,
   conservationOptions,
   isSubmitting,
   errorMessage,
@@ -73,47 +91,86 @@ export function SpeciesForm({
     control,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<SpeciesFormValues>({
     resolver: zodResolver(speciesFormSchema),
     defaultValues,
   });
-  const photo = useWatch({ control, name: 'photo' });
+  const newPhotos = useWatch({ control, name: 'newPhotos' });
+  const removedPhotoIds = useWatch({ control, name: 'removedPhotoIds' });
   const [photoError, setPhotoError] = useState<string | undefined>(undefined);
+  // Fotos ya quitadas en el servidor durante un guardado que falló después: no se vuelven a quitar.
+  const [deletedPhotoIds, setDeletedPhotoIds] = useState<string[]>([]);
 
-  const choosePhoto = async () => {
-    const result = await pickSpeciesPhoto();
-    if (result.status === 'picked') {
-      setPhotoError(undefined);
-      setValue('photo', result.photo, { shouldDirty: true });
+  const keptPhotos = savedPhotos.filter(
+    (photo) => photo.id === null || !removedPhotoIds.includes(photo.id),
+  );
+  const photoCount = keptPhotos.length + newPhotos.length;
+
+  const addPhotos = async () => {
+    const result = await pickSpeciesPhotos(SPECIES_PHOTO_LIMIT - photoCount);
+    if (result.status === 'cancelled') return;
+    setPhotoError(result.rejected ? REJECTED_PHOTO_MESSAGES[result.rejected] : undefined);
+    if (result.photos.length > 0) {
+      setValue('newPhotos', [...newPhotos, ...result.photos], { shouldDirty: true });
     }
-    if (result.status === 'invalid') setPhotoError(SPECIES_MESSAGES.invalidImage);
-    if (result.status === 'tooLarge') setPhotoError(SPECIES_MESSAGES.imageTooLarge);
+  };
+
+  const progress: SaveSpeciesProgress = {
+    onPhotoRemoved: (photoId) => setDeletedPhotoIds((current) => [...current, photoId]),
+    onPhotoAdded: (added) =>
+      setValue(
+        'newPhotos',
+        getValues('newPhotos').filter((photo) => photo.uri !== added.uri),
+      ),
   };
 
   const submit = handleSubmit((values) => {
-    if (mode === 'create' && !values.photo) {
+    // Al crear se exige al menos una foto; al editar, quitar la última no se permite desde el campo.
+    if (mode === 'create' && photoCount === 0) {
       setPhotoError(SPECIES_MESSAGES.requiredFields);
       return;
     }
     if (values.category === null || values.conservationStatus === null) return;
-    onSubmit(toSpeciesInput(values, values.category, values.conservationStatus));
+    const pendingRemovals = values.removedPhotoIds.filter(
+      (id) => savedPhotos.some((photo) => photo.id === id) && !deletedPhotoIds.includes(id),
+    );
+    onSubmit(
+      toSpeciesInput(
+        { ...values, removedPhotoIds: pendingRemovals },
+        values.category,
+        values.conservationStatus,
+      ),
+      progress,
+    );
   });
 
   // El esquema produce un error por envío; se muestra uno solo, en el orden del formulario.
   const firstError = FIELD_ORDER.map((field) => errors[field]?.message).find(Boolean);
   const message = photoError ?? firstError ?? errorMessage;
-  const hasPhoto = photo !== null || existingPhotoUrl !== null;
 
   return (
     <FormScreen>
       <SpeciesFormHeader title={title} />
 
       <FormSection title={SPECIES_FORM_LABELS.photoSection}>
-        <PhotoField
-          photoUri={photo?.uri ?? existingPhotoUrl}
-          hasPhoto={hasPhoto}
-          onPress={choosePhoto}
+        <SpeciesPhotosField
+          savedPhotos={keptPhotos}
+          newPhotos={newPhotos}
+          onAdd={() => void addPhotos()}
+          onRemoveSaved={(photoId) => {
+            setPhotoError(undefined);
+            setValue('removedPhotoIds', [...removedPhotoIds, photoId], { shouldDirty: true });
+          }}
+          onRemoveNew={(uri) => {
+            setPhotoError(undefined);
+            setValue(
+              'newPhotos',
+              newPhotos.filter((photo) => photo.uri !== uri),
+              { shouldDirty: true },
+            );
+          }}
         />
       </FormSection>
 
@@ -222,7 +279,7 @@ export function SpeciesForm({
   );
 }
 
-/** Convierte los valores validados al cuerpo de la API. La foto nueva queda en `photo`. */
+/** Convierte los valores validados al cuerpo de la API. */
 function toSpeciesInput(
   values: SpeciesFormValues,
   category: SpeciesCategory,
@@ -238,7 +295,8 @@ function toSpeciesInput(
     diet: values.diet,
     wetlandRole: values.wetlandRole,
     conservationStatus,
-    photo: values.photo,
+    newPhotos: values.newPhotos,
+    removedPhotoIds: values.removedPhotoIds,
   };
 }
 
@@ -269,57 +327,6 @@ function FormSection({ title, children }: { title: string; children: ReactNode }
       </ThemedText>
       {children}
     </View>
-  );
-}
-
-function PhotoField({
-  photoUri,
-  hasPhoto,
-  onPress,
-}: {
-  photoUri: string | null;
-  hasPhoto: boolean;
-  onPress: () => void;
-}) {
-  const theme = useTheme();
-
-  if (hasPhoto && photoUri) {
-    return (
-      <View style={styles.photo}>
-        <Image source={{ uri: photoUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={SPECIES_FORM_LABELS.photoChange}
-          onPress={onPress}
-          style={[styles.changePhoto, { backgroundColor: 'rgba(0, 15, 10, 0.55)' }]}>
-          <Icon name="camera" size={16} color="onPrimary" />
-          <ThemedText type="captionBold" themeColor="onPrimary">
-            {SPECIES_FORM_LABELS.photoChange}
-          </ThemedText>
-        </Pressable>
-      </View>
-    );
-  }
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={SPECIES_FORM_LABELS.photoUpload}
-      onPress={onPress}
-      style={[
-        styles.photoEmpty,
-        { borderColor: theme.border, backgroundColor: theme.backgroundElement },
-      ]}>
-      <View style={[styles.photoBadge, { backgroundColor: theme.primarySoft }]}>
-        <Icon name="imagePlus" size={24} color="primary" />
-      </View>
-      <ThemedText type="smallBold" themeColor="primary">
-        {SPECIES_FORM_LABELS.photoUpload}
-      </ThemedText>
-      <ThemedText type="caption" themeColor="textMuted">
-        {SPECIES_FORM_LABELS.photoHint}
-      </ThemedText>
-    </Pressable>
   );
 }
 
@@ -425,39 +432,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.two,
-  },
-  photo: {
-    height: 200,
-    borderRadius: Radius.medium + Spacing.one,
-    overflow: 'hidden',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: Spacing.two,
-  },
-  changePhoto: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.one,
-    paddingHorizontal: 12,
-    paddingVertical: Spacing.one + 2,
-    borderRadius: Radius.full,
-  },
-  photoEmpty: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.one,
-    height: 160,
-    borderRadius: Radius.medium + Spacing.one,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-  },
-  photoBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.one,
   },
   conservationRow: {
     flexDirection: 'row',

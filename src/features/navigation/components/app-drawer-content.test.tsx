@@ -81,6 +81,15 @@ describe('AppDrawerContent (menú lateral)', () => {
     expect(screen.queryByText(NAVIGATION_LABELS.publishAnnouncement)).toBeNull();
   });
 
+  it('HU-24: el administrador ve "Gestionar anuncios" y el usuario no', async () => {
+    await renderAs('user');
+    expect(screen.queryByText(NAVIGATION_LABELS.manageAnnouncements)).toBeNull();
+
+    await renderAs('admin');
+    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.manageAnnouncements));
+    expect(router.navigate).toHaveBeenCalledWith('/announcements/manage');
+  });
+
   it('el administrador no ve la gestión de cuentas', async () => {
     await renderAs('admin');
     expect(screen.queryByText(NAVIGATION_LABELS.manageAccounts)).toBeNull();

@@ -135,11 +135,14 @@ describe('CommunityScreen — botón para escribir un reporte', () => {
     expect(router.push).toHaveBeenCalledWith('/sightings/new');
   });
 
-  it('el administrador no lo ve: la API no le permite crear reportes', async () => {
-    await renderAs('admin', <CommunityScreen />);
-    await screen.findByText('Aún no hay avistamientos publicados.');
-    expect(screen.queryByRole('button', { name: 'Escribir un reporte' })).toBeNull();
-  });
+  it.each(['admin', 'superadmin'] as const)(
+    'HU-18 v2.0: al %s también lo lleva al formulario',
+    async (role) => {
+      await renderAs(role, <CommunityScreen />);
+      await fireEvent.press(await screen.findByRole('button', { name: 'Escribir un reporte' }));
+      expect(router.push).toHaveBeenCalledWith('/sightings/new');
+    },
+  );
 });
 
 describe('CommunityScreen — moderación (HU-19)', () => {
