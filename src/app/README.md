@@ -27,6 +27,7 @@
 | [`(drawer)/`](%28drawer%29/README.md) | Todos | Menú lateral que envuelve [`(tabs)/`](%28drawer%29/%28tabs%29/README.md): Inicio (fichas), Comunidad, Mapas, Usuario |
 | [`species/`](species/README.md) | Todos | Detalle de ficha `species/[id].tsx` |
 | [`sightings/`](sightings/README.md) | Usuario (`new`) · Todos (`photo`) | Formulario de reporte y visor de foto (HE-07) |
+| [`stations/`](stations/README.md) | Todos | Listado y detalle de estaciones del sendero (HU-13); crear y editar en `(admin)/stations` |
 | `qr.tsx` | Todos | Escáner QR interno de HU-11; al verificar el UUID abre el detalle de especie |
 | [`(auth)/`](%28auth%29/README.md) | Sin sesión | Login, registro, recuperar contraseña |
 | [`(admin)/`](%28admin%29/README.md) | Admin y superadmin | Formularios de fichas y gestión de administradores |

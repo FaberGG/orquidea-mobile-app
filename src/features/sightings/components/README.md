@@ -29,7 +29,6 @@
 | `sighting-location-field.tsx` | Ubicación actual del teléfono con `expo-location` (ADR-0013) |
 | `info-note.tsx` | Nota verde de "Revisión administrativa" |
 | `pick-sighting-photo.ts` | Galería + validación jpg/png ≤ 10 MB |
-| `get-current-location.ts` | Permiso en primer plano + posición actual |
 | `format-sighting.ts` | Fecha `dd/mm/aaaa · hh:mm`, iniciales, coordenadas, enlace a mapas y proporción acotada |
 
 Pruebas: `sightings-screens.test.tsx` (criterios de HU-18, HU-19 y HU-20 por rol) y `format-sighting.test.ts`.

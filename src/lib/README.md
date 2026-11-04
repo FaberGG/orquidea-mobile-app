@@ -8,6 +8,7 @@ de la app usa estas abstracciones en vez de las librerías directamente, para po
 | [`api/`](api/README.md) | Cliente HTTP hacia la API REST |
 | [`storage/`](storage/README.md) | Almacenamiento seguro (token de sesión) y almacenamiento general |
 | [`query/`](query/README.md) | Configuración del cliente de caché de servidor (TanStack Query) |
+| [`location/`](location/README.md) | Posición actual del dispositivo (`expo-location`) |
 
 ## Reglas
 

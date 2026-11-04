@@ -104,6 +104,13 @@ describe('AppDrawerContent (menú lateral)', () => {
     expect(router.navigate).toHaveBeenCalledWith('/admins');
   });
 
+  it('Estaciones del sendero abre el listado para cualquier rol (HU-13)', async () => {
+    await renderAs('visitor');
+    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.stations));
+    expect(closeDrawer).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith('/stations');
+  });
+
   it('Componentes del humedal abre la consulta para cualquier rol (HU-14)', async () => {
     await renderAs('visitor');
     await fireEvent.press(screen.getByText(NAVIGATION_LABELS.wetlandComponents));

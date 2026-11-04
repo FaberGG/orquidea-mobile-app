@@ -15,7 +15,8 @@ export type Permission =
   | 'announcements:publish'
   | 'content:manage'
   | 'sightings:create'
-  | 'sightings:review';
+  | 'sightings:review'
+  | 'stations:manage';
 
 /**
  * Permisos que cada rol agrega a los que hereda.
@@ -34,6 +35,7 @@ const OWN_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'content:manage',
     'sightings:review',
     'species:download-qr',
+    'stations:manage',
   ],
   superadmin: ['admins:read', 'admins:create', 'admins:update'],
 };

@@ -5,11 +5,11 @@ import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
 import { MinTouchSize, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { getCurrentLocation } from '@/lib/location';
 
 import { SIGHTING_FORM_LABELS, SIGHTINGS_MESSAGES } from '../constants';
 import { type Coordinates } from '../types';
 import { formatCoordinates } from './format-sighting';
-import { getCurrentLocation } from './get-current-location';
 
 export type SightingLocationFieldProps = {
   value: Coordinates | null;

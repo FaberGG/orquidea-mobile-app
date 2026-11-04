@@ -18,6 +18,7 @@ const EXPECTED: Record<Permission, readonly Role[]> = {
   'content:manage': ['admin', 'superadmin'],
   'sightings:create': ['user', 'admin', 'superadmin'],
   'sightings:review': ['admin', 'superadmin'],
+  'stations:manage': ['admin', 'superadmin'],
 };
 
 describe('can', () => {
