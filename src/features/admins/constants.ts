@@ -6,6 +6,8 @@ export const ADMIN_MESSAGES = {
   lastNameTooLong: 'El apellido no puede superar 100 caracteres.',
   emailTooLong: 'El correo no puede superar 254 caracteres.',
   passwordMismatch: 'Las contraseñas no coinciden.',
+  weakPassword:
+    'La contraseña debe tener mínimo 8 caracteres e incluir al menos una mayúscula, una minúscula y un número.',
   duplicateEmail: 'Este correo ya está registrado.',
   limitReached:
     'Has alcanzado el número de administradores configurado. Contacta al equipo de desarrollo si necesitas ampliarlo.',
