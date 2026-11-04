@@ -113,6 +113,7 @@ describe('createSpecies (HU-7 v2.0, contrato inferido SCRUM-47)', () => {
 
 describe('updateSpecies (HU-8 v2.0)', () => {
   it('guarda el texto sin archivos, quita fotos, agrega las nuevas y relee la ficha', async () => {
+    jest.mocked(apiClient.put).mockResolvedValue(dto([F1, F2]));
     jest.mocked(apiClient.get).mockResolvedValue(dto([F2, F3]));
     jest.mocked(uploadMultipart).mockResolvedValue(dto([F2, F3]));
     const onPhotoRemoved = jest.fn();
@@ -143,7 +144,28 @@ describe('updateSpecies (HU-8 v2.0)', () => {
     expect(species.photos.map((item) => item.id)).toEqual(['f2', 'f3']);
   });
 
-  it('se detiene en el primer fallo y no avisa lo que no se guardó', async () => {
+  it('si reemplaza la única foto guardada, sube primero la nueva y luego quita la anterior', async () => {
+    jest.mocked(apiClient.put).mockResolvedValue(dto([F1]));
+    jest.mocked(apiClient.get).mockResolvedValue(dto([F2]));
+    jest.mocked(uploadMultipart).mockResolvedValue(dto([F1, F2]));
+
+    await updateSpecies(ID, { ...INPUT, removedPhotoIds: ['f1'], newPhotos: [photo('dos')] });
+
+    expect(uploadMultipart).toHaveBeenCalledWith(
+      'POST',
+      `/api/fichas-taxonomicas/${ID}/fotos`,
+      {},
+      { uri: 'file:///dos.jpg', mimeType: 'image/jpeg' },
+      'foto',
+    );
+    expect(apiClient.delete).toHaveBeenCalledWith(`/api/fichas-taxonomicas/${ID}/fotos/f1`);
+    expect(jest.mocked(uploadMultipart).mock.invocationCallOrder[0]).toBeLessThan(
+      jest.mocked(apiClient.delete).mock.invocationCallOrder[0],
+    );
+  });
+
+  it('se detiene en el primer fallo y no avisa lo que no se alcanzó a borrar', async () => {
+    jest.mocked(apiClient.put).mockResolvedValue(dto([F1]));
     jest.mocked(apiClient.delete).mockRejectedValueOnce(new Error('404'));
     const onPhotoRemoved = jest.fn();
 
@@ -155,6 +177,6 @@ describe('updateSpecies (HU-8 v2.0)', () => {
       ),
     ).rejects.toThrow('404');
     expect(onPhotoRemoved).not.toHaveBeenCalled();
-    expect(uploadMultipart).not.toHaveBeenCalled();
+    expect(uploadMultipart).toHaveBeenCalledTimes(1);
   });
 });

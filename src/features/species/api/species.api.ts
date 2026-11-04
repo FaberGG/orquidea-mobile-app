@@ -122,7 +122,8 @@ export type SaveSpeciesProgress = {
 
 /**
  * HU-8 (GUARDAR CAMBIOS). La API recibe el texto y cada foto por separado, así que se aplican en orden:
- * texto (`PUT`, sin archivos), fotos quitadas (primero, para no chocar con el límite de 10) y fotos nuevas.
+ * texto (`PUT`, sin archivos) y luego cambios de fotos. Si se reemplazan todas las fotos existentes, se
+ * mantiene siempre al menos una en el servidor (el backend no permite quedar temporalmente sin fotos).
  * Si un paso falla, los anteriores ya quedaron guardados: `progress` avisa cuáles, para no repetirlos al
  * reintentar. Al final se vuelve a leer la ficha para mostrar su estado real.
  */
@@ -131,14 +132,52 @@ export async function updateSpecies(
   input: SpeciesInput,
   progress: SaveSpeciesProgress = {},
 ): Promise<Species> {
-  await apiClient.put<unknown>(speciesPath(id), { formData: toSpeciesFormData(input) });
-  for (const photoId of input.removedPhotoIds) {
+  const updated = toSpecies(
+    await apiClient.put<unknown>(speciesPath(id), { formData: toSpeciesFormData(input) }),
+  );
+
+  const removablePhotoIds = updated.photos
+    .map((photo) => photo.id)
+    .filter((photoId): photoId is string => photoId !== null);
+  const photosToRemove = removablePhotoIds.filter((photoId) =>
+    input.removedPhotoIds.includes(photoId),
+  );
+  const remainingAfterRemovals = updated.photos.length - photosToRemove.length;
+  const photosToAdd = [...input.newPhotos];
+
+  const removePhoto = async (photoId: string) => {
     await deleteSpeciesPhoto(id, photoId);
     progress.onPhotoRemoved?.(photoId);
-  }
-  for (const photo of input.newPhotos) {
+  };
+  const addPhoto = async (photo: SpeciesPhoto) => {
     await addSpeciesPhoto(id, photo);
     progress.onPhotoAdded?.(photo);
+  };
+
+  if (remainingAfterRemovals === 0 && photosToRemove.length > 0) {
+    const replacement = photosToAdd.shift();
+    if (!replacement) {
+      throw new Error('No se puede quitar la única foto de una ficha sin agregar otra.');
+    }
+    if (updated.photos.length === 10) {
+      for (const photoId of photosToRemove.slice(0, -1)) {
+        await removePhoto(photoId);
+      }
+      await addPhoto(replacement);
+      await removePhoto(photosToRemove[photosToRemove.length - 1]);
+    } else {
+      await addPhoto(replacement);
+      for (const photoId of photosToRemove) {
+        await removePhoto(photoId);
+      }
+    }
+  } else {
+    for (const photoId of photosToRemove) {
+      await removePhoto(photoId);
+    }
+  }
+  for (const photo of photosToAdd) {
+    await addPhoto(photo);
   }
   return getSpecies(id);
 }
