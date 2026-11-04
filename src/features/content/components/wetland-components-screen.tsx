@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { Can } from '@/permissions';
 
 import { CONTENT_MESSAGES, WETLAND_COMPONENT_ICONS, WETLAND_LABELS } from '../constants';
 import { useWetlandComponents } from '../hooks';
@@ -52,6 +53,15 @@ export function WetlandComponentsScreen() {
           ))}
         </View>
       )}
+
+      {/* HU-25: crear un componente nuevo (administrador y superadministrador). */}
+      <Can permission="content:manage">
+        <Button
+          label={WETLAND_LABELS.newComponentButton}
+          variant="secondary"
+          onPress={() => router.push('/wetland/new')}
+        />
+      </Can>
     </FormScreen>
   );
 }

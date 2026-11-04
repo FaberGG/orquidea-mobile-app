@@ -39,6 +39,7 @@ Acordado con Juan Sebastián (backend) por chat; **aún no está en `docs/api/op
 |---|---|---|
 | `GET /api/componentes` | Público | Lista de componentes |
 | `GET /api/componentes/{tipo}` | Público | Ej. `/api/componentes/AVES`; un tipo inexistente responde error |
+| `POST /api/componentes` | Admin y superadmin | HU-25: `{ "nombre", "descripcion" }` (máx. 100 / 5000); responde 201 con el componente y su `tipo` (código generado del nombre, p. ej. `COMPONENTE_HIDRICO`); 409 "Ya existe un componente con ese nombre." |
 | `PUT /api/componentes/{tipo}` | Admin y superadmin | `{ "nombre": string, "descripcion": string }` |
 | `POST /api/componentes/{tipo}/fotos` | Admin y superadmin | `multipart/form-data`, campo `foto`; jpg o png (400 "El formato de la imagen no es válido."), máx. 10 MB (413), máx. 10 fotos (409); responde 201 con el componente |
 | `DELETE /api/componentes/{tipo}/fotos/{idFoto}` | Admin y superadmin | — |
@@ -89,6 +90,8 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 | `api/wetland-components.mappers.ts` | DTO de la API ↔ `WetlandComponent` (validado con Zod) |
 | `components/wetland-components-screen.tsx` | HU-14: un botón por componente |
 | `components/wetland-component-detail-screen.tsx` | HU-14: descripción, fotos y fecha (CA1) o mensaje "disponible próximamente" (CA2); **EDITAR CONTENIDO** con `content:manage` |
+| `components/create-wetland-component-screen.tsx` | HU-25: nombre, descripción y fotos; **GUARDAR COMPONENTE** crea el componente (`POST /api/componentes`) y luego sube las fotos. Se abre con **NUEVO COMPONENTE** en la lista de componentes |
+| `components/component-photos-field.tsx` | Fotos compartidas por HU-15 y HU-25: miniaturas, quitar, agregar y contador x de 10 |
 | `components/edit-wetland-component-screen.tsx` | HU-15: nombre, descripción, fotos (agregar / quitar, contador x de 10) y **GUARDAR CAMBIOS** |
 | `components/content-screen-header.tsx` | Encabezado con volver y título centrado |
 | `components/pick-component-photo.ts` | Galería con validación local de jpg/png y 10 MB |

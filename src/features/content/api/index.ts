@@ -9,6 +9,9 @@ export {
 export { toAdminAnnouncementList, toAnnouncementList } from './announcements.mappers';
 export {
   addWetlandComponentPhoto,
+  createWetlandComponent,
+  type CreateWetlandComponentInput,
+  type CreateWetlandComponentResult,
   deleteWetlandComponentPhoto,
   getWetlandComponent,
   listWetlandComponents,

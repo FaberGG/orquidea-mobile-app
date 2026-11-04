@@ -2,13 +2,14 @@ import { apiClient, uploadMultipart } from '@/lib/api';
 
 import { type WetlandComponentChanges } from '../types';
 import {
+  createWetlandComponent,
   getWetlandComponent,
   listWetlandComponents,
   saveWetlandComponentChanges,
 } from './wetland-components.api';
 
 jest.mock('@/lib/api', () => ({
-  apiClient: { get: jest.fn(), put: jest.fn(), delete: jest.fn() },
+  apiClient: { get: jest.fn(), post: jest.fn(), put: jest.fn(), delete: jest.fn() },
   uploadMultipart: jest.fn(),
 }));
 
@@ -100,5 +101,61 @@ describe('saveWetlandComponentChanges (HU-15)', () => {
     expect(onPhotoAdded).toHaveBeenCalledTimes(1);
     expect(onPhotoAdded).toHaveBeenCalledWith(PHOTO);
     expect(apiClient.get).not.toHaveBeenCalled();
+  });
+});
+
+describe('createWetlandComponent (HU-25)', () => {
+  const HIDRICO = {
+    ...AVES_DTO,
+    tipo: 'COMPONENTE_HIDRICO',
+    nombre: 'Componente hídrico',
+    fotos: [],
+  };
+
+  it('crea el componente con nombre y descripción y luego sube las fotos', async () => {
+    jest.mocked(apiClient.post).mockResolvedValue(HIDRICO);
+    jest.mocked(uploadMultipart).mockResolvedValue(undefined);
+
+    const result = await createWetlandComponent({
+      name: ' Componente hídrico ',
+      description: ' Agua del humedal ',
+      photos: [PHOTO],
+    });
+
+    expect(apiClient.post).toHaveBeenCalledWith('/api/componentes', {
+      body: { nombre: 'Componente hídrico', descripcion: 'Agua del humedal' },
+    });
+    expect(uploadMultipart).toHaveBeenCalledWith(
+      'POST',
+      '/api/componentes/COMPONENTE_HIDRICO/fotos',
+      {},
+      { uri: 'file:///garza.jpg', mimeType: 'image/jpeg' },
+      'foto',
+    );
+    expect(result.component.type).toBe('COMPONENTE_HIDRICO');
+    expect(result.photoError).toBeNull();
+  });
+
+  it('si una foto falla, conserva el componente creado y devuelve el error', async () => {
+    const failure = new Error('413');
+    jest.mocked(apiClient.post).mockResolvedValue(HIDRICO);
+    jest.mocked(uploadMultipart).mockRejectedValue(failure);
+
+    const result = await createWetlandComponent({
+      name: 'Componente hídrico',
+      description: 'Agua',
+      photos: [PHOTO],
+    });
+
+    expect(result.component.type).toBe('COMPONENTE_HIDRICO');
+    expect(result.photoError).toBe(failure);
+  });
+
+  it('si el nombre ya existe, la creación falla y no sube fotos', async () => {
+    jest.mocked(apiClient.post).mockRejectedValue(new Error('409'));
+    await expect(
+      createWetlandComponent({ name: 'Aves', description: 'x', photos: [PHOTO] }),
+    ).rejects.toThrow('409');
+    expect(uploadMultipart).not.toHaveBeenCalled();
   });
 });

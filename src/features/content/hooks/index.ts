@@ -13,3 +13,7 @@ export {
   useAdminAnnouncements,
   useChangeAnnouncementVisibility,
 } from './use-manage-announcements';
+export {
+  getCreateWetlandComponentErrorMessage,
+  useCreateWetlandComponent,
+} from './use-create-wetland-component';

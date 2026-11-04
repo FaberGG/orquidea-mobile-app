@@ -38,6 +38,13 @@ export const CONTENT_MESSAGES = {
   componentNotFound: 'No encontramos este componente del humedal.',
   componentsLoadError: 'No pudimos cargar los componentes del humedal.',
   componentsEmpty: 'Aún no hay componentes del humedal.',
+  // HU-25 CA3 (mismo texto que la API con 409)
+  componentNameDuplicated: 'Ya existe un componente con ese nombre.',
+  // HU-25 CA1 (la HU no define texto: confirmación local)
+  componentCreated: 'El componente se creó correctamente.',
+  componentCreatedWithoutSomePhotos:
+    'El componente se creó, pero algunas fotos no se pudieron subir. Puedes agregarlas desde EDITAR CONTENIDO.',
+  componentCreateForbidden: 'No tienes permisos para crear componentes.',
 } as const;
 
 /** Textos de la interfaz de HE-06. */
@@ -108,6 +115,13 @@ export const WETLAND_LABELS = {
   newPhotoBadge: 'Nueva',
   // HU-15 CA1: "Clic en el botón GUARDAR CAMBIOS."
   saveButton: 'GUARDAR CAMBIOS',
+  // HU-25
+  createTitle: 'Nuevo componente',
+  createSubtitle:
+    'Agrega un componente del humedal con su nombre, descripción y fotos. Aparecerá en la sección de componentes.',
+  newComponentButton: 'NUEVO COMPONENTE',
+  // HU-25 CA1: "Clic en el botón GUARDAR COMPONENTE."
+  createButton: 'GUARDAR COMPONENTE',
 } as const;
 
 /** Límites de HU-15. Fotos: acordados con el backend (409 al pasar de 10, 413 sobre 10 MB). */
@@ -115,8 +129,9 @@ export const WETLAND_COMPONENT_LIMITS = {
   maxPhotos: 10,
   photoMaxBytes: 10 * 1024 * 1024,
   photoMimeTypes: ['image/jpeg', 'image/png'],
-  nameMaxLength: 80,
-  descriptionMaxLength: 4000,
+  // Los mismos que valida la API (ComponentCreateRequest / ComponentUpdateRequest)
+  nameMaxLength: 100,
+  descriptionMaxLength: 5000,
 } as const;
 
 /** Ícono de cada componente conocido; los demás usan el genérico del humedal. */
