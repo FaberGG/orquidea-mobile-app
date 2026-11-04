@@ -31,6 +31,7 @@ const AZULEJO: Species = {
   wetlandRole: 'Dispersor de semillas',
   conservationStatus: 'LC',
   photoUrl: null,
+  photos: [],
 };
 
 const CARACOL: Species = {
@@ -135,6 +136,24 @@ describe('SpeciesDetailScreen (HU-10 detalle, HU-8 y HU-9 por rol)', () => {
     });
     expect(await screen.findByText('Azulejo')).toBeTruthy();
   }
+
+  it('muestra todas las fotos de la ficha con su posición (HU-7 v2.0)', async () => {
+    jest.mocked(getSpecies).mockResolvedValue({
+      ...AZULEJO,
+      photoUrl: 'http://localhost:9000/f1.jpg',
+      photos: [
+        { id: 'f1', url: 'http://localhost:9000/f1.jpg' },
+        { id: 'f2', url: 'http://localhost:9000/f2.jpg' },
+      ],
+    });
+    await render(<SpeciesDetailScreen id="ave-1" />, {
+      wrapper: (props) => <Providers role="visitor" {...props} />,
+    });
+
+    expect(await screen.findByText('1/2')).toBeTruthy();
+    expect(screen.getByLabelText('Foto 1 de 2 de Azulejo')).toBeTruthy();
+    expect(screen.getByLabelText('Foto 2 de 2 de Azulejo')).toBeTruthy();
+  });
 
   it('muestra la taxonomía y el rol en el humedal solo como texto', async () => {
     await renderDetail('visitor');

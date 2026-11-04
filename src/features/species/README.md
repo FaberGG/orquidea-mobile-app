@@ -10,7 +10,7 @@ HE-3 → "Listar fichas" y "Detalle ficha".
 | HU | Descripción | Rol | Estado |
 |---|---|---|---|
 | HU-10 | Listado por categoría (chips con ícono) y detalle | Todos | ✅ Implementado (sin búsqueda: la API aún no la tiene) |
-| HU-7 | Crear ficha | Admin+ | ✅ Formulario de `(admin)/species/new` (Figma "Crear ficha") |
+| HU-7 | Crear ficha | Admin+ | ✅ Formulario de `(admin)/species/new` (Figma "Crear ficha"). v2.0: varias fotos, con contrato inferido ([`fichas-varias-fotos.md`](../../../docs/api/fichas-varias-fotos.md)) |
 | HU-8 | Editar ficha | Admin+ | ✅ Formulario de `(admin)/species/[id]/edit` (Figma "Editar ficha") |
 | HU-9 | Eliminar ficha | Admin+ | Botón visible con `<Can>`; deshabilitado: la API no tiene `DELETE` (docs/api B1) |
 | HU-11 | Escanear QR para consultar la ficha | Todos | Escáner interno implementado; pruebas físicas pendientes |
@@ -19,7 +19,7 @@ HE-3 → "Listar fichas" y "Detalle ficha".
 ## Modelo
 
 `Species`: `id`, `category` (`bird` | `plant` | `insect` | `mammal` | `reptile` | `amphibian` | `fungus`), `order`, `family`, `genus`, `scientificName`,
-`vernacularName`, `diet`, `wetlandRole`, `conservationStatus`, `photoUrl`. Los campos opcionales son `null`
+`vernacularName`, `diet`, `wetlandRole`, `conservationStatus`, `photoUrl` (principal) y `photos` (todas, en orden). Los campos opcionales son `null`
 cuando la API los envía vacíos.
 
 El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el rol de cada especie.

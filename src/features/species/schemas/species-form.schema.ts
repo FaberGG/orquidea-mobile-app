@@ -5,10 +5,12 @@ import { CONSERVATION_CODES, SPECIES_FORM_CATEGORIES, SPECIES_MESSAGES } from '.
 /** HU-7 CA3 y docs/api: la foto debe ser jpg o png y no superar 10 MB. */
 export const SPECIES_PHOTO_MAX_BYTES = 10 * 1024 * 1024;
 export const SPECIES_PHOTO_MIME_TYPES = ['image/jpeg', 'image/png'] as const;
+/** HU-7 v2.0 (SCRUM-47): fotos por ficha, igual que los componentes del humedal. */
+export const SPECIES_PHOTO_LIMIT = 10;
 
 const requiredText = z.string().trim().min(1, SPECIES_MESSAGES.requiredFields);
 
-/** Foto elegida en el dispositivo. `null` = no hay foto nueva (en edición se conserva la actual). */
+/** Foto elegida en el dispositivo, aún no subida. */
 export const speciesPhotoSchema = z.object({
   uri: z.string().min(1),
   fileName: z.string().nullable(),
@@ -17,12 +19,13 @@ export const speciesPhotoSchema = z.object({
 });
 
 /**
- * Formulario de crear y editar ficha (HU-7, HU-8). Los campos obligatorios son los de `TaxonRequest`;
- * la foto es obligatoria solo al crear.
+ * Formulario de crear y editar ficha (HU-7, HU-8). Los campos obligatorios son los de `TaxonRequest`.
+ * Las fotos (una o más) las valida el formulario, porque al editar dependen de las ya guardadas.
  */
 export const speciesFormSchema = z
   .object({
-    photo: speciesPhotoSchema.nullable(),
+    newPhotos: z.array(speciesPhotoSchema).max(SPECIES_PHOTO_LIMIT),
+    removedPhotoIds: z.array(z.string()),
     category: z.enum(SPECIES_FORM_CATEGORIES).nullable(),
     vernacularName: requiredText,
     scientificName: requiredText,

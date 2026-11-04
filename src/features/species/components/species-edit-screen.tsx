@@ -19,7 +19,8 @@ import { SpeciesForm } from './species-form';
 /** Valores iniciales del formulario a partir de una ficha existente. */
 export function toSpeciesFormValues(species: Species): SpeciesFormValues {
   return {
-    photo: null,
+    newPhotos: [],
+    removedPhotoIds: [],
     category: species.category,
     vernacularName: species.vernacularName,
     scientificName: species.scientificName,
@@ -73,12 +74,12 @@ export function SpeciesEditScreen({ id }: { id: string }) {
       title={SPECIES_FORM_LABELS.editTitle}
       submitLabel={SPECIES_FORM_LABELS.editSubmit}
       defaultValues={toSpeciesFormValues(data)}
-      existingPhotoUrl={data.photoUrl}
+      savedPhotos={data.photos}
       conservationOptions={conservationOptionsFor(data.conservationStatus)}
       isSubmitting={update.isPending}
       errorMessage={update.isError ? getSpeciesSaveErrorMessage(update.error) : undefined}
       successMessage={update.isSuccess ? SPECIES_MESSAGES.updateSuccess : undefined}
-      onSubmit={(input) => update.mutate(input)}
+      onSubmit={(input, progress) => update.mutate({ input, progress })}
     />
   );
 }

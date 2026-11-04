@@ -3,4 +3,5 @@ export {
   getSpeciesSaveErrorMessage,
   useCreateSpecies,
   useUpdateSpecies,
+  type UpdateSpeciesVariables,
 } from './use-species-mutations';
