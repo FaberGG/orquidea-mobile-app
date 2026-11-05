@@ -8,7 +8,7 @@ import { SPECIES_QR_LABELS } from '../constants';
 export function ScanSpeciesQrButton() {
   return (
     <HeaderIconButton
-      icon="camera"
+      icon="qrCode"
       accessibilityLabel={SPECIES_QR_LABELS.title}
       onPress={() => router.push('/qr')}
     />

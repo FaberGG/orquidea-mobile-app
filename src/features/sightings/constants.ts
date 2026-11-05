@@ -4,7 +4,7 @@ import { type Kingdom } from './types';
 export const SIGHTINGS_LABELS = {
   // Pestaña Comunidad (Figma: "Comunidad · Usuario" y "Comunidad · Administrador")
   communityTitle: 'Comunidad',
-  announcements: 'Anuncios (próximamente)',
+  announcements: 'Anuncios',
   tabFeed: 'Comunidad',
   tabModeration: 'Moderación',
   newReport: 'Escribir un reporte',

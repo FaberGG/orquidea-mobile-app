@@ -14,6 +14,9 @@ export function toAnnouncementList(response: unknown): Announcement[] {
     title: dto.titulo,
     description: dto.descripcion,
     publishedAt: dto.fechaCreacion,
+    expiresAt: dto.fechaExpiracion ?? null,
+    publisherName: dto.nombrePublicador?.trim() || null,
+    priority: dto.prioridad === 'ALTA' ? 'high' : dto.prioridad === 'MEDIA' ? 'medium' : 'low',
   }));
 }
 

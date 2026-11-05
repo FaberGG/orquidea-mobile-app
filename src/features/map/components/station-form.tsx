@@ -182,7 +182,7 @@ export function StationForm({
       {message === undefined && successMessage !== undefined && (
         <FormMessage message={successMessage} variant="success" />
       )}
-      <Button label={submitLabel} onPress={submit} isLoading={isSubmitting} />
+      <Button label={submitLabel} onPress={() => submit()} isLoading={isSubmitting} />
     </FormScreen>
   );
 }

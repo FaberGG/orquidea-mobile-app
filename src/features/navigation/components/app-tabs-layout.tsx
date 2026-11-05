@@ -65,7 +65,7 @@ export function AppTabsLayout() {
               title={NAVIGATION_LABELS.tabCommunity}
               menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
               onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              right={<AnnouncementsButton />}
+              right={<AnnouncementsButton onPress={() => navigation.navigate('announcements')} />}
             />
           ),
         }}
@@ -81,7 +81,6 @@ export function AppTabsLayout() {
       <Tabs.Screen
         name="announcements"
         options={{
-          href: null,
           title: NAVIGATION_LABELS.announcements,
           header: ({ navigation }) => (
             <AppHeader

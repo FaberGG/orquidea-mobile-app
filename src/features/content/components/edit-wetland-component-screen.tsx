@@ -191,7 +191,11 @@ function EditWetlandComponentForm({ component }: { component: WetlandComponent }
         hasSaved && <FormMessage variant="success" message={CONTENT_MESSAGES.componentUpdated} />
       )}
 
-      <Button label={WETLAND_LABELS.saveButton} onPress={onSubmit} isLoading={save.isPending} />
+      <Button
+        label={WETLAND_LABELS.saveButton}
+        onPress={() => onSubmit()}
+        isLoading={save.isPending}
+      />
     </FormScreen>
   );
 }

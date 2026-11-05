@@ -16,3 +16,5 @@
 | `Collapsible` | Sección expandible (de la plantilla; chevron con `Icon`) |
 
 Los integradores con React Hook Form (campos controlados) también pueden vivir aquí si no dependen del dominio.
+
+`Icon` distingue `qrCode` (acceso al escáner QR) de `camera` (fotografías).

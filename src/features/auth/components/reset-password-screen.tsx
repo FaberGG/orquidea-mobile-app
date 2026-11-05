@@ -137,7 +137,7 @@ export function ResetPasswordScreen() {
               autoComplete="new-password"
               textContentType="newPassword"
               returnKeyType="go"
-              onSubmitEditing={onSubmit}
+              onSubmitEditing={() => onSubmit()}
             />
           )}
         />
@@ -147,7 +147,7 @@ export function ResetPasswordScreen() {
 
       <Button
         label={AUTH_LABELS.resetButton}
-        onPress={onSubmit}
+        onPress={() => onSubmit()}
         isLoading={resetMutation.isPending}
       />
 

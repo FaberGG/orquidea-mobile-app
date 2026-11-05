@@ -90,7 +90,13 @@ export const CONTENT_LABELS = {
   announcementsRetry: 'REINTENTAR',
   announcementsRefreshButton: 'ACTUALIZAR',
   announcementsPublishedPrefix: 'Publicado el',
+  announcementsPublisherPrefix: 'por',
+  announcementsAvailableUntilPrefix: 'Disponible hasta el',
   announcementsRefresh: 'Actualizar anuncios',
+  announcementPriority: (priority: 'high' | 'medium' | 'low') =>
+    `Prioridad ${priority === 'high' ? 'alta' : priority === 'medium' ? 'media' : 'baja'}`,
+  announcementPriorityLabel: (priority: 'high' | 'medium' | 'low') =>
+    priority === 'high' ? 'Alta' : priority === 'medium' ? 'Media' : 'Baja',
 } as const;
 
 /** Textos de la interfaz de HU-14 y HU-15 (sin diseño en Figma). */

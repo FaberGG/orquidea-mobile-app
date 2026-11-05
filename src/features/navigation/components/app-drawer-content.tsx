@@ -23,7 +23,7 @@ function getInitials(user: User) {
 /**
  * Contenido del menú lateral. Sin diseño en Figma: hereda sus tokens (Nunito, Lucide, neutros y
  * green-500, radios completos de los chips). Arriba la identidad (usuario con su rol, o visitante con
- * acceso a iniciar sesión); debajo los destinos secundarios. Los que aún no existen se muestran como
+ * acceso a iniciar sesión); debajo los destinos secundarios. Los destinos no implementados se muestran como
  * "Próximamente"; la administración solo aparece con su permiso.
  */
 export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
@@ -32,8 +32,13 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
   const { user } = useSession();
 
   const goTo = (href: Href) => {
-    navigation.closeDrawer();
     router.navigate(href);
+    navigation.closeDrawer();
+  };
+
+  const goToAnnouncements = () => {
+    navigation.closeDrawer();
+    router.push('/(drawer)/(tabs)/announcements');
   };
 
   return (
@@ -108,7 +113,7 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
             <DrawerItem
               icon="visibility"
               label={NAVIGATION_LABELS.manageAnnouncements}
-              onPress={() => goTo('/announcements/manage')}
+              onPress={() => goTo('/announcements/manage' as Href)}
             />
           </Can>
         </DrawerSection>
@@ -120,21 +125,21 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
           label={NAVIGATION_LABELS.wetlandComponents}
           onPress={() => goTo('/wetland' as Href)}
         />
-        {/* Provisional hasta que el mapa (HU-12) sea la entrada a las estaciones. */}
+        {/* Vista alternativa al mapa (HU-12) para consultar y gestionar estaciones. */}
         <DrawerItem
           icon="location"
           label={NAVIGATION_LABELS.stations}
-          onPress={() => goTo('/stations')}
+          onPress={() => goTo('/stations' as Href)}
         />
         <DrawerItem
-          icon="camera"
+          icon="qrCode"
           label={NAVIGATION_LABELS.scanSpeciesQr}
           onPress={() => goTo('/qr')}
         />
         <DrawerItem
           icon="announcements"
           label={NAVIGATION_LABELS.announcements}
-          onPress={() => goTo('/announcements')}
+          onPress={goToAnnouncements}
         />
         <DrawerItem icon="offline" label={NAVIGATION_LABELS.offlineDownloads} isComingSoon />
       </DrawerSection>

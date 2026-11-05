@@ -9,7 +9,7 @@ import { RoleProvider, type Role } from '@/permissions';
 import { NAVIGATION_LABELS } from '../constants';
 import { AppDrawerContent } from './app-drawer-content';
 
-jest.mock('expo-router', () => ({ router: { navigate: jest.fn() } }));
+jest.mock('expo-router', () => ({ router: { navigate: jest.fn(), push: jest.fn() } }));
 jest.mock('@/features/auth', () => ({
   useSession: jest.fn(),
   ROLE_LABELS: {
@@ -122,7 +122,7 @@ describe('AppDrawerContent (menú lateral)', () => {
     await renderAs('visitor');
     await fireEvent.press(screen.getByText(NAVIGATION_LABELS.announcements));
     expect(closeDrawer).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith('/announcements');
+    expect(router.push).toHaveBeenCalledWith('/(drawer)/(tabs)/announcements');
   });
 
   it('los destinos sin implementar no son presionables', async () => {

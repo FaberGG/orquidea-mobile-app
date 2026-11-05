@@ -66,7 +66,7 @@ export function ForgotPasswordScreen() {
               keyboardType="email-address"
               textContentType="emailAddress"
               returnKeyType="send"
-              onSubmitEditing={onSubmit}
+              onSubmitEditing={() => onSubmit()}
             />
           )}
         />
@@ -76,7 +76,7 @@ export function ForgotPasswordScreen() {
 
       <Button
         label={AUTH_LABELS.sendButton}
-        onPress={onSubmit}
+        onPress={() => onSubmit()}
         isLoading={requestMutation.isPending}
       />
 

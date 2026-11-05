@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 
 import { STATION_LABELS } from '../constants';
 import { getStationSaveErrorMessage, useCreateStation } from '../hooks';
@@ -33,7 +33,10 @@ export function StationCreateScreen() {
       onSubmit={(input) =>
         create.mutate(input, {
           onSuccess: (station) =>
-            router.replace({ pathname: '/stations/[id]', params: { id: station.id } }),
+            router.replace({
+              pathname: '/stations/[id]',
+              params: { id: station.id },
+            } as unknown as Href),
         })
       }
     />

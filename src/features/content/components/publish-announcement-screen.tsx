@@ -188,7 +188,7 @@ export function PublishAnnouncementScreen() {
 
       <Button
         label={CONTENT_LABELS.publishButton}
-        onPress={onSubmit}
+        onPress={() => onSubmit()}
         isLoading={publish.isPending}
       />
     </FormScreen>

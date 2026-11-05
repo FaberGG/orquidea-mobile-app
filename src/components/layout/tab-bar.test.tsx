@@ -18,10 +18,10 @@ const ROUTES = [
 ];
 
 function renderTabBar(index: number) {
-  const navigation = {
+  const emitter = {
     emit: jest.fn(() => ({ defaultPrevented: false })),
-    navigate: jest.fn(),
   };
+  const navigateToTab = jest.fn();
   const descriptors = Object.fromEntries(
     ROUTES.map((route) => [
       route.key,
@@ -39,10 +39,11 @@ function renderTabBar(index: number) {
   const props = {
     state: { index, routes: ROUTES.map(({ key, name }) => ({ key, name })) },
     descriptors,
-    navigation,
+    emitter,
+    navigateToTab,
   } as unknown as BottomTabBarProps;
   return {
-    navigation,
+    navigateToTab,
     render: () =>
       render(
         <SafeAreaProvider initialMetrics={SAFE_AREA_METRICS}>
@@ -64,11 +65,11 @@ describe('TabBar', () => {
   });
 
   it('navega al presionar una pestaña inactiva', async () => {
-    const { navigation, render: renderIt } = renderTabBar(0);
+    const { navigateToTab, render: renderIt } = renderTabBar(0);
     await renderIt();
 
     await fireEvent.press(screen.getByRole('tab', { name: 'Mapas' }));
-    expect(navigation.navigate).toHaveBeenCalledWith('map', undefined);
+    expect(navigateToTab).toHaveBeenCalledWith('map-1');
   });
 
   it('oculta la ruta de administradores de la barra inferior', async () => {

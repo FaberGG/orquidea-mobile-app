@@ -7,3 +7,4 @@ export {
   useStations,
   useUpdateStation,
 } from './use-stations';
+export { useTrailMap } from './use-trail-map';

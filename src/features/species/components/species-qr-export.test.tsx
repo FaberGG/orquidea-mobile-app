@@ -149,10 +149,12 @@ describe('SpeciesQrExport', () => {
     });
     const view = await renderExport();
     await fireEvent.press(screen.getByRole('button', { name: LABELS.generate }));
-    await waitFor(() => expect(signal).toBeDefined());
-    expect(
-      screen.getByRole('button', { name: LABELS.generate }).props.accessibilityState.disabled,
-    ).toBe(true);
+    await waitFor(() => {
+      expect(signal).toBeDefined();
+      expect(
+        screen.getByRole('button', { name: LABELS.generate }).props.accessibilityState.disabled,
+      ).toBe(true);
+    });
     await view.unmount();
     expect(signal?.aborted).toBe(true);
     await act(async () => {

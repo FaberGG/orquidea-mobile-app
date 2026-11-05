@@ -145,7 +145,11 @@ export function CreateWetlandComponentScreen() {
         )
       )}
 
-      <Button label={WETLAND_LABELS.createButton} onPress={onSubmit} isLoading={create.isPending} />
+      <Button
+        label={WETLAND_LABELS.createButton}
+        onPress={() => void onSubmit()}
+        isLoading={create.isPending}
+      />
     </FormScreen>
   );
 }

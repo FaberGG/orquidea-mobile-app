@@ -175,7 +175,11 @@ export function CreateAdminScreen() {
         />
       </View>
       {errorMessage !== undefined && <FormMessage message={errorMessage} />}
-      <Button label={ADMIN_LABELS.create} onPress={onSubmit} isLoading={mutation.isPending} />
+      <Button
+        label={ADMIN_LABELS.create}
+        onPress={() => onSubmit()}
+        isLoading={mutation.isPending}
+      />
     </FormScreen>
   );
 }

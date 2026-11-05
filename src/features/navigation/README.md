@@ -19,6 +19,7 @@ permanece el mismo menú lateral y la misma barra inferior de cuatro destinos.
 
 `Escanear QR` está disponible desde el menú y el encabezado de Inicio para visitantes y usuarios con sesión;
 abre la ruta raíz `/qr`, fuera de los guards de autenticación y administración.
+Ambos accesos usan el ícono `qrCode` para identificar el lector de códigos.
 
 ## Diseño del menú lateral
 

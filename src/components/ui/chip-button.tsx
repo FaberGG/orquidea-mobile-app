@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, type AccessibilityRole } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon, type IconName } from '@/components/ui/icon';
@@ -11,7 +11,7 @@ export type ChipButtonProps = {
   selected: boolean;
   onPress: () => void;
   /** `tab` para filtros (por defecto); `radio` para elegir una opción en un formulario. */
-  accessibilityRole?: Extract<AccessibilityRole, 'tab' | 'radio'>;
+  accessibilityRole?: 'tab' | 'radio';
 };
 
 /** Chip de filtro: verde de marca cuando está activo (Figma: "Todos"), neutro-100 cuando no. */

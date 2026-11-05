@@ -49,6 +49,13 @@ module.exports = defineConfig([
   expoConfig,
   eslintPluginPrettierRecommended,
   {
+    settings: {
+      'import/resolver': {
+        typescript: { alwaysTryTypes: true, project: './tsconfig.json' },
+      },
+    },
+  },
+  {
     ignores: [
       'dist/*',
       'web-build/*',

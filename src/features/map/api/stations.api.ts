@@ -3,7 +3,7 @@ import { apiClient, uploadMultipart } from '@/lib/api';
 import { type Station, type StationInput } from '../types';
 import { toStation, toStationFields, toStationFormData, toStationList } from './stations.mappers';
 
-// HU-13 (SCRUM-40). El backend aún no existe: contrato inferido en docs/api/estaciones.md.
+// HU-13 (SCRUM-40). Contrato integrado en el backend compartido `dev`.
 const STATIONS_PATH = '/api/estaciones';
 
 const stationPath = (id: string) => `${STATIONS_PATH}/${encodeURIComponent(id)}`;

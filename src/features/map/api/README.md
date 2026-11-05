@@ -1,7 +1,7 @@
 # src/features/map/api/
 
 **Responsabilidad:** llamadas a los endpoints de estaciones mediante `@/lib/api`, con traducción DTO ⇄ `Station`.
-El backend (SCRUM-40) aún no existe: el contrato es **inferido** y está en
+El contrato está integrado en el backend compartido `dev` y se mantiene documentado en
 [`docs/api/estaciones.md`](../../../../docs/api/estaciones.md).
 
 | Función | Endpoint | HU |

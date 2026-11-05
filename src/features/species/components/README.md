@@ -17,6 +17,8 @@
 | `SpeciesPhotoCarousel` | Fotos del detalle, deslizables, con contador | HU-7 v2.0 | ✅ |
 | `SpeciesCard` / `CategoryChips` / `ChipButton` / `ConservationBadge` / `ConservationChip` | Piezas del listado y del detalle | HU-10 | ✅ |
 
+`ScanSpeciesQrButton` identifica el acceso al escáner desde Inicio con el ícono `qrCode`.
+
 ## Diferencias con el diseño (pendientes de decisión)
 
 - **Autocompletar por nombre científico** ("Auto" en Editar, sugerencias en Crear): no hay fuente de datos en la API.

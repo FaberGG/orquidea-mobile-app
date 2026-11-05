@@ -11,8 +11,8 @@ pantallas, componentes propios, hooks de datos, llamadas a la API, validaciones 
 | [`navigation/`](navigation/README.md) | Shell | 1 | Menú lateral y pestañas inferiores (compone las demás features) |
 | [`admins/`](admins/README.md) | HE-02 | 1 | Crear, editar y revocar administradores |
 | [`species/`](species/README.md) | HE-03, HE-04 | 1–2 | Fichas taxonómicas y flujo HU-11 de escaneo QR → detalle |
-| [`map/`](map/README.md) | HE-05 | futuro (pestaña creada) | Mapa del sendero y estaciones |
-| [`content/`](content/README.md) | HE-06 | 2 | Anuncios (HU-16) y componentes del humedal (HU-14, HU-15) |
+| [`map/`](map/README.md) | HE-05 | 3 | HU-12: mapa del sendero, estaciones, ubicación y capa satelital |
+| [`content/`](content/README.md) | HE-06 | 2–3 | Anuncios (HU-16, HU-17) y componentes del humedal (HU-14, HU-15) |
 | [`sightings/`](sightings/README.md) | HE-07 | futuro (pestaña creada) | Reportes ciudadanos y moderación (pestaña Comunidad) |
 
 ## Estructura interna estándar

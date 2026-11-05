@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { EmptyState } from '@/components/feedback/empty-state';
@@ -20,7 +20,7 @@ const THUMB_SIZE = 72;
 
 /**
  * Estaciones del sendero (HU-13). Es pública: desde aquí se llega a "Ver estación". Mientras no exista el
- * mapa (HU-12) se abre desde el menú lateral; luego el mapa será la entrada principal. Los administradores
+ * mapa (HU-12) se abre desde la pestaña Mapas; este listado se conserva como vista alternativa. Los administradores
  * ven el botón **+** para crear (`stations:manage`).
  */
 export function StationsListScreen() {
@@ -36,7 +36,7 @@ export function StationsListScreen() {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={STATION_LABELS.create}
-              onPress={() => router.push('/stations/new')}
+              onPress={() => router.push('/stations/new' as Href)}
               hitSlop={Spacing.two}>
               <Icon name="add" size={24} color="primary" />
             </Pressable>
@@ -64,7 +64,10 @@ export function StationsListScreen() {
               key={station.id}
               station={station}
               onPress={() =>
-                router.push({ pathname: '/stations/[id]', params: { id: station.id } })
+                router.push({
+                  pathname: '/stations/[id]',
+                  params: { id: station.id },
+                } as unknown as Href)
               }
             />
           ))}

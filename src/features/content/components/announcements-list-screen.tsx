@@ -81,7 +81,9 @@ export function AnnouncementsListScreen() {
           />
         }
         ListHeaderComponent={
-          refreshError ? <FormMessage message={CONTENT_MESSAGES.announcementsRefreshError} /> : null
+          refreshError ? (
+            <FormMessage message={CONTENT_MESSAGES.announcementsRefreshError} />
+          ) : undefined
         }
       />
     </Screen>

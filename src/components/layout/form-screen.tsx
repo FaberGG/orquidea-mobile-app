@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
+  type ScrollViewInstance,
 } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
@@ -56,7 +57,7 @@ export function getKeyboardScrollDelta({
  * en ambas plataformas; además, al abrirse el teclado se desplaza el formulario hasta el campo enfocado.
  */
 export function FormScreen({ children, hasNavigationHeader = false }: FormScreenProps) {
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance | null>(null);
   const scrollOffset = useRef(0);
 
   useEffect(() => {

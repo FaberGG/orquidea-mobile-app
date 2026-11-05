@@ -158,6 +158,7 @@ describe('SpeciesEditScreen (HU-8)', () => {
       expect(updateSpecies).toHaveBeenCalledWith(
         'ave-1',
         expect.objectContaining({ category: 'mammal' }),
+        expect.anything(),
       ),
     );
     expect(await screen.findByText(SPECIES_MESSAGES.updateSuccess)).toBeTruthy();

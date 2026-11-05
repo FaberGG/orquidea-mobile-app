@@ -1,8 +1,32 @@
-/** Textos de la interfaz de HE-05 (mapa del sendero). */
+/** Textos y claves de caché del mapa del sendero (HU-12). */
 export const MAP_LABELS = {
-  placeholderTitle: 'Mapa del sendero',
-  placeholderDescription:
-    'Pronto podrás ver las estaciones del sendero y orientarte durante tu recorrido.',
+  loading: 'Cargando el mapa del sendero…',
+  retry: 'REINTENTAR',
+  loadError: 'No pudimos cargar el mapa. Revisa tu conexión e inténtalo de nuevo.',
+  emptyTitle: 'El mapa aún no está disponible',
+  emptyDescription: 'Todavía no se han publicado el recorrido y sus estaciones.',
+  stations: 'Estaciones',
+  stationDetails: 'Detalles de la estación',
+  noStationDescription: 'No hay una descripción disponible para esta estación.',
+  noStationPhoto: 'Foto no disponible',
+  associatedSpecies: 'Fichas de esta estación',
+  noAssociatedSpecies: 'Esta estación todavía no tiene fichas asociadas.',
+  currentLocation: 'Mi ubicación',
+  requestLocation: 'Mostrar mi ubicación',
+  locationDenied: 'Permite el acceso a tu ubicación para encontrar la estación más cercana.',
+  locationUnavailable: 'No pudimos obtener tu ubicación. Comprueba que el GPS esté activo.',
+  locationTrackingUnavailable:
+    'No pudimos actualizar tu ubicación en tiempo real. Puedes volver a intentarlo.',
+  nearestStation: 'Estación más cercana',
+  distance: (meters: number) =>
+    meters < 1000
+      ? `${Math.round(meters)} m`
+      : `${(meters / 1000).toLocaleString('es-CO', { maximumFractionDigits: 1 })} km`,
+  satellite: 'Vista satelital',
+  standard: 'Vista de mapa',
+  closeDetails: 'Cerrar detalles de estación',
+  openStation: (name: string) => `Ver estación ${name}`,
+  species: (name: string) => `Abrir ficha de ${name}`,
 } as const;
 
 /** Mensajes de HU-13 (copiados de los criterios de aceptación) y respaldos locales. */
@@ -86,4 +110,9 @@ export const stationKeys = {
   all: ['stations'] as const,
   list: () => [...stationKeys.all, 'list'] as const,
   detail: (id: string) => [...stationKeys.all, 'detail', id] as const,
+};
+
+export const mapKeys = {
+  all: ['trail-map'] as const,
+  detail: () => [...mapKeys.all, 'detail'] as const,
 };

@@ -11,4 +11,5 @@
 | `useDeleteStation(id)` | Eliminar; quita el detalle de la caché e invalida el listado |
 | `getStationSaveErrorMessage` / `getStationDeleteErrorMessage` | Prefieren el `mensaje` del servidor (CODIGO §10) |
 
-Cuando exista el mapa (HU-12, `GET /api/mapa`), las mutaciones también deben invalidar su clave.
+El mapa de HU-12 usa la clave independiente de `useTrailMap`; las mutaciones de estaciones invalidan el
+listado y el detalle, y el mapa se refresca con su propia consulta al volver a enfocarse.

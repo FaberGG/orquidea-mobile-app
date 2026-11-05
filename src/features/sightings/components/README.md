@@ -23,7 +23,7 @@
 | `community-tabs.tsx` | Pestañas subrayadas Comunidad / Moderación |
 | `new-sighting-fab.tsx` | Botón flotante: formulario (usuario) o aviso de iniciar sesión (visitante); oculto para admin+ |
 | `login-required-dialog.tsx` | Aviso modal que lleva a `/login` |
-| `announcements-button.tsx` | Campana del encabezado; sin destino hasta HU-17 |
+| `announcements-button.tsx` | Campana del encabezado de Comunidad; abre la lista pública de anuncios (HU-17) |
 | `sighting-form.tsx` | Formulario (React Hook Form + Zod) |
 | `sighting-photo-field.tsx` | Foto opcional: subir, cambiar o quitar (una sola: límite de la API) |
 | `sighting-location-field.tsx` | Ubicación actual del teléfono con `expo-location` (ADR-0013) |

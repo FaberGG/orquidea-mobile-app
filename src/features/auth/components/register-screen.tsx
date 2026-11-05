@@ -186,7 +186,7 @@ export function RegisterScreen() {
 
       <Button
         label={AUTH_LABELS.registerButton}
-        onPress={onSubmit}
+        onPress={() => onSubmit()}
         isLoading={registerMutation.isPending}
       />
 

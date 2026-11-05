@@ -92,7 +92,7 @@ export function SightingsList({
             color={theme.primary}
             accessibilityLabel={SIGHTINGS_LABELS.loadingMore}
           />
-        ) : null
+        ) : undefined
       }
       refreshControl={
         <RefreshControl

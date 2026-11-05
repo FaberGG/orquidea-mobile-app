@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { type ReactNode, useState } from 'react';
 import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -24,8 +24,8 @@ const HERO_HEIGHT = 260;
 
 /**
  * "Ver estación" (HU-13): foto, descripción, ubicación y enlaces a sus fichas (CA4). Es la misma pantalla
- * para todos los roles; Editar y ELIMINAR aparecen con `stations:manage`. Cuando exista el mapa (HU-12),
- * se abrirá al tocar una estación en él.
+ * para todos los roles; Editar y ELIMINAR aparecen con `stations:manage`. Desde el mapa (HU-12) o el listado
+ * se abre al tocar una estación.
  */
 export function StationDetailScreen({ id }: { id: string }) {
   const { data, isPending, isError, error, refetch } = useStation(id);
@@ -162,7 +162,10 @@ function StationDetailContent({ station, insetTop }: { station: Station; insetTo
               <Button
                 label={STATION_LABELS.edit}
                 onPress={() =>
-                  router.push({ pathname: '/stations/[id]/edit', params: { id: station.id } })
+                  router.push({
+                    pathname: '/stations/[id]/edit',
+                    params: { id: station.id },
+                  } as unknown as Href)
                 }
               />
               <Pressable

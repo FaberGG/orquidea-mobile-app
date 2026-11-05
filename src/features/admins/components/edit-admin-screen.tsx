@@ -193,7 +193,7 @@ function AdminForm({ admin }: { admin: Admin }) {
           {update.isError && <FormMessage message={getAdminError(update.error)} />}
           <Button
             label={ADMIN_LABELS.save}
-            onPress={onSave}
+            onPress={() => onSave()}
             isLoading={update.isPending}
             disabled={revoke.isPending}
           />

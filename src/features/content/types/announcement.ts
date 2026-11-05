@@ -31,4 +31,7 @@ export type Announcement = {
   title: string;
   description: string;
   publishedAt: string;
+  expiresAt: string | null;
+  publisherName: string | null;
+  priority: AnnouncementPriority;
 };

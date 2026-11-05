@@ -18,4 +18,10 @@ export type AnnouncementResponseDto = {
   titulo: string;
   descripcion: string;
   fechaCreacion: string;
+  prioridad: AnnouncementPriorityDto;
+  estado: 'ACTIVO' | 'INACTIVO';
+  fechaExpiracion: string | null;
+  expirado: boolean;
+  /** Pendiente del backend: nombre público del usuario que creó el anuncio. */
+  nombrePublicador?: string | null;
 };

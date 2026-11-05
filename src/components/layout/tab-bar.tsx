@@ -14,7 +14,7 @@ export const TAB_ICON_SIZE = 28;
  * esquinas superiores redondeadas, ícono de 28 px sobre la etiqueta y color green-700 en la pestaña
  * activa. Cada pantalla define su etiqueta (`title`) y su ícono (`tabBarIcon`) en el layout.
  */
-export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -37,13 +37,13 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         const color = isFocused ? theme.navActive : theme.navInactive;
 
         const onPress = () => {
-          const event = navigation.emit({
+          const event = emitter.emit({
             type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
           });
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            navigateToTab(route.key);
           }
         };
 
@@ -54,7 +54,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             accessibilityState={{ selected: isFocused }}
             accessibilityLabel={options.tabBarAccessibilityLabel ?? label}
             onPress={onPress}
-            onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
+            onLongPress={() => emitter.emit({ type: 'tabLongPress', target: route.key })}
             style={({ pressed }) => [styles.item, pressed && styles.pressed]}>
             {options.tabBarIcon?.({ focused: isFocused, color, size: TAB_ICON_SIZE })}
             <ThemedText

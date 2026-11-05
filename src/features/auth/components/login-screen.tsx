@@ -98,7 +98,7 @@ export function LoginScreen() {
               autoComplete="current-password"
               textContentType="password"
               returnKeyType="go"
-              onSubmitEditing={onSubmit}
+              onSubmitEditing={() => onSubmit()}
             />
           )}
         />
@@ -120,7 +120,7 @@ export function LoginScreen() {
 
       <Button
         label={AUTH_LABELS.loginButton}
-        onPress={onSubmit}
+        onPress={() => onSubmit()}
         isLoading={loginMutation.isPending}
       />
 
