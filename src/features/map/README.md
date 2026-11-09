@@ -48,5 +48,10 @@ recorrido GPX, `tramos` puede venir vacío y el mapa sigue mostrando las estacio
 **Permiso:** `stations:manage` (admin y superadmin) para **+**, **Editar estación** y **ELIMINAR**. Las rutas de
 crear y editar viven en `src/app/(admin)/stations/`.
 
+**Modo sin conexión (HU-21):** `stationsOfflineSource` (en `index.ts`) guarda las estaciones y las fotos de
+las estaciones y de sus fichas; las pantallas de estaciones muestran la copia guardada o el mensaje del CA2.
+El recorrido (`/api/mapa`) se agregará como otra fuente en SCRUM-68 siguiendo
+[docs/architecture/OFFLINE.md](../../../docs/architecture/OFFLINE.md).
+
 **Dependencias:** usa `useSpeciesList` del barrel de `@/features/species` para el selector de fichas, y
 `getCurrentLocation` de `@/lib/location` para "Usar mi ubicación actual".

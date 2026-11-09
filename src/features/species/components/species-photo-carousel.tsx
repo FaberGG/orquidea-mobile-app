@@ -1,8 +1,8 @@
-import { Image } from 'expo-image';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
+import { OfflineImage } from '@/components/ui/offline-image';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -40,9 +40,9 @@ export function SpeciesPhotoCarousel({ photos, name }: SpeciesPhotoCarouselProps
           setIndex(Math.round(event.nativeEvent.contentOffset.x / width))
         }>
         {photos.map((photo, position) => (
-          <Image
+          <OfflineImage
             key={photo.id ?? photo.url}
-            source={{ uri: photo.url }}
+            uri={photo.url}
             style={[styles.photo, { width, backgroundColor: theme.backgroundSelected }]}
             contentFit="cover"
             accessibilityLabel={SPECIES_LABELS.photoOf(name, position + 1, photos.length)}

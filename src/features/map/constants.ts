@@ -44,6 +44,9 @@ export const STATION_MESSAGES = {
   saveError: 'No pudimos guardar la estación. Inténtalo de nuevo.',
   deleteError: 'No pudimos eliminar la estación. Inténtalo de nuevo.',
   loadError: 'No pudimos cargar las estaciones. Revisa tu conexión e inténtalo de nuevo.',
+  /** HU-21 CA2: la sección no se descargó antes de quedarse sin conexión. */
+  offlineUnavailable:
+    'Esta información no está disponible sin conexión. Conéctate a internet para descargarla.',
   notFound: 'Esta estación no existe o ya no está disponible.',
   empty: 'Aún no hay estaciones registradas.',
   locationDenied: 'Activa el permiso de ubicación para usar tu posición actual.',

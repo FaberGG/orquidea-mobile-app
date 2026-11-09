@@ -33,7 +33,7 @@ src/
 ├── permissions/    Roles, matriz de permisos, <Can/>, usePermission
 ├── providers/      Composición de providers (sesión, caché de servidor, tema)
 ├── components/     UI compartida y agnóstica del dominio (ui/, layout/, feedback/)
-├── lib/            Infraestructura: api/ (cliente HTTP), storage/ (almacenamiento seguro), query/
+├── lib/            Infraestructura: api/ (cliente HTTP), storage/ (almacenamiento seguro), query/, offline/
 ├── hooks/          Hooks transversales (tema, conectividad, etc.)
 ├── config/         Lectura/validación de variables de entorno
 ├── constants/      Tokens de diseño (tema) y constantes globales
@@ -112,6 +112,7 @@ API REST
 | Tipo | Dónde | Herramienta |
 |---|---|---|
 | Datos de la API (fichas, admins…) | Caché de servidor | TanStack Query (ver ADR-0003) |
+| Copia offline de datos públicos (fichas, estaciones) y fotos | Dispositivo | `@/lib/offline` + `features/offline` (ver ADR-0017 y [OFFLINE.md](OFFLINE.md)) |
 | Sesión (usuario, rol, token) | `features/auth` + `providers/` | React Context + SecureStore |
 | Estado de formulario | Componente | React Hook Form + Zod (ver ADR-0004) |
 | Estado de UI efímero | Componente | `useState` |
@@ -126,5 +127,6 @@ La estructura anticipa las épicas futuras sin implementarlas:
 - **HE-05 (mapa)** → `features/map/`.
 - **HE-06 (contenido)** → `features/content/`.
 - **HE-07 (avistamientos)** → `features/sightings/`.
-- **HE-08 (offline)** → persistencia de la caché de servidor y cola de sincronización en `lib/`; por eso
-  todo acceso a datos debe pasar por hooks de query desde el Sprint 1.
+- **HE-08 (offline)** → ✅ base implementada en SCRUM-63: persistencia de la caché (`lib/offline`), fuentes
+  offline por feature (`features/offline`) y fotos en disco. El mapa (SCRUM-68) y la cola de reportes
+  (SCRUM-70) se apoyan en ella; ver [OFFLINE.md](OFFLINE.md).

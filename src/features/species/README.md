@@ -64,9 +64,19 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 | HU-10 sin fichas (filtro Todos) | `Aún no hay especies registradas.` (local, no viene de una HU) |
 | Ficha inexistente (404) | `Esta ficha no existe o ya no está disponible.` (local) |
 | Error de carga | `No pudimos cargar las fichas. Revisa tu conexión e inténtalo de nuevo.` (local) |
+| HU-21 CA2: sin conexión y sin copia guardada | `Esta información no está disponible sin conexión. Conéctate a internet para descargarla.` |
 
-> HU-11 reutiliza `getSpecies` y la caché de detalle. El almacenamiento de fichas e imágenes offline
-> sigue fuera de alcance y corresponde a HE-08/HU-21.
+> HU-11 reutiliza `getSpecies` y la caché de detalle.
+
+## Modo sin conexión (HU-21, ADR-0017)
+
+- `speciesOfflineSource` (exportada en `index.ts`) guarda en el dispositivo el listado completo, el detalle de
+  cada ficha y sus fotos; la sincroniza `features/offline` al abrir la app y al reconectar.
+- Sin conexión, el listado y el detalle muestran la copia guardada; los chips de categoría filtran el listado
+  completo guardado. Si no hay copia, se muestra el mensaje del CA2.
+- El escáner QR, con desconexión confirmada, abre la ficha guardada si existe (HU-11 CA3).
+- Las fotos de la API se muestran con `OfflineImage` (archivo local si ya se descargó).
+- Cuando SCRUM-64 entregue el endpoint de sincronización, solo cambia `hooks/species-offline.ts`.
 # Fichas taxonómicas
 
 Feature de listado, detalle y administración de fichas taxonómicas. El flujo HU-11 vive en

@@ -42,7 +42,7 @@ export function SpeciesQrScannerScreen() {
   const loadingRef = useRef(false);
   const pendingSpeciesIdRef = useRef<string | null>(null);
   const interruptedRequestRef = useRef(false);
-  const { resolve, cancel } = useQrResolution();
+  const { resolve, cancel, hasSavedSpecies } = useQrResolution();
   const { refresh: refreshNetworkStatus } = useNetworkStatus();
 
   useEffect(() => {
@@ -122,7 +122,12 @@ export function SpeciesQrScannerScreen() {
     const connectivity = await refreshNetworkStatus();
     if (!isCurrent()) return;
     if (connectivity === 'offline') {
-      setMessage(SPECIES_QR_LABELS.offline);
+      // HU-21: sin red se abre la ficha guardada si existe; si no, se pide conexión (HU-11 CA3).
+      if (hasSavedSpecies(id)) {
+        router.push({ pathname: '/species/[id]', params: { id, source: 'qr' } });
+      } else {
+        setMessage(SPECIES_QR_LABELS.offline);
+      }
       return;
     }
     loadingRef.current = true;
@@ -137,6 +142,10 @@ export function SpeciesQrScannerScreen() {
       } else {
         const currentConnectivity = await refreshNetworkStatus();
         if (!isCurrent()) return;
+        if (currentConnectivity === 'offline' && hasSavedSpecies(id)) {
+          router.push({ pathname: '/species/[id]', params: { id, source: 'qr' } });
+          return;
+        }
         setMessage(
           currentConnectivity === 'offline'
             ? SPECIES_QR_LABELS.offline
