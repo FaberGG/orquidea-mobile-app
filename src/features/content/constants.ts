@@ -12,7 +12,9 @@ export const CONTENT_MESSAGES = {
   announcementExpiredCannotShow: 'No puedes mostrar un anuncio que ya expiró.',
   announcementNotFound: 'El anuncio no existe.',
   announcementsManageForbidden: 'No tienes permisos para gestionar anuncios.',
-  announcementsAdminEmpty: 'Aún no hay anuncios publicados.',
+  // SCRUM-71: editar un anuncio (la HU no define textos: confirmación y respaldos locales)
+  announcementUpdated: 'El anuncio se actualizó correctamente.',
+  announcementsEditForbidden: 'No tienes permisos para editar anuncios.',
   // HU-16 CA1 (la HU no define texto: confirmación local)
   announcementPublished: 'El anuncio se publicó correctamente.',
   // HU-17 CA2
@@ -69,23 +71,27 @@ export const CONTENT_LABELS = {
   expirationDone: 'Listo',
   // HU-16 CA1 y CA2: "Clic en el botón PUBLICAR."
   publishButton: 'PUBLICAR',
-  // HU-24 (vista del administrador)
-  manageTitle: 'Gestionar anuncios',
-  manageSubtitle:
-    'Oculta un anuncio para retirarlo de la sección de anuncios sin eliminarlo, o vuelve a mostrarlo.',
+  // SCRUM-71: edición desde la lista unificada
+  editButton: 'EDITAR',
+  editTitle: 'Editar anuncio',
+  editSubtitle:
+    'Cambia la prioridad, la fecha de finalización o el texto. Para retirarlo de la lista usa OCULTAR.',
+  saveButton: 'GUARDAR CAMBIOS',
+  expirationLockedHint:
+    'Puedes cambiar la fecha de finalización, pero no quitarla. Si ya no quieres mostrarlo, usa OCULTAR.',
+  editAnnouncement: (title: string) => `Editar el anuncio ${title}`,
+  // HU-24 (en la lista unificada, solo para quien gestiona anuncios)
+  manageHint:
+    'Como administrador ves también los anuncios ocultos y vencidos. Oculta uno para retirarlo sin eliminarlo, o vuelve a mostrarlo.',
   visibilityVisible: 'Visible',
   // HU-24 CA1: "se marca como 'Oculto' en la vista del administrador"
   visibilityHidden: 'Oculto',
   // HU-23 CA4: "se marca como 'Expirado' en la vista del administrador"
   visibilityExpired: 'Expirado',
-  priorityPrefix: 'Prioridad',
-  expiresPrefix: 'Vence el',
-  expiredPrefix: 'Venció el',
-  noExpiration: 'Sin fecha de finalización',
+  visibilityState: (state: string) => `Estado: ${state}`,
   // HU-24 CA1 y CA2: "clic OCULTAR" / "clic MOSTRAR"
   hideButton: 'OCULTAR',
   showButton: 'MOSTRAR',
-  manageRetry: 'REINTENTAR',
   announcementsTitle: 'Anuncios',
   announcementsRetry: 'REINTENTAR',
   announcementsRefreshButton: 'ACTUALIZAR',

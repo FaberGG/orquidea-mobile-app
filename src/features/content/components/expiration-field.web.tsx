@@ -17,9 +17,15 @@ function toInputValue(date: Date | null): string {
 
 /**
  * HU-23 en web: el selector nativo no existe en el navegador, así que se usa el campo de fecha y
- * hora del propio navegador. Vaciarlo quita la fecha de finalización.
+ * hora del propio navegador. Vaciarlo quita la fecha de finalización (salvo con `canClear={false}`).
  */
-export function ExpirationField({ value, onChange, hasError = false }: ExpirationFieldProps) {
+export function ExpirationField({
+  value,
+  onChange,
+  hasError = false,
+  canClear = true,
+  hint = CONTENT_LABELS.expirationHint,
+}: ExpirationFieldProps) {
   const theme = useTheme();
 
   return (
@@ -33,6 +39,8 @@ export function ExpirationField({ value, onChange, hasError = false }: Expiratio
         value: toInputValue(value),
         onChange: (event: { target: { value: string } }) => {
           const text = event.target.value;
+          // Sin `canClear`, vaciar el campo no quita la fecha: se conserva la anterior.
+          if (!text && !canClear) return;
           onChange(text ? new Date(text) : null);
         },
         style: {
@@ -45,7 +53,7 @@ export function ExpirationField({ value, onChange, hasError = false }: Expiratio
         },
       })}
       <ThemedText type="caption" themeColor="textMuted">
-        {CONTENT_LABELS.expirationHint}
+        {hint}
       </ThemedText>
     </View>
   );

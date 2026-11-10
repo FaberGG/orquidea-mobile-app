@@ -1,14 +1,39 @@
+import { type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { FontFamily, Radius, Spacing } from '@/constants/theme';
+import { FontFamily, Radius, Spacing, type ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 import { CONTENT_LABELS } from '../constants';
-import { type Announcement } from '../types';
+import { type AnnouncementVisibility, type ListedAnnouncement } from '../types';
 
 type AnnouncementCardProps = {
-  announcement: Announcement;
+  announcement: ListedAnnouncement;
+  /** Acciones al pie (solo para quien gestiona anuncios, SCRUM-71). */
+  children?: ReactNode;
+};
+
+/** Estado que solo ve quien gestiona anuncios (HU-23 CA4 y HU-24). */
+const VISIBILITY_STYLE: Record<
+  AnnouncementVisibility,
+  { label: string; text: ThemeColor; background: ThemeColor }
+> = {
+  visible: {
+    label: CONTENT_LABELS.visibilityVisible,
+    text: 'success',
+    background: 'successBackground',
+  },
+  hidden: {
+    label: CONTENT_LABELS.visibilityHidden,
+    text: 'textSecondary',
+    background: 'backgroundSelected',
+  },
+  expired: {
+    label: CONTENT_LABELS.visibilityExpired,
+    text: 'danger',
+    background: 'dangerBackground',
+  },
 };
 
 function formatPublishedDate(value: string): string {
@@ -31,8 +56,12 @@ function formatExpirationDate(value: string): string {
   return `${formatPublishedDate(value)}, ${time}`;
 }
 
-/** Tarjeta de lectura pública: título, contenido y metadatos al final. */
-export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
+/**
+ * Tarjeta de anuncio: título con el chip de prioridad, contenido y metadatos al final. Los de prioridad
+ * alta llevan además un borde del color del chip para que resalten en la lista (SCRUM-71). Si el
+ * anuncio trae `visibility`, se muestra su estado (Visible, Oculto o Expirado) junto a la prioridad.
+ */
+export function AnnouncementCard({ announcement, children }: AnnouncementCardProps) {
   const theme = useTheme();
   const priorityStyle =
     announcement.priority === 'high'
@@ -41,8 +70,16 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
         ? { backgroundColor: theme.primarySoft, color: theme.primary }
         : { backgroundColor: theme.backgroundElement, color: theme.textSecondary };
 
+  const isHighPriority = announcement.priority === 'high';
+  const visibility = announcement.visibility ? VISIBILITY_STYLE[announcement.visibility] : null;
+
   return (
-    <View style={[styles.card, { backgroundColor: theme.background, borderColor: theme.border }]}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: theme.background, borderColor: theme.border },
+        isHighPriority && [styles.highlighted, { borderLeftColor: theme.danger }],
+      ]}>
       <View style={styles.heading}>
         <ThemedText
           type="default"
@@ -60,6 +97,15 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
           </ThemedText>
         </View>
       </View>
+      {visibility && (
+        <View
+          style={[styles.visibilityBadge, { backgroundColor: theme[visibility.background] }]}
+          accessibilityLabel={CONTENT_LABELS.visibilityState(visibility.label)}>
+          <ThemedText type="captionBold" themeColor={visibility.text}>
+            {visibility.label}
+          </ThemedText>
+        </View>
+      )}
       <ThemedText type="default" themeColor="text" style={styles.description} selectable>
         {announcement.description}
       </ThemedText>
@@ -73,6 +119,7 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
           </ThemedText>
         )}
       </View>
+      {children}
     </View>
   );
 }
@@ -101,6 +148,15 @@ const styles = StyleSheet.create({
     gap: Spacing.one,
     paddingTop: Spacing.two,
     borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  highlighted: {
+    borderLeftWidth: 4,
+  },
+  visibilityBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: Spacing.two,
+    paddingVertical: 2,
+    borderRadius: Radius.full,
   },
   priorityBadge: {
     minHeight: 24,

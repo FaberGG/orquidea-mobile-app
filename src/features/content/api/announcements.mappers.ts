@@ -7,6 +7,12 @@ import {
   type AnnouncementVisibility,
 } from '../types';
 
+function toPriority(apiValue: 'ALTA' | 'MEDIA' | 'BAJA'): AnnouncementPriority {
+  const option = ANNOUNCEMENT_PRIORITY_OPTIONS.find((item) => item.apiValue === apiValue);
+  if (!option) throw new Error(`Prioridad desconocida: ${apiValue}`);
+  return option.id;
+}
+
 /** Valida y traduce la respuesta de `GET /api/anuncios` al modelo de pantalla. */
 export function toAnnouncementList(response: unknown): Announcement[] {
   return announcementListDtoSchema.parse(response).map((dto) => ({
@@ -16,14 +22,8 @@ export function toAnnouncementList(response: unknown): Announcement[] {
     publishedAt: dto.fechaCreacion,
     expiresAt: dto.fechaExpiracion ?? null,
     publisherName: dto.nombrePublicador?.trim() || null,
-    priority: dto.prioridad === 'ALTA' ? 'high' : dto.prioridad === 'MEDIA' ? 'medium' : 'low',
+    priority: toPriority(dto.prioridad),
   }));
-}
-
-function toPriority(apiValue: 'ALTA' | 'MEDIA' | 'BAJA'): AnnouncementPriority {
-  const option = ANNOUNCEMENT_PRIORITY_OPTIONS.find((item) => item.apiValue === apiValue);
-  if (!option) throw new Error(`Prioridad desconocida: ${apiValue}`);
-  return option.id;
 }
 
 /**
@@ -44,6 +44,7 @@ export function toAdminAnnouncementList(response: unknown): AdminAnnouncement[] 
     publishedAt: dto.fechaCreacion,
     priority: toPriority(dto.prioridad),
     expiresAt: dto.fechaExpiracion ?? null,
+    publisherName: dto.nombrePublicador?.trim() || null,
     visibility: toVisibility(dto.estado, dto.expirado),
   }));
 }

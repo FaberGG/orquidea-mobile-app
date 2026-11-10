@@ -77,17 +77,18 @@ pantalla quita de la cola las fotos ya subidas y no repite los borrados al reint
 
 | Carpeta / archivo | Contenido |
 |---|---|
-| `api/announcements.api.ts` | `createAnnouncement` y `listAnnouncements`; lectura pública sin token |
+| `api/announcements.api.ts` | `createAnnouncement`, `listAnnouncements` (pública, sin token), `listAdminAnnouncements`, `hideAnnouncement` / `showAnnouncement` y `updateAnnouncement` (solo envía lo que cambió) |
 | `api/announcements.mappers.ts` | Validación y traducción DTO → `Announcement`, incluida la prioridad de la respuesta |
-| `components/publish-announcement-screen.tsx` | Formulario con título, contenido, prioridad (Alta / Media / Baja), fecha de finalización opcional y **PUBLICAR**; al publicar limpia el formulario y confirma |
-| `components/manage-announcements-screen.tsx` | HU-24: todos los anuncios con su estado (Visible / Oculto / Expirado), prioridad y vigencia; **OCULTAR** y **MOSTRAR**. Ruta `/announcements/manage`, desde Gestión de contenido |
-| `hooks/use-manage-announcements.ts` | Query de la vista del administrador, mutation de ocultar / mostrar y `getAnnouncementVisibilityErrorMessage` |
+| `components/announcement-form.tsx` | Formulario compartido de publicar y editar: título, contenido, prioridad (Alta / Media / Baja) y fecha de finalización opcional |
+| `components/publish-announcement-screen.tsx` | HU-16/HU-23: **PUBLICAR**; al publicar limpia el formulario y confirma |
+| `components/edit-announcement-screen.tsx` | SCRUM-71: **GUARDAR CAMBIOS** de prioridad, vigencia y texto (`PATCH /api/anuncios/{id}/actualizar`). Una fecha de finalización ya puesta se puede cambiar, pero no quitar (la API ignora los campos vacíos) |
+| `hooks/use-manage-announcements.ts` | Query de la vista del administrador, mutations de ocultar / mostrar y de editar, y sus mensajes de error |
 | `components/expiration-field.tsx` / `.web.tsx` | Fecha y hora de finalización (HU-23): diálogos de fecha y hora en Android, selector en línea en iOS y `datetime-local` en web |
-| `components/announcements-list-screen.tsx` | HU-17: lista con carga, vacío, error y actualización manual |
-| `components/announcement-card.tsx` | Tarjeta con título y prioridad arriba, descripción destacada en el centro, y fechas al pie; muestra el publicador cuando la API lo proporcione |
+| `components/announcements-list-screen.tsx` | HU-17 + SCRUM-71: una sola lista para todos. Visitante y usuario ven los visibles y vigentes; con `announcements:manage` se ven todos con su estado y cada tarjeta trae **EDITAR** y **OCULTAR** / **MOSTRAR** (HU-24). Reemplaza a la antigua pantalla "Gestionar anuncios" |
+| `components/announcement-card.tsx` | Tarjeta con título y chip de prioridad arriba (los de prioridad alta llevan además un borde rojo), estado si se gestiona, descripción, fechas y acciones al pie |
 | `components/create-announcement-button.tsx` | Botón "+" del encabezado de Anuncios que abre `/announcements/new` (Acta 17); solo con `announcements:publish` |
 | `hooks/use-create-announcement.ts` | Mutation (invalida `announcementKeys.all`) y `getPublishAnnouncementErrorMessage` |
-| `hooks/use-announcements.ts` | Query pública `announcementKeys.list()` y manejo del error de lectura |
+| `hooks/use-announcements.ts` | Query pública `announcementKeys.list()`, `useAnnouncementList(canManage)` (pública o del administrador según el permiso) y manejo del error de lectura |
 | `schemas/announcement-form.schema.ts` | Título y contenido obligatorios (CA2), prioridad obligatoria (CA3) y fecha de finalización posterior a la actual (HU-23 CA3) |
 | `schemas/announcement-list.schema.ts` | Validación de la respuesta recibida del backend |
 | `types/` | `AnnouncementInput`, `Announcement` y DTO de respuesta |

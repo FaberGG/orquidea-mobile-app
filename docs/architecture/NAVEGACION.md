@@ -18,7 +18,7 @@ src/app/
 │       ├── community.tsx           /community   Comunidad: avistamientos (HU-18, HU-19, HU-20)
 │       ├── map.tsx                 /map         Mapas: mapa del sendero (HU-12, HU-13)
 │       ├── account.tsx             /account     Usuario: visitante → iniciar sesión · con sesión → datos, rol y cerrar sesión (HU-3)
-│       ├── announcements.tsx        /announcements Anuncios públicos desde el menú lateral (HU-17)
+│       ├── announcements.tsx        /announcements Anuncios (HU-17) + gestión vía <Can> (SCRUM-71: estado, EDITAR, OCULTAR/MOSTRAR)
 │       └── admins/                /admins      Ruta oculta de la barra inferior; gestión HE-2 (solo superadmin)
 │
 ├── species/
@@ -44,6 +44,9 @@ src/app/
     ├── species/
     │   ├── new.tsx                 /species/new         HU-7
     │   └── [id]/edit.tsx           /species/:id/edit    HU-8
+    ├── announcements/
+    │   ├── new.tsx                 /announcements/new        HU-16 (announcements:publish), botón "+" de Anuncios
+    │   └── [id]/edit.tsx           /announcements/:id/edit   SCRUM-71 (announcements:manage), botón EDITAR de cada anuncio
     ├── stations/
     │   ├── new.tsx                 /stations/new        HU-13 (stations:manage)
     │   └── [id]/edit.tsx           /stations/:id/edit   HU-13 (stations:manage)
@@ -61,7 +64,7 @@ src/app/
 | Encabezado de las pestañas | Botón de menú (abre el menú lateral); acción opcional a la derecha (p. ej. buscar en Inicio) | Todos |
 | Inicio | Acción **Escanear QR** junto a Crear ficha | Todos |
 | Menú lateral: identidad | Usuario: iniciales, nombre, correo y rol (lleva a `/account`). Visitante: botón **INICIAR SESIÓN** | Todos |
-| Menú lateral: Gestión de contenido | **Nueva ficha** y **Publicar anuncio** según permisos; **Escanear QR** para todos | Según acción |
+| Menú lateral: Gestión de contenido | **Nueva ficha** y **Publicar anuncio** según permisos; **Escanear QR** para todos. La gestión de anuncios (antes "Gestionar anuncios") vive en la propia lista de Anuncios (SCRUM-71) | Según acción |
 | Menú lateral: Humedal | Componentes del humedal (HU-14), **Estaciones del sendero** (HU-13, `/stations`; provisional hasta que el mapa HU-12 sea la entrada), Anuncios (HU-17) abre `/announcements`, Descargas sin conexión (HU-21) — *Próximamente* | Todos |
 | Menú lateral: Administración | Gestionar cuentas abre `/admins`; creación HU-4 y gestión HU-5 | `<Can permission="admins:read">` |
 

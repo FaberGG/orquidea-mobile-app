@@ -2,8 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { isApiError } from '@/lib/api';
 
-import { hideAnnouncement, listAdminAnnouncements, showAnnouncement } from '../api';
+import {
+  hideAnnouncement,
+  listAdminAnnouncements,
+  showAnnouncement,
+  updateAnnouncement,
+} from '../api';
 import { announcementKeys, CONTENT_MESSAGES } from '../constants';
+import { type AnnouncementChanges } from '../types';
 
 /** HU-24: todos los anuncios con su estado (solo administrador y superadministrador). */
 export function useAdminAnnouncements() {
@@ -36,5 +42,27 @@ export function getAnnouncementVisibilityErrorMessage(error: unknown): string {
   if (error.status === 403) return CONTENT_MESSAGES.announcementsManageForbidden;
   if (error.status === 404) return CONTENT_MESSAGES.announcementNotFound;
   if (error.status === 409) return CONTENT_MESSAGES.announcementExpiredCannotShow;
+  return CONTENT_MESSAGES.unexpectedError;
+}
+
+type AnnouncementUpdate = { id: string; changes: AnnouncementChanges };
+
+/** SCRUM-71: edita prioridad, vigencia o textos y refresca la lista pública y la del administrador. */
+export function useUpdateAnnouncement() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, changes }: AnnouncementUpdate) => updateAnnouncement(id, changes),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: announcementKeys.all }),
+  });
+}
+
+/** Mensaje si falla la edición: el del servidor en 4xx (p. ej. fecha pasada); respaldos locales. */
+export function getUpdateAnnouncementErrorMessage(error: unknown): string {
+  if (!isApiError(error)) return CONTENT_MESSAGES.unexpectedError;
+  if (error.kind !== 'http') return CONTENT_MESSAGES.networkError;
+  if (error.status >= 400 && error.status < 500 && error.serverMessage) return error.serverMessage;
+  if (error.status === 400) return CONTENT_MESSAGES.announcementRequiredFields;
+  if (error.status === 403) return CONTENT_MESSAGES.announcementsEditForbidden;
+  if (error.status === 404) return CONTENT_MESSAGES.announcementNotFound;
   return CONTENT_MESSAGES.unexpectedError;
 }
