@@ -60,6 +60,7 @@ Los permisos se nombran `recurso:acción` en inglés.
 | `admins:create` | Crear administrador | HU-4 | — | — | — | ✔ |
 | `admins:update` | Editar / revocar administrador | HU-5 | — | — | — | ✔ |
 | `announcements:publish` | Publicar anuncios e información educativa | HU-16 | — | — | ✔ | ✔ |
+| `announcements:manage` | En la lista de anuncios: ver también los ocultos y vencidos, editar prioridad, vigencia y textos, y ocultar o mostrar | HU-23, HU-24 (SCRUM-71) | — | — | ✔ | ✔ |
 | `content:manage` | Editar el texto y las fotos de los componentes del humedal | HU-15 | — | — | ✔ | ✔ |
 | `sightings:create` | Crear un reporte de avistamiento (HU-18 v2.0: también administrador y superadministrador) | HU-18 | — | ✔ | ✔ | ✔ |
 | `sightings:review` | Revisar la cola de reportes y aprobarlos o rechazarlos | HU-19 | — | — | ✔ | ✔ |

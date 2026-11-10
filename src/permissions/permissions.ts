@@ -13,6 +13,7 @@ export type Permission =
   | 'admins:create'
   | 'admins:update'
   | 'announcements:publish'
+  | 'announcements:manage'
   | 'content:manage'
   | 'sightings:create'
   | 'sightings:review'
@@ -32,6 +33,7 @@ const OWN_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'species:update',
     'species:delete',
     'announcements:publish',
+    'announcements:manage',
     'content:manage',
     'sightings:review',
     'species:download-qr',
