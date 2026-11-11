@@ -11,16 +11,18 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { TextField } from '@/components/ui/text-field';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
+import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useTheme } from '@/hooks/use-theme';
 import { getCurrentLocation } from '@/lib/location';
 
-import { STATION_LABELS, STATION_MESSAGES } from '../constants';
+import { LOCATION_PICKER_LABELS, STATION_LABELS, STATION_MESSAGES } from '../constants';
 import {
   parseCoordinate,
   stationFormSchema,
   type StationFormValues,
 } from '../schemas/station-form.schema';
-import { type StationInput } from '../types';
+import { type Coordinates, type StationInput } from '../types';
+import { MapLocationPicker } from './map-location-picker';
 import { pickStationPhoto } from './pick-station-photo';
 import { StationScreenHeader } from './station-screen-header';
 import { StationSpeciesPicker } from './station-species-picker';
@@ -42,8 +44,8 @@ const FIELD_ORDER = ['name', 'description', 'latitude', 'longitude'] as const;
 
 /**
  * Formulario de crear y editar estación (HU-13). Sin diseño en Figma: usa los tokens y la estructura del
- * formulario de fichas. Las coordenadas se escriben o se toman de la ubicación actual; cuando exista el
- * mapa (HU-12) se podrá elegir el punto tocándolo.
+ * formulario de fichas. Las coordenadas se escriben, se toman de la ubicación actual o, con conexión, se
+ * eligen tocando el mapa (SCRUM-72).
  */
 export function StationForm({
   mode,
@@ -65,6 +67,17 @@ export function StationForm({
   const photo = useWatch({ control, name: 'photo' });
   const [localError, setLocalError] = useState<string | undefined>(undefined);
   const [isLocating, setIsLocating] = useState(false);
+  const [isPickingOnMap, setIsPickingOnMap] = useState(false);
+  const { status: networkStatus } = useNetworkStatus();
+  const latitude = useWatch({ control, name: 'latitude' });
+  const longitude = useWatch({ control, name: 'longitude' });
+  const currentPoint = toCoordinates(latitude, longitude);
+
+  const setCoordinates = ({ latitude: lat, longitude: lng }: Coordinates) => {
+    setLocalError(undefined);
+    setValue('latitude', lat.toFixed(6), { shouldDirty: true, shouldValidate: true });
+    setValue('longitude', lng.toFixed(6), { shouldDirty: true, shouldValidate: true });
+  };
 
   const choosePhoto = async () => {
     const result = await pickStationPhoto();
@@ -80,11 +93,7 @@ export function StationForm({
     setIsLocating(true);
     const result = await getCurrentLocation();
     setIsLocating(false);
-    if (result.status === 'located') {
-      setLocalError(undefined);
-      setValue('latitude', result.coordinates.latitude.toFixed(6), { shouldDirty: true });
-      setValue('longitude', result.coordinates.longitude.toFixed(6), { shouldDirty: true });
-    }
+    if (result.status === 'located') setCoordinates(result.coordinates);
     if (result.status === 'denied') setLocalError(STATION_MESSAGES.locationDenied);
     if (result.status === 'error') setLocalError(STATION_MESSAGES.locationError);
   };
@@ -163,6 +172,23 @@ export function StationForm({
           onPress={() => void fillCurrentLocation()}
           isLoading={isLocating}
         />
+        {/* Sin red el mapa no carga: se queda el GPS (y escribirlas a mano), como antes. */}
+        {networkStatus !== 'offline' && (
+          <Button
+            label={currentPoint ? LOCATION_PICKER_LABELS.change : LOCATION_PICKER_LABELS.open}
+            variant="secondary"
+            onPress={() => setIsPickingOnMap(true)}
+          />
+        )}
+        <MapLocationPicker
+          visible={isPickingOnMap}
+          value={currentPoint}
+          onCancel={() => setIsPickingOnMap(false)}
+          onConfirm={(point) => {
+            setIsPickingOnMap(false);
+            setCoordinates(point);
+          }}
+        />
       </FormSection>
 
       <FormSection title={STATION_LABELS.speciesSection}>
@@ -185,6 +211,15 @@ export function StationForm({
       <Button label={submitLabel} onPress={() => submit()} isLoading={isSubmitting} />
     </FormScreen>
   );
+}
+
+/** Las coordenadas escritas, si son válidas, para abrir el mapa centrado en ellas. */
+function toCoordinates(latitude: string, longitude: string): Coordinates | null {
+  const lat = parseCoordinate(latitude);
+  const lng = parseCoordinate(longitude);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+  return { latitude: lat, longitude: lng };
 }
 
 function FormSection({ title, children }: { title: string; children: ReactNode }) {

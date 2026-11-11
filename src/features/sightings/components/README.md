@@ -26,7 +26,7 @@
 | `announcements-button.tsx` | Campana del encabezado de Comunidad; abre la lista pública de anuncios (HU-17) |
 | `sighting-form.tsx` | Formulario (React Hook Form + Zod) |
 | `sighting-photo-field.tsx` | Foto opcional: subir, cambiar o quitar (una sola: límite de la API) |
-| `sighting-location-field.tsx` | Ubicación actual del teléfono con `expo-location` (ADR-0013) |
+| `sighting-location-field.tsx` | Ubicación actual del teléfono con `expo-location` (ADR-0013) o, con conexión, "Elegir en el mapa" con `MapLocationPicker` de `@/features/map` (SCRUM-72) |
 | `info-note.tsx` | Nota verde de "Revisión administrativa" |
 | `pick-sighting-photo.ts` | Galería + validación jpg/png ≤ 10 MB |
 | `format-sighting.ts` | Fecha `dd/mm/aaaa · hh:mm`, iniciales, coordenadas, enlace a mapas y proporción acotada |

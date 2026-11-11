@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { type ReactElement, type ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { useNetworkStatus } from '@/hooks/use-network-status';
 import { RoleProvider, type Role } from '@/permissions';
 
 import {
@@ -17,6 +18,7 @@ import { CommunityScreen } from './community-screen';
 import { NewSightingScreen } from './new-sighting-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn() } }));
+jest.mock('@/hooks/use-network-status', () => ({ useNetworkStatus: jest.fn() }));
 jest.mock('../api', () => ({
   listApprovedSightings: jest.fn(),
   listPendingSightings: jest.fn(),
@@ -72,6 +74,10 @@ function Providers({ role, children }: { role: Role; children: ReactNode }) {
 async function renderAs(role: Role, ui: ReactElement) {
   await render(ui, { wrapper: (props) => <Providers role={role} {...props} /> });
 }
+
+beforeEach(() => {
+  jest.mocked(useNetworkStatus).mockReturnValue({ status: 'online', refresh: jest.fn() });
+});
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -258,5 +264,20 @@ describe('NewSightingScreen (HU-18)', () => {
     expect(
       await screen.findByText('La imagen supera el tamaño máximo permitido de 10 MB.'),
     ).toBeTruthy();
+  });
+});
+
+describe('Ubicación del avistamiento en el mapa (SCRUM-72)', () => {
+  it('con conexión ofrece elegir en el mapa además del GPS', async () => {
+    await renderAs('user', <NewSightingScreen />);
+    expect(screen.getByRole('button', { name: 'Elegir en el mapa' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Usar mi ubicación actual' })).toBeTruthy();
+  });
+
+  it('sin conexión no muestra el mapa', async () => {
+    jest.mocked(useNetworkStatus).mockReturnValue({ status: 'offline', refresh: jest.fn() });
+    await renderAs('user', <NewSightingScreen />);
+    expect(screen.queryByRole('button', { name: 'Elegir en el mapa' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Usar mi ubicación actual' })).toBeTruthy();
   });
 });

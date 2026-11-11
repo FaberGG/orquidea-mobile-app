@@ -31,6 +31,7 @@ la consulta directa y la gestión de estaciones.
 | `types/` | Modelo de recorrido, estaciones y fichas asociadas |
 | `components/map-screen.tsx` | Estados de carga/error/vacío, ubicación actual y coordinación de la pantalla |
 | `components/trail-map-view.tsx` | Dibuja la geometría y las estaciones en el mapa nativo |
+| `components/map-location-picker.tsx` | SCRUM-72: `MapLocationPicker`, selector de un punto en pantalla completa (tocar el mapa o arrastrar el marcador, CONFIRMAR). Muestra el sendero como referencia. Lo usan estaciones (HU-13) y avistamientos (HU-18, vía `@/features/map`); solo se ofrece con conexión |
 | `components/map-controls.tsx` | Cambia la capa del mapa y permite centrar en la ubicación |
 | `components/station-details-card.tsx` | Muestra detalles y abre fichas asociadas |
 | `api/`, `hooks/`, `schemas/`, `components/` de estaciones | CRUD de estaciones para HU-13, formularios, validación y pantallas administrativas |

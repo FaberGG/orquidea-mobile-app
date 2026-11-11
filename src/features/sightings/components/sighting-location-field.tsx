@@ -4,6 +4,8 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
 import { MinTouchSize, Radius, Spacing } from '@/constants/theme';
+import { LOCATION_PICKER_LABELS, MapLocationPicker } from '@/features/map';
+import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useTheme } from '@/hooks/use-theme';
 import { getCurrentLocation } from '@/lib/location';
 
@@ -17,14 +19,16 @@ export type SightingLocationFieldProps = {
 };
 
 /**
- * Lugar del avistamiento (Figma: "ubicacion"). La API guarda coordenadas; el diseño propone elegir un
- * punto en un mapa, pero el mapa del sendero (HE-05) aún no existe, así que se toma la ubicación actual
- * del teléfono. Es opcional.
+ * Lugar del avistamiento (Figma: "ubicacion"). La API guarda coordenadas. Se toma la ubicación actual
+ * del teléfono o, con conexión, se elige tocando el mapa (SCRUM-72); sin red solo queda el GPS. Es
+ * opcional.
  */
 export function SightingLocationField({ value, onChange }: SightingLocationFieldProps) {
   const theme = useTheme();
   const [isLocating, setIsLocating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPickingOnMap, setIsPickingOnMap] = useState(false);
+  const { status: networkStatus } = useNetworkStatus();
 
   const locate = async () => {
     setIsLocating(true);
@@ -82,6 +86,33 @@ export function SightingLocationField({ value, onChange }: SightingLocationField
           </ThemedText>
         </Pressable>
       )}
+
+      {networkStatus !== 'offline' && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={value ? LOCATION_PICKER_LABELS.change : LOCATION_PICKER_LABELS.open}
+          onPress={() => setIsPickingOnMap(true)}
+          style={({ pressed }) => [
+            styles.field,
+            { borderColor: theme.border, backgroundColor: theme.background },
+            pressed && styles.pressed,
+          ]}>
+          <Icon name="map" size={20} color="primary" />
+          <ThemedText type="small" themeColor="primary">
+            {value ? LOCATION_PICKER_LABELS.change : LOCATION_PICKER_LABELS.open}
+          </ThemedText>
+        </Pressable>
+      )}
+      <MapLocationPicker
+        visible={isPickingOnMap}
+        value={value}
+        onCancel={() => setIsPickingOnMap(false)}
+        onConfirm={(point) => {
+          setIsPickingOnMap(false);
+          setError(null);
+          onChange(point);
+        }}
+      />
 
       {error && (
         <ThemedText type="caption" themeColor="danger" accessibilityRole="alert">
