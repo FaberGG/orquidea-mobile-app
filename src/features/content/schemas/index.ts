@@ -1,4 +1,8 @@
-export { announcementFormSchema, type AnnouncementFormValues } from './announcement-form.schema';
+export {
+  announcementFormSchema,
+  type AnnouncementFormValues,
+  createAnnouncementFormSchema,
+} from './announcement-form.schema';
 export {
   adminAnnouncementDtoSchema,
   adminAnnouncementListDtoSchema,

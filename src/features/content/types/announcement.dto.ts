@@ -25,3 +25,6 @@ export type AnnouncementResponseDto = {
   /** Pendiente del backend: nombre público del usuario que creó el anuncio. */
   nombrePublicador?: string | null;
 };
+
+/** Cuerpo de `PATCH /api/anuncios/{id}/actualizar` (back: AnnouncementUpdateRequest). Todo opcional. */
+export type UpdateAnnouncementRequestDto = Partial<CreateAnnouncementRequestDto>;

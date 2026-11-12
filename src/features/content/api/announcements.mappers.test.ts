@@ -35,6 +35,7 @@ describe('toAdminAnnouncementList (HU-24)', () => {
         publishedAt: BASE.fechaCreacion,
         priority: 'high',
         expiresAt: null,
+        publisherName: null,
         visibility: 'visible',
       },
     ]);

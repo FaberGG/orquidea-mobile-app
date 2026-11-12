@@ -5,6 +5,8 @@ export {
   listAnnouncements,
   showAnnouncement,
   toCreateAnnouncementDto,
+  toUpdateAnnouncementDto,
+  updateAnnouncement,
 } from './announcements.api';
 export { toAdminAnnouncementList, toAnnouncementList } from './announcements.mappers';
 export {
