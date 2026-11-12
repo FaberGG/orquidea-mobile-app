@@ -6,11 +6,13 @@ import { type ReactElement, type ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useSpeciesList } from '@/features/species';
+import { useNetworkStatus } from '@/hooks/use-network-status';
 import { ApiError } from '@/lib/api';
 import { RoleProvider, type Role } from '@/permissions';
 
 import { createStation, deleteStation, getStation, listStations, updateStation } from '../api';
-import { STATION_MESSAGES } from '../constants';
+import { getTrailMap } from '../api/map.api';
+import { LOCATION_PICKER_LABELS, STATION_LABELS, STATION_MESSAGES } from '../constants';
 import { type Station } from '../types';
 import { StationCreateScreen } from './station-create-screen';
 import { StationDetailScreen } from './station-detail-screen';
@@ -22,6 +24,8 @@ jest.mock('expo-router', () => ({
 }));
 jest.mock('expo-image-picker', () => ({ launchImageLibraryAsync: jest.fn() }));
 jest.mock('@/lib/location', () => ({ getCurrentLocation: jest.fn() }));
+jest.mock('@/hooks/use-network-status', () => ({ useNetworkStatus: jest.fn() }));
+jest.mock('../api/map.api', () => ({ getTrailMap: jest.fn() }));
 jest.mock('@/features/species', () => ({ useSpeciesList: jest.fn() }));
 jest.mock('../api', () => ({
   listStations: jest.fn(),
@@ -79,6 +83,11 @@ async function fillForm() {
   await fireEvent.changeText(screen.getByLabelText('Latitud'), '2,4598');
   await fireEvent.changeText(screen.getByLabelText('Longitud'), '-76.6115');
 }
+
+beforeEach(() => {
+  jest.mocked(useNetworkStatus).mockReturnValue({ status: 'online', refresh: jest.fn() });
+  jest.mocked(getTrailMap).mockRejectedValue(new Error('sin mapa en pruebas'));
+});
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -276,5 +285,57 @@ describe('StationEditScreen (HU-13 CA2)', () => {
       ),
     );
     expect(await screen.findByText('La estación se actualizó correctamente.')).toBeTruthy();
+  });
+});
+
+describe('Selector de ubicación en el mapa (SCRUM-72)', () => {
+  it('con conexión, elige el punto tocando el mapa y llena las coordenadas', async () => {
+    await renderAs('admin', <StationCreateScreen />);
+
+    await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.open));
+    expect(await screen.findByText(LOCATION_PICKER_LABELS.title)).toBeTruthy();
+
+    await fireEvent(screen.getByLabelText(LOCATION_PICKER_LABELS.mapLabel), 'press', {
+      nativeEvent: { coordinate: { latitude: 2.4612345, longitude: -76.6123456 } },
+    });
+    expect(screen.getByText('2.461235, -76.612346')).toBeTruthy();
+    await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.confirm));
+
+    expect(screen.getByLabelText('Latitud').props.value).toBe('2.461235');
+    expect(screen.getByLabelText('Longitud').props.value).toBe('-76.612346');
+    expect(screen.getByText(LOCATION_PICKER_LABELS.change)).toBeTruthy();
+  });
+
+  it('el marcador se puede arrastrar para ajustar el punto', async () => {
+    await renderAs('admin', <StationCreateScreen />);
+    await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.open));
+    await fireEvent(await screen.findByLabelText(LOCATION_PICKER_LABELS.mapLabel), 'press', {
+      nativeEvent: { coordinate: { latitude: 2.46, longitude: -76.61 } },
+    });
+
+    await fireEvent(screen.getByLabelText(LOCATION_PICKER_LABELS.selectedPoint), 'dragEnd', {
+      nativeEvent: { coordinate: { latitude: 2.47, longitude: -76.62 } },
+    });
+
+    expect(screen.getByText('2.470000, -76.620000')).toBeTruthy();
+  });
+
+  it('CANCELAR no cambia las coordenadas', async () => {
+    await renderAs('admin', <StationCreateScreen />);
+    await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.open));
+    await fireEvent(await screen.findByLabelText(LOCATION_PICKER_LABELS.mapLabel), 'press', {
+      nativeEvent: { coordinate: { latitude: 2.46, longitude: -76.61 } },
+    });
+    await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.cancel));
+
+    expect(screen.getByLabelText('Latitud').props.value).toBe('');
+  });
+
+  it('sin conexión no ofrece el mapa y se mantiene el GPS', async () => {
+    jest.mocked(useNetworkStatus).mockReturnValue({ status: 'offline', refresh: jest.fn() });
+    await renderAs('admin', <StationCreateScreen />);
+
+    expect(screen.queryByText(LOCATION_PICKER_LABELS.open)).toBeNull();
+    expect(screen.getByText(STATION_LABELS.useCurrentLocation)).toBeTruthy();
   });
 });
