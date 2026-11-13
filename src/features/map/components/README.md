@@ -17,7 +17,8 @@ diseño"): usan los tokens y la estructura de fichas y componentes del humedal.
 
 | Archivo | Contenido |
 |---|---|
-| `station-form.tsx` | Formulario compartido (React Hook Form + Zod): foto, nombre, descripción, latitud/longitud con "Usar mi ubicación actual" y fichas asociadas |
+| `station-form.tsx` | Formulario compartido (React Hook Form + Zod): foto, nombre, descripción, latitud/longitud con "Usar mi ubicación actual" y, con conexión, "Elegir en el mapa" (SCRUM-72), y fichas asociadas |
+| `map-location-picker.tsx` | SCRUM-72: selector de ubicación en el mapa (marcador movible y CONFIRMAR) |
 | `station-species-picker.tsx` | Selector múltiple de fichas (casillas) con `useSpeciesList('all')` |
 | `delete-station-dialog.tsx` | Confirmación de ELIMINAR con CONFIRMAR / CANCELAR (CA5) |
 | `station-screen-header.tsx` | Encabezado con volver, título y acción opcional |

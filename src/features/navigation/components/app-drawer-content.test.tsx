@@ -81,13 +81,9 @@ describe('AppDrawerContent (menú lateral)', () => {
     expect(screen.queryByText(NAVIGATION_LABELS.publishAnnouncement)).toBeNull();
   });
 
-  it('HU-24: el administrador ve "Gestionar anuncios" y el usuario no', async () => {
-    await renderAs('user');
-    expect(screen.queryByText(NAVIGATION_LABELS.manageAnnouncements)).toBeNull();
-
+  it('SCRUM-71: ya no existe "Gestionar anuncios"; la gestión vive en la lista de Anuncios', async () => {
     await renderAs('admin');
-    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.manageAnnouncements));
-    expect(router.navigate).toHaveBeenCalledWith('/announcements/manage');
+    expect(screen.queryByText('Gestionar anuncios')).toBeNull();
   });
 
   it('el administrador no ve la gestión de cuentas', async () => {

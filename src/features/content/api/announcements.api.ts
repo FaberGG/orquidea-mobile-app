@@ -4,10 +4,12 @@ import { ANNOUNCEMENT_PRIORITY_OPTIONS } from '../constants';
 import {
   type AdminAnnouncement,
   type Announcement,
+  type AnnouncementChanges,
   type AnnouncementInput,
   type AnnouncementPriority,
   type AnnouncementPriorityDto,
   type CreateAnnouncementRequestDto,
+  type UpdateAnnouncementRequestDto,
 } from '../types';
 import { toAdminAnnouncementList, toAnnouncementList } from './announcements.mappers';
 
@@ -68,4 +70,29 @@ export async function hideAnnouncement(id: string): Promise<void> {
 /** HU-24 CA2: `PATCH /api/anuncios/{id}/mostrar`. `409` si el anuncio ya expiró. */
 export async function showAnnouncement(id: string): Promise<void> {
   await apiClient.patch<unknown>(`${ANNOUNCEMENTS_PATH}/${encodeURIComponent(id)}/mostrar`);
+}
+
+/** Traduce los cambios de la edición al cuerpo de la API; los campos sin cambios no se envían. */
+export function toUpdateAnnouncementDto({
+  title,
+  description,
+  priority,
+  expiresAt,
+}: AnnouncementChanges): UpdateAnnouncementRequestDto {
+  return {
+    ...(title !== undefined ? { titulo: title.trim() } : {}),
+    ...(description !== undefined ? { descripcion: description.trim() } : {}),
+    ...(priority !== undefined ? { prioridad: toPriorityDto(priority) } : {}),
+    ...(expiresAt !== undefined ? { fechaExpiracion: expiresAt.toISOString() } : {}),
+  };
+}
+
+/**
+ * SCRUM-71: `PATCH /api/anuncios/{id}/actualizar`. Solo cambia los campos enviados; una fecha de
+ * finalización pasada responde `400`. El estado (oculto o visible) no se cambia aquí.
+ */
+export async function updateAnnouncement(id: string, changes: AnnouncementChanges): Promise<void> {
+  await apiClient.patch<unknown>(`${ANNOUNCEMENTS_PATH}/${encodeURIComponent(id)}/actualizar`, {
+    body: toUpdateAnnouncementDto(changes),
+  });
 }

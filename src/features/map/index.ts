@@ -4,7 +4,8 @@ export { StationCreateScreen } from './components/station-create-screen';
 export { StationDetailScreen } from './components/station-detail-screen';
 export { StationEditScreen } from './components/station-edit-screen';
 export { StationsListScreen } from './components/stations-list-screen';
-export { MAP_LABELS, STATION_LABELS } from './constants';
+export { MapLocationPicker, type MapLocationPickerProps } from './components/map-location-picker';
+export { LOCATION_PICKER_LABELS, MAP_LABELS, STATION_LABELS } from './constants';
 export { getDistanceInMeters, getNearestStation, toTrailMap } from './api';
 // HU-21: fuente offline de estaciones que registra y sincroniza `features/offline`.
 export { prefetchStationsForOffline, stationsOfflineSource } from './hooks';

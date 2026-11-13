@@ -13,18 +13,6 @@ export type AnnouncementInput = {
 /** Cómo ve el administrador un anuncio (HU-24): visible, oculto por un admin o vencido (HU-23). */
 export type AnnouncementVisibility = 'visible' | 'hidden' | 'expired';
 
-/** Anuncio en la vista del administrador (HU-24). */
-export type AdminAnnouncement = {
-  id: string;
-  title: string;
-  description: string;
-  publishedAt: string;
-  priority: AnnouncementPriority;
-  /** Fecha ISO de finalización, o `null` si no se vence. */
-  expiresAt: string | null;
-  visibility: AnnouncementVisibility;
-};
-
 /** Modelo de lectura de HU-17, independiente de los nombres del contrato en español. */
 export type Announcement = {
   id: string;
@@ -35,3 +23,24 @@ export type Announcement = {
   publisherName: string | null;
   priority: AnnouncementPriority;
 };
+
+/** Anuncio como lo ve el administrador (HU-24): el mismo de HU-17 más su estado. */
+export type AdminAnnouncement = Announcement & {
+  visibility: AnnouncementVisibility;
+};
+
+/** Elemento de la lista unificada (SCRUM-71): solo trae `visibility` si quien mira gestiona anuncios. */
+export type ListedAnnouncement = Announcement & {
+  visibility?: AnnouncementVisibility;
+};
+
+/**
+ * Cambios al editar un anuncio (SCRUM-71). Solo se incluye lo que cambió: la API conserva el resto.
+ * No hay forma de quitar la fecha de finalización (la API ignora los campos vacíos).
+ */
+export type AnnouncementChanges = Partial<{
+  title: string;
+  description: string;
+  priority: AnnouncementPriority;
+  expiresAt: Date;
+}>;

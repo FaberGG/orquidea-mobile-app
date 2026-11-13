@@ -1,5 +1,9 @@
 import { CONTENT_MESSAGES } from '../constants';
-import { announcementFormSchema, type AnnouncementFormValues } from './announcement-form.schema';
+import {
+  announcementFormSchema,
+  type AnnouncementFormValues,
+  createAnnouncementFormSchema,
+} from './announcement-form.schema';
 
 const VALID: AnnouncementFormValues = {
   title: 'Jornada de aves',
@@ -50,5 +54,22 @@ describe('announcementFormSchema (HU-16 y HU-23)', () => {
     expect(
       announcementFormSchema.parse({ ...VALID, title: '  Hola ', description: ' Texto ' }),
     ).toEqual({ ...VALID, title: 'Hola', description: 'Texto' });
+  });
+});
+
+describe('createAnnouncementFormSchema (edición, SCRUM-71)', () => {
+  const PAST = new Date('2026-01-01T12:00:00Z');
+
+  it('acepta conservar una fecha de finalización ya vencida sin cambiarla', () => {
+    const schema = createAnnouncementFormSchema(PAST);
+    expect(schema.safeParse({ ...VALID, expiresAt: new Date(PAST) }).success).toBe(true);
+  });
+
+  it('rechaza cambiarla por otra fecha pasada', () => {
+    const schema = createAnnouncementFormSchema(PAST);
+    const result = schema.safeParse({ ...VALID, expiresAt: new Date('2026-02-01T12:00:00Z') });
+    expect(result.success ? undefined : result.error.issues[0]?.message).toBe(
+      CONTENT_MESSAGES.announcementExpirationInvalid,
+    );
   });
 });

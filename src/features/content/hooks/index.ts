@@ -2,7 +2,11 @@ export {
   getPublishAnnouncementErrorMessage,
   useCreateAnnouncement,
 } from './use-create-announcement';
-export { getAnnouncementsErrorMessage, useAnnouncements } from './use-announcements';
+export {
+  getAnnouncementsErrorMessage,
+  useAnnouncementList,
+  useAnnouncements,
+} from './use-announcements';
 export {
   getSaveWetlandComponentErrorMessage,
   useSaveWetlandComponent,
@@ -10,8 +14,10 @@ export {
 export { useWetlandComponent, useWetlandComponents } from './use-wetland-components';
 export {
   getAnnouncementVisibilityErrorMessage,
+  getUpdateAnnouncementErrorMessage,
   useAdminAnnouncements,
   useChangeAnnouncementVisibility,
+  useUpdateAnnouncement,
 } from './use-manage-announcements';
 export {
   getCreateWetlandComponentErrorMessage,

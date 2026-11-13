@@ -1,4 +1,4 @@
-import { toCreateAnnouncementDto } from './announcements.api';
+import { toCreateAnnouncementDto, toUpdateAnnouncementDto } from './announcements.api';
 
 describe('toCreateAnnouncementDto', () => {
   it('traduce el formulario a los campos en español de la API (HU-16 CA3)', () => {
@@ -33,5 +33,31 @@ describe('toCreateAnnouncementDto', () => {
       toCreateAnnouncementDto({ title: 'a', description: 'b', priority: 'medium', expiresAt: null })
         .prioridad,
     ).toBe('MEDIA');
+  });
+});
+
+describe('toUpdateAnnouncementDto (SCRUM-71)', () => {
+  it('solo envía los campos que cambiaron', () => {
+    expect(toUpdateAnnouncementDto({ priority: 'low' })).toEqual({ prioridad: 'BAJA' });
+  });
+
+  it('traduce todos los campos y envía la fecha como instante ISO en UTC', () => {
+    expect(
+      toUpdateAnnouncementDto({
+        title: ' Nuevo título ',
+        description: ' Nuevo contenido ',
+        priority: 'high',
+        expiresAt: new Date('2026-12-01T15:30:00Z'),
+      }),
+    ).toEqual({
+      titulo: 'Nuevo título',
+      descripcion: 'Nuevo contenido',
+      prioridad: 'ALTA',
+      fechaExpiracion: '2026-12-01T15:30:00.000Z',
+    });
+  });
+
+  it('sin cambios, el cuerpo queda vacío', () => {
+    expect(toUpdateAnnouncementDto({})).toEqual({});
   });
 });

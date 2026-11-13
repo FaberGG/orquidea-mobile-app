@@ -1,27 +1,52 @@
+import { router, type Href } from 'expo-router';
+import { useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { FormMessage } from '@/components/feedback/form-message';
 import { Screen } from '@/components/layout/screen';
+import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { usePermission } from '@/permissions';
 
 import { CONTENT_LABELS, CONTENT_MESSAGES } from '../constants';
-import { getAnnouncementsErrorMessage, useAnnouncements } from '../hooks';
-import { type Announcement } from '../types';
+import {
+  getAnnouncementVisibilityErrorMessage,
+  getAnnouncementsErrorMessage,
+  useAnnouncementList,
+  useChangeAnnouncementVisibility,
+} from '../hooks';
+import { type ListedAnnouncement } from '../types';
 import { AnnouncementCard } from './announcement-card';
 
-/** HU-17: lista pública de anuncios con estados de carga, error, vacío y refresco. */
+/**
+ * Anuncios (HU-17) unificada con la gestión (SCRUM-71). Visitantes y usuarios registrados ven solo
+ * los anuncios visibles y vigentes. Con `announcements:manage` se ven todos, con su estado (Visible,
+ * Oculto o Expirado, HU-23/HU-24), y cada tarjeta trae EDITAR y OCULTAR o MOSTRAR. Publicar sigue en
+ * el botón "+" del encabezado (`announcements:publish`).
+ */
 export function AnnouncementsListScreen() {
   const theme = useTheme();
+  const canManage = usePermission('announcements:manage');
   const { data, error, isError, isPending, isRefetchError, isRefetching, refetch } =
-    useAnnouncements();
+    useAnnouncementList(canManage);
+  const changeVisibility = useChangeAnnouncementVisibility();
+  const [pendingId, setPendingId] = useState<string | null>(null);
   const announcements = data ?? [];
   const refreshError = isRefetchError;
 
   const refresh = () => {
     void refetch();
+  };
+
+  const toggleVisibility = (announcement: ListedAnnouncement) => {
+    setPendingId(announcement.id);
+    changeVisibility.mutate(
+      { id: announcement.id, action: announcement.visibility === 'visible' ? 'hide' : 'show' },
+      { onSettled: () => setPendingId(null) },
+    );
   };
 
   if (isPending) {
@@ -61,13 +86,26 @@ export function AnnouncementsListScreen() {
     );
   }
 
+  const hasHeader = canManage || refreshError || changeVisibility.isError;
+
   return (
     <Screen>
-      <FlatList<Announcement>
+      <FlatList<ListedAnnouncement>
         accessibilityLabel={CONTENT_LABELS.announcementsTitle}
         data={announcements}
         keyExtractor={(announcement) => announcement.id}
-        renderItem={({ item }) => <AnnouncementCard announcement={item} />}
+        renderItem={({ item }) => (
+          <AnnouncementCard announcement={item}>
+            {canManage && item.visibility && (
+              <ManageActions
+                announcement={item}
+                isChanging={pendingId === item.id}
+                isDisabled={pendingId !== null && pendingId !== item.id}
+                onToggleVisibility={() => toggleVisibility(item)}
+              />
+            )}
+          </AnnouncementCard>
+        )}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         refreshControl={
@@ -81,12 +119,69 @@ export function AnnouncementsListScreen() {
           />
         }
         ListHeaderComponent={
-          refreshError ? (
-            <FormMessage message={CONTENT_MESSAGES.announcementsRefreshError} />
+          hasHeader ? (
+            <View style={styles.header}>
+              {canManage && (
+                <ThemedText type="small" themeColor="textSecondary">
+                  {CONTENT_LABELS.manageHint}
+                </ThemedText>
+              )}
+              {refreshError && <FormMessage message={CONTENT_MESSAGES.announcementsRefreshError} />}
+              {changeVisibility.isError && (
+                <FormMessage
+                  message={getAnnouncementVisibilityErrorMessage(changeVisibility.error)}
+                />
+              )}
+            </View>
           ) : undefined
         }
       />
     </Screen>
+  );
+}
+
+/**
+ * Acciones de gestión en cada tarjeta (SCRUM-71, antes en "Gestionar anuncios"). EDITAR abre la
+ * edición de prioridad, vigencia y texto. OCULTAR / MOSTRAR (HU-24); los vencidos no se pueden
+ * mostrar (la API responde 409), pero sí editar para ponerles una fecha nueva.
+ */
+function ManageActions({
+  announcement,
+  isChanging,
+  isDisabled,
+  onToggleVisibility,
+}: {
+  announcement: ListedAnnouncement;
+  isChanging: boolean;
+  isDisabled: boolean;
+  onToggleVisibility: () => void;
+}) {
+  const isVisible = announcement.visibility === 'visible';
+  return (
+    <View style={styles.actions}>
+      <View style={styles.action}>
+        <Button
+          label={CONTENT_LABELS.editButton}
+          variant="secondary"
+          accessibilityLabel={CONTENT_LABELS.editAnnouncement(announcement.title)}
+          disabled={isChanging}
+          onPress={() =>
+            router.push(`/announcements/${encodeURIComponent(announcement.id)}/edit` as Href)
+          }
+        />
+      </View>
+      {announcement.visibility !== 'expired' && (
+        <View style={styles.action}>
+          <Button
+            label={isVisible ? CONTENT_LABELS.hideButton : CONTENT_LABELS.showButton}
+            variant={isVisible ? 'secondary' : 'primary'}
+            isLoading={isChanging}
+            disabled={isDisabled}
+            onPress={onToggleVisibility}
+          />
+        </View>
+      )}
+    </View>
   );
 }
 
@@ -102,10 +197,22 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.two,
     paddingBottom: Spacing.four,
   },
+  header: {
+    gap: Spacing.two,
+    paddingBottom: Spacing.three,
+  },
   separator: {
     height: Spacing.three,
   },
   emptyContent: {
+    flex: 1,
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+    paddingTop: Spacing.one,
+  },
+  action: {
     flex: 1,
   },
 });

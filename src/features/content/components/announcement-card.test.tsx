@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react-native';
+import { Text } from 'react-native';
 
+import { CONTENT_LABELS } from '../constants';
 import { type Announcement } from '../types';
 import { AnnouncementCard } from './announcement-card';
 
@@ -33,5 +35,20 @@ describe('AnnouncementCard', () => {
     );
 
     expect(screen.getByText('Publicado el 4 de noviembre de 2026 · por Ana Gómez')).toBeTruthy();
+  });
+
+  it('SCRUM-71: sin estado no muestra Visible/Oculto/Expirado (visitantes y usuarios)', async () => {
+    await render(<AnnouncementCard announcement={ANNOUNCEMENT} />);
+    expect(screen.queryByText(CONTENT_LABELS.visibilityVisible)).toBeNull();
+  });
+
+  it('SCRUM-71: muestra el estado y las acciones cuando se gestiona el anuncio', async () => {
+    await render(
+      <AnnouncementCard announcement={{ ...ANNOUNCEMENT, visibility: 'hidden' }}>
+        <Text>Acciones</Text>
+      </AnnouncementCard>,
+    );
+    expect(screen.getByText(CONTENT_LABELS.visibilityHidden)).toBeTruthy();
+    expect(screen.getByText('Acciones')).toBeTruthy();
   });
 });

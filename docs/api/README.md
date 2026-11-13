@@ -71,6 +71,9 @@ Los DTO se traducen a modelos de la app en la carpeta `api/` de cada feature
 |---|---|---|---|
 | `GET /api/anuncios` | Público | HU-17 | `200 AnnouncementResponse[]`, orden descendente por `fechaCreacion`; arreglo vacío si no hay anuncios |
 | `POST /api/anuncios` | Admin y superadmin | HU-16, HU-23 | `201 AnnouncementResponse` (incluye `prioridad`, `estado`, `fechaExpiracion` y `expirado`) |
+| `GET /api/anuncios/administracion` | Admin y superadmin | HU-24, SCRUM-71 | `200 AnnouncementResponse[]` con todos, también inactivos y vencidos |
+| `PATCH /api/anuncios/{id}/ocultar` · `/mostrar` | Admin y superadmin | HU-24 | `200 AnnouncementResponse`; mostrar uno vencido → `409` |
+| `PATCH /api/anuncios/{id}/actualizar` | Admin y superadmin | SCRUM-71 | Cuerpo `AnnouncementUpdateRequest`: `titulo`, `descripcion`, `prioridad`, `fechaExpiracion`, todos opcionales; los que no se envían se conservan (no se puede quitar la fecha). Fecha pasada → `400`. `200 AnnouncementResponse` |
 
 `AnnouncementResponse`: `id` (UUID), `titulo`, `descripcion`, `fechaCreacion` (UTC ISO-8601). El archivo
 generado `openapi.json` aún debe regenerarse desde el backend para reflejar estas rutas; el cliente valida

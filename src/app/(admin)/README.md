@@ -13,7 +13,7 @@ se declaran las rutas.
 | [`species/new.tsx`](species/README.md) | `/species/new` | `SpeciesCreateScreen` | HU-7 | ✅ |
 | [`species/[id]/edit.tsx`](species/README.md) | `/species/:id/edit` | `SpeciesEditScreen` | HU-8 | ✅ |
 | `announcements/new.tsx` | `/announcements/new` | `PublishAnnouncementScreen` (`@/features/content`) | HU-16 | ✅ |
-| `announcements/manage.tsx` | `/announcements/manage` | `ManageAnnouncementsScreen` (`@/features/content`) | HU-24 | ✅ |
+| `announcements/[id]/edit.tsx` | `/announcements/:id/edit` | `EditAnnouncementScreen` (`@/features/content`), con `announcements:manage`. Se abre con **EDITAR** en la lista de Anuncios | SCRUM-71 | ✅ |
 | `wetland/new.tsx` | `/wetland/new` | `CreateWetlandComponentScreen` (`@/features/content`), con `content:manage` | HU-25 | ✅ |
 | `wetland/[type]/edit.tsx` | `/wetland/:type/edit` | `EditWetlandComponentScreen` (`@/features/content`), con `content:manage` | HU-15 | ✅ |
 | `stations/new.tsx` | `/stations/new` | `StationCreateScreen` (`@/features/map`), con `stations:manage` | HU-13 | ✅ (contrato inferido) |

@@ -17,7 +17,13 @@ import { formatDateTime, getDefaultExpiration } from './format-date';
  * luego hora); en iOS, el selector de fecha y hora aparece debajo del campo con un botón "Listo".
  * La validación (posterior a la fecha actual) la hace el formulario al publicar.
  */
-export function ExpirationField({ value, onChange, hasError = false }: ExpirationFieldProps) {
+export function ExpirationField({
+  value,
+  onChange,
+  hasError = false,
+  canClear = true,
+  hint = CONTENT_LABELS.expirationHint,
+}: ExpirationFieldProps) {
   const theme = useTheme();
   const [isIosPickerOpen, setIsIosPickerOpen] = useState(false);
   const [iosDraft, setIosDraft] = useState<Date>(() => value ?? getDefaultExpiration());
@@ -75,7 +81,7 @@ export function ExpirationField({ value, onChange, hasError = false }: Expiratio
             {value ? formatDateTime(value) : CONTENT_LABELS.expirationEmpty}
           </ThemedText>
         </Pressable>
-        {value && (
+        {value && canClear && (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={CONTENT_LABELS.expirationClear}
@@ -89,7 +95,7 @@ export function ExpirationField({ value, onChange, hasError = false }: Expiratio
         )}
       </View>
       <ThemedText type="caption" themeColor="textMuted">
-        {CONTENT_LABELS.expirationHint}
+        {hint}
       </ThemedText>
 
       {isIosPickerOpen && (

@@ -29,6 +29,27 @@ export const MAP_LABELS = {
   species: (name: string) => `Abrir ficha de ${name}`,
 } as const;
 
+/**
+ * Centro aproximado del Humedal La Orquídea (el mismo punto de ejemplo de docs/api/estaciones.md). Se
+ * usa para abrir el selector de ubicación cuando no hay un punto elegido ni se pudo cargar el sendero.
+ */
+export const WETLAND_CENTER = { latitude: 2.4598, longitude: -76.6115 } as const;
+
+/** SCRUM-72: selector de ubicación en el mapa (estaciones y avistamientos). Sin textos en las HU. */
+export const LOCATION_PICKER_LABELS = {
+  open: 'Elegir en el mapa',
+  change: 'Cambiar en el mapa',
+  title: 'Elige la ubicación',
+  hint: 'Toca el mapa para poner el marcador. Puedes arrastrarlo para ajustarlo.',
+  mapLabel: 'Mapa para elegir la ubicación',
+  selectedPoint: 'Ubicación elegida',
+  noPoint: 'Aún no has elegido un punto.',
+  coordinates: ({ latitude, longitude }: { latitude: number; longitude: number }) =>
+    `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+  cancel: 'CANCELAR',
+  confirm: 'CONFIRMAR',
+} as const;
+
 /** Mensajes de HU-13 (copiados de los criterios de aceptación) y respaldos locales. */
 export const STATION_MESSAGES = {
   requiredFields: 'Debes completar todos los campos obligatorios.',
