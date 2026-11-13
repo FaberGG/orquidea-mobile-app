@@ -119,5 +119,6 @@ Pendientes de resolver con el equipo de backend / Product Owner:
 | B12 | El diseño ofrece **quitar foto** al editar; la API conserva la actual si no se envía una nueva | No hay forma de quitar la foto de una ficha |
 | B13 | `POST/GET /api/anuncios` (HU-16/17) ya están confirmados en controladores y DTOs de `dev`, pero faltan en `openapi.json` | HU-16/17 consumen el contrato actual; regenerar el OpenAPI desde el backend para que el archivo refleje las rutas |
 | B14 | `GET/PUT /api/componentes`, `POST/DELETE /api/componentes/{tipo}/fotos` (HU-14/15) se acordaron por chat (`tipo`, `nombre`, `descripcion`, `tieneContenido`, `fotos[{id,url}]`, `fechaActualizacion`; campo `foto` en el multipart) pero aún no están en `openapi.json` | El front de HU-14/15 usa esos nombres (ver `src/features/content/README.md`); confirmar al exportar el contrato |
+| B15 | `POST /api/reportes-avistamiento` aún no usa el `id` del cliente (SCRUM-66) | HU-22 (SCRUM-70) ya envía el campo `id` (UUID del teléfono) en el multipart. Hasta que el back lo use para no repetir, un reenvío tras perder la respuesta podría duplicar el reporte (la moderación lo filtra). Confirmar con el back el nombre del campo |
 
 Al resolver una brecha, actualizar esta tabla y el [plan del sprint](../sprints/sprint-01.md).

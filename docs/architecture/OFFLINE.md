@@ -91,6 +91,8 @@ con `setOfflineJson` y enviarlo en `If-None-Match`; con `304` devolver los datos
 - Para reaccionar a la reconexión usar `useNetworkStatus` (o `onlineManager.subscribe`), como `OfflineSync`.
 - Las mutaciones tienen `retry: false` (`src/lib/query`); el reintento lo controla la cola.
 - El backend acepta el `id` del cliente (SCRUM-66) para que reenviar no duplique.
+- Implementado en SCRUM-70: ver `src/features/sightings/README.md` (sección *Reportes sin conexión*).
+  `storeLocalFile` / `removeLocalFile` de `@/lib/offline` copian y borran la foto.
 
 ## 6. Reglas
 

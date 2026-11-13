@@ -6,3 +6,4 @@ export {
   useReviewSighting,
   type ReviewDecision,
 } from './use-sighting-mutations';
+export { useQueuedSightings, useSightingQueueState } from './use-sighting-queue';

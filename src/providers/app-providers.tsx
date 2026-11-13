@@ -5,6 +5,7 @@ import { useColorScheme } from 'react-native';
 
 import { SessionProvider, useSession } from '@/features/auth';
 import { configureOfflineQueries, OfflineSync } from '@/features/offline';
+import { SightingQueueSync } from '@/features/sightings';
 import { connectOnlineManager, queryPersistOptions } from '@/lib/offline';
 import { queryClient } from '@/lib/query';
 import { RoleProvider } from '@/permissions';
@@ -31,6 +32,8 @@ export function AppProviders({ children }: AppProvidersProps) {
     <PersistQueryClientProvider client={queryClient} persistOptions={queryPersistOptions}>
       <OfflineSync />
       <SessionProvider>
+        {/* HU-22: envía los reportes guardados sin conexión al volver la señal (necesita la sesión). */}
+        <SightingQueueSync />
         <SessionRoleProvider>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             {children}
