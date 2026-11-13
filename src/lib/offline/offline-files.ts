@@ -144,3 +144,29 @@ export function clearOfflineFiles(folder?: string): void {
   const directory = folder ? folderDirectory(folder) : new Directory(Paths.document, ROOT_FOLDER);
   if (directory.exists) directory.delete();
 }
+
+/**
+ * Copia un archivo local (p. ej. la foto elegida en el selector, cuya URI puede desaparecer) a
+ * `offline-files/<carpeta>/<nombre>` y devuelve la nueva URI. En web no hay sistema de archivos: devuelve la
+ * misma URI. Si ya existía un archivo con ese nombre, lo reemplaza.
+ */
+export function storeLocalFile(sourceUri: string, folder: string, name: string): string {
+  if (!supported) return sourceUri;
+  const directory = folderDirectory(folder);
+  directory.create({ intermediates: true, idempotent: true });
+  const target = new File(directory, name);
+  if (target.exists) target.delete();
+  new File(sourceUri).copy(target);
+  return target.uri;
+}
+
+/** Borra un archivo local por su URI. No falla si ya no existe. */
+export function removeLocalFile(uri: string): void {
+  if (!supported || !uri) return;
+  try {
+    const file = new File(uri);
+    if (file.exists) file.delete();
+  } catch {
+    // Se ignora: un archivo que no se pudo borrar no afecta a la app.
+  }
+}

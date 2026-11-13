@@ -25,6 +25,8 @@ export {
   getOfflineFileUri,
   offlineFileName,
   pruneOfflineFiles,
+  removeLocalFile,
+  storeLocalFile,
   type OfflineDownloadOptions,
   type OfflineDownloadSummary,
 } from './offline-files';

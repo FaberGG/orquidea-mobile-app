@@ -12,7 +12,7 @@ uso para nuevas features: [docs/architecture/OFFLINE.md](../../../docs/architect
 | `key-value-storage.types.ts` | Tipo `KeyValueStorage` (compatible con AsyncStorage) |
 | `query-persistence.ts` | `queryPersister`, `queryPersistOptions`, `offlineQueryOptions` (`meta.persist`, `gcTime: Infinity`), `registerOfflineQueries`, `shouldPersistQuery`, `isPersistedQuery`, `OFFLINE_CACHE_MAX_AGE_MS`, `OFFLINE_CACHE_BUSTER` |
 | `offline-source.ts` | Tipo `OfflineSource`: lo que exporta una feature para tener datos offline |
-| `offline-files.ts` | `downloadOfflineFiles`, `getOfflineFileUri`, `pruneOfflineFiles`, `clearOfflineFiles`, `offlineFileName` (archivos en `Paths.document/offline-files/<carpeta>/`) |
+| `offline-files.ts` | `downloadOfflineFiles`, `getOfflineFileUri`, `pruneOfflineFiles`, `clearOfflineFiles`, `offlineFileName` (archivos en `Paths.document/offline-files/<carpeta>/`); `storeLocalFile` / `removeLocalFile` para copiar y borrar archivos propios del dispositivo (fotos de la cola de reportes, SCRUM-70) |
 | `network-state.ts` | `toNetworkStatus`: regla de conectividad de ADR-0015 |
 | `online-manager.ts` | `connectOnlineManager`: TanStack Query pausa las queries sin red confirmada |
 | `index.ts` | API pública |
