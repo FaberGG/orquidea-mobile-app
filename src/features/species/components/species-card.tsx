@@ -1,8 +1,8 @@
-import { Image } from 'expo-image';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
+import { OfflineImage } from '@/components/ui/offline-image';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -31,7 +31,7 @@ export function SpeciesCard({ species, onPress }: SpeciesCardProps) {
         pressed && styles.pressed,
       ]}>
       {species.photoUrl ? (
-        <Image source={{ uri: species.photoUrl }} style={styles.photo} contentFit="cover" />
+        <OfflineImage uri={species.photoUrl} style={styles.photo} contentFit="cover" />
       ) : (
         <View
           style={[styles.photo, styles.placeholder, { backgroundColor: theme.backgroundSelected }]}>

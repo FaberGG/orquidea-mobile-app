@@ -15,4 +15,5 @@ las features.
 
 - Las claves de caché **no** se definen aquí: cada feature define las suyas en su `constants.ts`.
 - Al cerrar sesión (HU-3) se limpia toda la caché (`queryClient.clear()`).
-- En HE-08 se agregará la persistencia de la caché para el modo offline.
+- La persistencia offline (HE-08) vive en [`../offline/`](../offline/README.md): solo se guardan las queries
+  marcadas `meta.persist` y `AppProviders` usa `PersistQueryClientProvider` (ADR-0017).

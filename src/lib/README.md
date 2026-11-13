@@ -9,6 +9,7 @@ de la app usa estas abstracciones en vez de las librerías directamente, para po
 | [`storage/`](storage/README.md) | Almacenamiento seguro (token de sesión) y almacenamiento general |
 | [`query/`](query/README.md) | Configuración del cliente de caché de servidor (TanStack Query) |
 | [`location/`](location/README.md) | Posición actual del dispositivo (`expo-location`) |
+| [`offline/`](offline/README.md) | Persistencia offline: kv-store, caché guardada, archivos en disco y conectividad (ADR-0017) |
 
 ## Reglas
 

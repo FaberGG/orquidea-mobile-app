@@ -9,4 +9,6 @@ export { ScanSpeciesQrButton } from './components/scan-species-qr-button';
 export { SPECIES_LABELS } from './constants';
 // Lo usan otras features (p. ej. el selector de fichas de una estación, HU-13).
 export { useSpeciesList } from './hooks';
+// HU-21: fuente offline que registra y sincroniza `features/offline`.
+export { prefetchSpeciesForOffline, speciesOfflineSource } from './hooks';
 export { type Species } from './types';

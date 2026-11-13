@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { router, type Href } from 'expo-router';
 import { type ReactNode, useState } from 'react';
 import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -9,6 +8,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
+import { OfflineImage } from '@/components/ui/offline-image';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { isApiError } from '@/lib/api';
@@ -28,9 +28,26 @@ const HERO_HEIGHT = 260;
  * se abre al tocar una estación.
  */
 export function StationDetailScreen({ id }: { id: string }) {
-  const { data, isPending, isError, error, refetch } = useStation(id);
+  const { data, isPending, isError, error, fetchStatus, refetch } = useStation(id);
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+
+  const removed = isError && isApiError(error) && error.status === 404;
+  // HU-21: con la copia guardada se muestra aunque falle el refresco, salvo que la API confirme el borrado.
+  if (data !== undefined && !removed) {
+    return <StationDetailContent station={data} insetTop={insets.top} />;
+  }
+
+  if (isPending && fetchStatus === 'paused') {
+    return (
+      <ThemedView style={[styles.flex, { paddingTop: insets.top }]}>
+        <EmptyState icon="location" title={STATION_MESSAGES.offlineUnavailable}>
+          <Button label={STATION_LABELS.back} variant="link" onPress={() => router.back()} />
+          <Button label={STATION_LABELS.retry} onPress={() => void refetch()} />
+        </EmptyState>
+      </ThemedView>
+    );
+  }
 
   if (isPending) {
     return (
@@ -56,7 +73,7 @@ export function StationDetailScreen({ id }: { id: string }) {
     );
   }
 
-  return <StationDetailContent station={data} insetTop={insets.top} />;
+  return null;
 }
 
 function StationDetailContent({ station, insetTop }: { station: Station; insetTop: number }) {
@@ -77,8 +94,8 @@ function StationDetailContent({ station, insetTop }: { station: Station; insetTo
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.hero, { backgroundColor: theme.backgroundSelected }]}>
           {station.photoUrl && (
-            <Image
-              source={{ uri: station.photoUrl }}
+            <OfflineImage
+              uri={station.photoUrl}
               style={StyleSheet.absoluteFill}
               contentFit="cover"
               accessibilityLabel={STATION_LABELS.photoOf(station.name)}
@@ -137,8 +154,8 @@ function StationDetailContent({ station, insetTop }: { station: Station; insetTo
                       pressed && styles.pressed,
                     ]}>
                     {species.photoUrl ? (
-                      <Image
-                        source={{ uri: species.photoUrl }}
+                      <OfflineImage
+                        uri={species.photoUrl}
                         style={styles.speciesThumb}
                         contentFit="cover"
                       />

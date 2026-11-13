@@ -14,6 +14,7 @@ pantallas, componentes propios, hooks de datos, llamadas a la API, validaciones 
 | [`map/`](map/README.md) | HE-05 | 3 | HU-12: mapa del sendero, estaciones, ubicación y capa satelital |
 | [`content/`](content/README.md) | HE-06 | 2–3 | Anuncios (HU-16, HU-17) y componentes del humedal (HU-14, HU-15) |
 | [`sightings/`](sightings/README.md) | HE-07 | futuro (pestaña creada) | Reportes ciudadanos y moderación (pestaña Comunidad) |
+| [`offline/`](offline/README.md) | HE-08 | 4 | Sin pantallas: registra las fuentes offline de las features y sincroniza datos y fotos |
 
 ## Estructura interna estándar
 

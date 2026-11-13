@@ -34,5 +34,6 @@ se reemplazan con uno nuevo.
 | [0013](0013-ubicacion-con-expo-location.md) | Lugar del avistamiento con expo-location | Aceptado |
 | [0015](0015-escaneo-qr-y-conectividad.md) | Escaneo QR de fichas y conectividad | Aceptado |
 | [0016](0016-exportar-qr-desde-la-app.md) | Obtener y compartir el PNG QR desde el detalle administrativo | Aceptado |
+| [0017](0017-persistencia-offline.md) | Persistencia offline: caché guardada, conectividad global y fotos en disco (reemplaza parcialmente 0015) | Aceptado |
 
 Los ADR *Propuestos* se aceptan (o se modifican) al ejecutar la tarea del Sprint 1 que instala la dependencia.

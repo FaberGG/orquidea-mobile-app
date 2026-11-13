@@ -34,21 +34,26 @@ export async function listPendingSightings(page: number): Promise<SightingPage> 
 /**
  * HU-18: `POST /api/reportes-avistamiento` (multipart). El autor lo pone el servidor a partir del
  * token (CA4). Con foto se usa la subida nativa; sin foto, `multipart` de texto.
+ *
+ * HU-22 (SCRUM-70): los reportes guardados sin conexión llevan `clientId`, un UUID generado en el
+ * teléfono, que viaja en el campo `id` para que reenviarlo no duplique el reporte (SCRUM-66 en el back).
  */
-export async function createSighting(input: SightingInput): Promise<Sighting> {
+export async function createSighting(input: SightingInput, clientId?: string): Promise<Sighting> {
+  const fields = toSightingFields(input);
+  if (clientId) fields.id = clientId;
   if (input.photo) {
     const response = await uploadMultipart(
       'POST',
       SIGHTINGS_PATH,
-      toSightingFields(input),
+      fields,
       { uri: input.photo.uri, mimeType: input.photo.mimeType },
       'foto',
     );
     return toSighting(response);
   }
-  const response = await apiClient.post<unknown>(SIGHTINGS_PATH, {
-    formData: toSightingFormData(input),
-  });
+  const formData = toSightingFormData(input);
+  if (clientId) formData.append('id', clientId);
+  const response = await apiClient.post<unknown>(SIGHTINGS_PATH, { formData });
   return toSighting(response);
 }
 
