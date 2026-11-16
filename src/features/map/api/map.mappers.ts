@@ -1,3 +1,5 @@
+import { resolveMediaUrl } from '@/lib/resolve-media-url';
+
 import { trailMapDtoSchema } from '../schemas';
 import { type Coordinates, type TrailMap } from '../types';
 
@@ -27,7 +29,7 @@ export function toTrailMap(response: unknown): TrailMap {
       id: station.id,
       name: station.nombre,
       description: station.descripcion,
-      photoUrl: station.urlFoto,
+      photoUrl: resolveMediaUrl(station.urlFoto),
       coordinates: {
         latitude: station.decimalLatitude,
         longitude: station.decimalLongitude,
@@ -35,7 +37,7 @@ export function toTrailMap(response: unknown): TrailMap {
       species: station.fichas.map((taxon) => ({
         id: taxon.id,
         commonName: taxon.vernacularName,
-        photoUrl: taxon.urlFoto,
+        photoUrl: resolveMediaUrl(taxon.urlFoto),
       })),
     })),
   };

@@ -121,12 +121,11 @@ describe('AppDrawerContent (menú lateral)', () => {
     expect(router.push).toHaveBeenCalledWith('/(drawer)/(tabs)/announcements');
   });
 
-  it('los destinos sin implementar no son presionables', async () => {
+  it('el visitante puede abrir las descargas sin conexión', async () => {
     await renderAs('visitor');
-    const item = screen.getByLabelText(
-      `${NAVIGATION_LABELS.offlineDownloads}, ${NAVIGATION_LABELS.comingSoon}`,
-    );
-    expect(item.props.accessibilityState).toEqual(expect.objectContaining({ disabled: true }));
+    await fireEvent.press(screen.getByText(NAVIGATION_LABELS.offlineDownloads));
+    expect(closeDrawer).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith('/offline-downloads');
   });
   it('la gestión de contenido: Nueva ficha solo para administradores', async () => {
     await renderAs('user');

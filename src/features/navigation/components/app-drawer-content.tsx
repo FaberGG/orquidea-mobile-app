@@ -136,7 +136,11 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
           label={NAVIGATION_LABELS.announcements}
           onPress={goToAnnouncements}
         />
-        <DrawerItem icon="offline" label={NAVIGATION_LABELS.offlineDownloads} isComingSoon />
+        <DrawerItem
+          icon="offline"
+          label={NAVIGATION_LABELS.offlineDownloads}
+          onPress={() => goTo('/offline-downloads' as Href)}
+        />
       </DrawerSection>
 
       <Can permission="admins:read">
