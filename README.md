@@ -1,7 +1,10 @@
-# Orquídea — App móvil del Humedal
+# Contexto del proyecto
+El Humedal La Orquídea, en el barrio La María Occidente de Popayán, es un ecosistema en recuperación que el comité ambiental local, junto con voluntarios de la Universidad del Cauca, ha caracterizado biológicamente durante años (aves, plantas, mamíferos e insectos). El problema es que toda esa información permanece dispersa y es de difícil acceso tanto para la comunidad como para los visitantes del sendero.
 
-Aplicación móvil (Android / iOS / Web) del **Humedal La Orquídea**. Permite a los visitantes
-conocer la biodiversidad del humedal mediante fichas taxonómicas, mapa del sendero, contenido
+# Propuesta ( Orquídea — App móvil del Humedal )
+una aplicación para Android e iOS que centralice, gestione y divulgue esa información, para que el Comité Ambiental La Orquídea la administre de forma autónoma.
+
+Permite a los visitantes conocer la biodiversidad del humedal mediante fichas taxonómicas, mapa del sendero, contenido
 educativo y reportes ciudadanos de avistamientos; y a los administradores gestionar ese contenido.
 
 La app es un **cliente de una API REST**: no contiene lógica de negocio autoritativa. Toda regla
