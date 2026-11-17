@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { isApiError } from '@/lib/api';
 
-import { createSpecies, type SaveSpeciesProgress, updateSpecies } from '../api';
+import { createSpecies, deleteSpecies, type SaveSpeciesProgress, updateSpecies } from '../api';
 import { SPECIES_MESSAGES, speciesKeys } from '../constants';
 import { type SpeciesInput } from '../types';
 
@@ -62,6 +62,18 @@ export function useUpdateSpecies(id: string) {
     mutationFn: ({ input, progress }: UpdateSpeciesVariables) => updateSpecies(id, input, progress),
     onError: (error, { input }) => logSaveFailure('editar', error, input),
     onSettled: () => queryClient.invalidateQueries({ queryKey: speciesKeys.all }),
+  });
+}
+
+/** HU-9: elimina la ficha y refresca los listados; el detalle eliminado deja de estar en caché. */
+export function useDeleteSpecies(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => deleteSpecies(id),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: speciesKeys.detail(id) });
+      return queryClient.invalidateQueries({ queryKey: speciesKeys.all });
+    },
   });
 }
 

@@ -23,6 +23,10 @@ export const SPECIES_LABELS = {
   conservationLabel: 'Estado de conservación',
   editButton: 'Editar ficha',
   deleteButton: 'Eliminar ficha',
+  deleteTitle: '¿Eliminar esta ficha?',
+  deleteDescription: 'La ficha y sus fotos se eliminarán. Esta acción no se puede deshacer.',
+  confirm: 'CONFIRMAR',
+  cancel: 'CANCELAR',
   back: 'Volver',
   noData: 'Sin información',
   backToList: 'Volver al listado',
@@ -192,6 +196,8 @@ export const SPECIES_FORM_CONSERVATION_CODES = ['CR', 'EN', 'VU', 'NT', 'LC'] as
 
 /** Mensajes de HU-7 y HU-8 (copiados de los criterios de aceptación) y respaldos locales. */
 export const SPECIES_MESSAGES = {
+  // Eliminar ficha (HU-9).
+  deleteError: 'No pudimos eliminar la ficha. Inténtalo de nuevo.',
   // HU-7 CA2
   requiredFields: 'Debes completar todos los campos obligatorios.',
   // HU-7 CA3
