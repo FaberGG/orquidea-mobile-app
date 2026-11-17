@@ -28,8 +28,8 @@ export type SpeciesDetailScreenProps = {
 };
 
 /**
- * Detalle de una ficha (Figma: "Detalle ficha"). Es la misma pantalla para todos los roles: las
- * acciones de edición y eliminación aparecen solo con su permiso (`<Can>`, ROLES-Y-PERMISOS §3).
+ * Detalle de una ficha (Figma: "Detalle ficha"). Es la misma pantalla para todos los roles: la
+ * acción de edición aparece solo con su permiso (`<Can>`, ROLES-Y-PERMISOS §3).
  */
 export function SpeciesDetailScreen({ id, source }: SpeciesDetailScreenProps) {
   const { data, isPending, isError, error, fetchStatus, refetch } = useSpecies(id);
@@ -173,20 +173,6 @@ function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTo
                 router.push({ pathname: '/species/[id]/edit', params: { id: species.id } })
               }
             />
-          </Can>
-
-          <Can permission="species:delete">
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={SPECIES_LABELS.deleteButton}
-              // HU-9: la API aún no tiene DELETE /api/fichas-taxonomicas/{id} (docs/api B1).
-              disabled
-              style={[styles.deleteButton, { borderColor: theme.danger }]}>
-              <Icon name="delete" size={18} color="danger" />
-              <ThemedText type="smallBold" themeColor="danger">
-                {SPECIES_LABELS.deleteButton}
-              </ThemedText>
-            </Pressable>
           </Can>
         </View>
       </ScrollView>
@@ -350,15 +336,5 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     lineHeight: 22,
-  },
-  deleteButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.two,
-    minHeight: 52,
-    borderWidth: 1,
-    borderRadius: Radius.pill,
-    backgroundColor: 'transparent',
   },
 });

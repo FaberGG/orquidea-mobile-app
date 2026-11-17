@@ -178,7 +178,8 @@ describe('SpeciesDetailScreen (HU-10 detalle, HU-8 y HU-9 por rol)', () => {
   it('el administrador ve editar y eliminar', async () => {
     await renderDetail('admin');
     expect(screen.getByText('Editar ficha')).toBeTruthy();
-    expect(screen.getByText('Eliminar ficha')).toBeTruthy();
+    // HU-9 bloqueada: sin DELETE en la API, el botón no se muestra.
+    expect(screen.queryByText('Eliminar ficha')).toBeNull();
   });
 
   it('muestra el mensaje de no encontrada cuando la ficha no existe', async () => {

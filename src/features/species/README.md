@@ -12,7 +12,7 @@ HE-3 → "Listar fichas" y "Detalle ficha".
 | HU-10 | Listado por categoría (chips con ícono) y detalle | Todos | ✅ Implementado (sin búsqueda: la API aún no la tiene) |
 | HU-7 | Crear ficha | Admin+ | ✅ Formulario de `(admin)/species/new` (Figma "Crear ficha"). v2.0: varias fotos, con contrato inferido ([`fichas-varias-fotos.md`](../../../docs/api/fichas-varias-fotos.md)) |
 | HU-8 | Editar ficha | Admin+ | ✅ Formulario de `(admin)/species/[id]/edit` (Figma "Editar ficha") |
-| HU-9 | Eliminar ficha | Admin+ | Botón visible con `<Can>`; deshabilitado: la API no tiene `DELETE` (docs/api B1) |
+| HU-9 | Eliminar ficha | Admin+ | Bloqueada: la API no tiene `DELETE` (docs/api B1), por eso el botón no se muestra |
 | HU-11 | Escanear QR para consultar la ficha | Todos | Escáner interno implementado; pruebas físicas pendientes |
 | HU-11 (gestión QR) | Obtener el PNG de una ficha y guardarlo/compartirlo desde el detalle | Admin y superadmin | Implementado localmente; validación física pendiente |
 
@@ -54,7 +54,6 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 | Listado y detalle | `species:read` (todos) |
 | Botón **Editar ficha** en el detalle | `species:update` (admin, superadmin) |
 | Botón **+** del encabezado del listado y **Nueva ficha** en el menú lateral | `species:create` (admin, superadmin) |
-| Botón **Eliminar ficha** en el detalle | `species:delete` (admin, superadmin) |
 
 ## Mensajes
 

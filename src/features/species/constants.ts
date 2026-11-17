@@ -22,7 +22,6 @@ export const SPECIES_LABELS = {
   rowSpecies: 'Especie',
   conservationLabel: 'Estado de conservación',
   editButton: 'Editar ficha',
-  deleteButton: 'Eliminar ficha',
   back: 'Volver',
   noData: 'Sin información',
   backToList: 'Volver al listado',
