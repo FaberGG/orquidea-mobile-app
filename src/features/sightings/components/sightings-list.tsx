@@ -2,6 +2,7 @@ import { type ReactElement } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { EmptyState } from '@/components/feedback/empty-state';
+import { TAB_BAR_OVERLAP } from '@/components/layout/tab-bar';
 import { Button } from '@/components/ui/button';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content: {
-    paddingBottom: FAB_CLEARANCE,
+    paddingBottom: FAB_CLEARANCE + TAB_BAR_OVERLAP,
   },
   emptyContent: {
     flexGrow: 1,

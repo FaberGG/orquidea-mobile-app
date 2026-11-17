@@ -5,6 +5,7 @@ import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'r
 import { EmptyState } from '@/components/feedback/empty-state';
 import { FormMessage } from '@/components/feedback/form-message';
 import { Screen } from '@/components/layout/screen';
+import { TAB_BAR_OVERLAP } from '@/components/layout/tab-bar';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { Spacing } from '@/constants/theme';
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.two,
-    paddingBottom: Spacing.four,
+    paddingBottom: Spacing.four + TAB_BAR_OVERLAP,
   },
   header: {
     gap: Spacing.two,

@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { TAB_BAR_OVERLAP } from '@/components/layout/tab-bar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     gap: 28,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.two,
-    paddingBottom: Spacing.four,
+    paddingBottom: Spacing.four + TAB_BAR_OVERLAP,
     width: '100%',
     maxWidth: MaxContentWidth,
     alignSelf: 'center',

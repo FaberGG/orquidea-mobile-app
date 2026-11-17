@@ -6,6 +6,12 @@ import { ThemedText } from '@/components/themed-text';
 import { MinTouchSize, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
+/**
+ * Cuánto se sobrepone la barra al borde inferior de la pantalla (el radio de sus esquinas). Las pantallas
+ * de las pestañas suman este valor a su espacio inferior para que nada quede bajo la barra.
+ */
+export const TAB_BAR_OVERLAP = Spacing.four;
+
 /** Tamaño del ícono de cada pestaña en el diseño. */
 export const TAB_ICON_SIZE = 28;
 
@@ -82,7 +88,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: Spacing.four,
     // La barra se sobrepone al borde inferior de la pantalla: tras sus esquinas redondeadas se ve el
     // contenido de la pantalla y no el fondo del contenedor de navegación.
-    marginTop: -Spacing.four,
+    marginTop: -TAB_BAR_OVERLAP,
   },
   item: {
     alignItems: 'center',
