@@ -25,7 +25,8 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
         styles.bar,
         {
           backgroundColor: theme.backgroundSelected,
-          paddingBottom: Math.max(insets.bottom, Spacing.three),
+          // Espacio extra bajo los íconos, además del área segura (botones o gesto de Android).
+          paddingBottom: insets.bottom + Spacing.three,
         },
       ]}>
       {state.routes.map((route, index) => {
@@ -79,6 +80,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     borderTopLeftRadius: Spacing.four,
     borderTopRightRadius: Spacing.four,
+    // La barra se sobrepone al borde inferior de la pantalla: tras sus esquinas redondeadas se ve el
+    // contenido de la pantalla y no el fondo del contenedor de navegación.
+    marginTop: -Spacing.four,
   },
   item: {
     alignItems: 'center',
