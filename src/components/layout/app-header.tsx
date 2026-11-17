@@ -35,6 +35,8 @@ export function HeaderIconButton({ icon, accessibilityLabel, onPress }: HeaderIc
 export type AppHeaderProps = {
   onMenuPress: () => void;
   menuAccessibilityLabel: string;
+  /** �cono del bot�n de la izquierda; por defecto el men� lateral. */
+  leadingIcon?: IconName;
   title?: string;
   /** Acción opcional a la derecha (p. ej. buscar en el listado de fichas). */
   right?: ReactNode;
@@ -44,7 +46,13 @@ export type AppHeaderProps = {
  * Encabezado de las pestañas principales (Figma: "Listar fichas"): botón de menú a la izquierda y una
  * acción opcional a la derecha. Cubre el área segura superior.
  */
-export function AppHeader({ onMenuPress, menuAccessibilityLabel, title, right }: AppHeaderProps) {
+export function AppHeader({
+  onMenuPress,
+  menuAccessibilityLabel,
+  leadingIcon = 'menu',
+  title,
+  right,
+}: AppHeaderProps) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -55,7 +63,7 @@ export function AppHeader({ onMenuPress, menuAccessibilityLabel, title, right }:
         { backgroundColor: theme.background, paddingTop: insets.top + Spacing.three },
       ]}>
       <HeaderIconButton
-        icon="menu"
+        icon={leadingIcon}
         accessibilityLabel={menuAccessibilityLabel}
         onPress={onMenuPress}
       />

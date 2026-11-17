@@ -71,10 +71,4 @@ describe('TabBar', () => {
     await fireEvent.press(screen.getByRole('tab', { name: 'Mapas' }));
     expect(navigateToTab).toHaveBeenCalledWith('map-1');
   });
-
-  it('oculta la ruta de administradores de la barra inferior', async () => {
-    await renderTabBar(2).render();
-    expect(screen.queryByRole('tab', { name: 'Administradores' })).toBeNull();
-    expect(screen.getByRole('tab', { name: 'Inicio' })).toBeTruthy();
-  });
 });

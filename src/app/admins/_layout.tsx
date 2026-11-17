@@ -1,10 +1,8 @@
 import { Redirect, router, Stack } from 'expo-router';
-import { DrawerActions } from 'expo-router/react-navigation';
 
 import { AppHeader, HeaderIconButton } from '@/components/layout/app-header';
 import { ADMIN_LABELS } from '@/features/admins';
 import { useSession } from '@/features/auth';
-import { NAVIGATION_LABELS } from '@/features/navigation';
 import { usePermission } from '@/permissions';
 
 export default function AdminsLayout() {
@@ -18,11 +16,12 @@ export default function AdminsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          header: ({ navigation }) => (
+          header: () => (
             <AppHeader
               title={ADMIN_LABELS.listTitle}
-              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
-              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              leadingIcon="chevronLeft"
+              menuAccessibilityLabel="Volver"
+              onMenuPress={() => router.back()}
               right={
                 <HeaderIconButton
                   icon="add"
@@ -37,18 +36,12 @@ export default function AdminsLayout() {
       <Stack.Screen
         name="new"
         options={{
-          header: ({ navigation }) => (
+          header: () => (
             <AppHeader
               title={ADMIN_LABELS.title}
-              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
-              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              right={
-                <HeaderIconButton
-                  icon="chevronLeft"
-                  accessibilityLabel="Volver a administradores"
-                  onPress={() => router.back()}
-                />
-              }
+              leadingIcon="chevronLeft"
+              menuAccessibilityLabel="Volver"
+              onMenuPress={() => router.back()}
             />
           ),
         }}
@@ -56,18 +49,12 @@ export default function AdminsLayout() {
       <Stack.Screen
         name="[id]"
         options={{
-          header: ({ navigation }) => (
+          header: () => (
             <AppHeader
               title={ADMIN_LABELS.editTitle}
-              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
-              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              right={
-                <HeaderIconButton
-                  icon="chevronLeft"
-                  accessibilityLabel="Volver a administradores"
-                  onPress={() => router.back()}
-                />
-              }
+              leadingIcon="chevronLeft"
+              menuAccessibilityLabel="Volver"
+              onMenuPress={() => router.back()}
             />
           ),
         }}

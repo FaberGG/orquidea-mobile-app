@@ -31,7 +31,7 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         // `href: null` de Expo Router no se expone en BottomTabNavigationOptions.
-        if (route.name === 'admins' || route.name === 'announcements') return null;
+        if (route.name === 'announcements') return null;
         const isFocused = state.index === index;
         const label = options.title ?? route.name;
         const color = isFocused ? theme.navActive : theme.navInactive;
