@@ -9,6 +9,9 @@ export const SPECIES_LABELS = {
   noSpeciesAtAll: 'Aún no hay especies registradas.',
   notFound: 'Esta ficha no existe o ya no está disponible.',
   loadError: 'No pudimos cargar las fichas. Revisa tu conexión e inténtalo de nuevo.',
+  /** HU-21 CA2: la ficha o sección no se descargó antes de quedarse sin conexión. */
+  offlineUnavailable:
+    'Esta información no está disponible sin conexión. Conéctate a internet para descargarla.',
   retry: 'REINTENTAR',
   sectionTaxonomy: 'Taxonomía',
   sectionDiet: 'Alimentación',

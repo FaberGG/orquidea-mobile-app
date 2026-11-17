@@ -1,18 +1,9 @@
-import {
-  addNetworkStateListener,
-  getNetworkStateAsync,
-  NetworkStateType,
-  type NetworkState,
-} from 'expo-network';
+import { addNetworkStateListener, getNetworkStateAsync } from 'expo-network';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export type NetworkStatus = 'online' | 'offline' | 'unknown';
+import { toNetworkStatus, type NetworkStatus } from '@/lib/offline';
 
-function toNetworkStatus(state: NetworkState): NetworkStatus {
-  if (state.isConnected === true) return 'online';
-  if (state.isConnected === false && state.type === NetworkStateType.NONE) return 'offline';
-  return 'unknown';
-}
+export type { NetworkStatus } from '@/lib/offline';
 
 /** Observa la conectividad sin convertirla en requisito global para las consultas de la app. */
 export function useNetworkStatus() {

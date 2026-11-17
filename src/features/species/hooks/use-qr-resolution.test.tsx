@@ -84,4 +84,13 @@ describe('useQrResolution', () => {
     await waitFor(() => expect(requestSignal?.aborted).toBe(true));
     expect(queryClient.getQueryData(speciesKeys.detail(SPECIES.id))).toBeUndefined();
   });
+
+  it('HU-21: indica si la ficha del QR está guardada para abrirla sin conexión', async () => {
+    const { result } = await renderHook(() => useQrResolution(), { wrapper: Wrapper });
+    expect(result.current.hasSavedSpecies(SPECIES.id)).toBe(false);
+
+    queryClient.setQueryData(speciesKeys.detail(SPECIES.id), SPECIES);
+    expect(result.current.hasSavedSpecies(SPECIES.id)).toBe(true);
+    expect(getSpecies).not.toHaveBeenCalled();
+  });
 });

@@ -1,3 +1,4 @@
+export { prefetchSpeciesForOffline, speciesOfflineSource } from './species-offline';
 export { useSpecies, useSpeciesList } from './use-species';
 export {
   getSpeciesSaveErrorMessage,

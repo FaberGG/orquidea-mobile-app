@@ -4,7 +4,10 @@ import { router } from 'expo-router';
 import { type ReactElement, type ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { useSession } from '@/features/auth';
 import { useNetworkStatus } from '@/hooks/use-network-status';
+import { ApiError } from '@/lib/api';
+import { setOfflineJson } from '@/lib/offline';
 import { RoleProvider, type Role } from '@/permissions';
 
 import {
@@ -13,12 +16,21 @@ import {
   listPendingSightings,
   reviewSighting,
 } from '../api';
-import { type Sighting, type SightingPage } from '../types';
+import {
+  enqueueSighting,
+  getSightingQueueState,
+  resetSightingQueueForTests,
+  SIGHTING_QUEUE_KEY,
+} from '../queue';
+import { type Sighting, type SightingInput, type SightingPage } from '../types';
 import { CommunityScreen } from './community-screen';
 import { NewSightingScreen } from './new-sighting-screen';
+import { SightingQueueSync } from './sighting-queue-sync';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn() } }));
 jest.mock('@/hooks/use-network-status', () => ({ useNetworkStatus: jest.fn() }));
+jest.mock('@/features/auth', () => ({ useSession: jest.fn() }));
+jest.mock('expo-crypto', () => ({ randomUUID: () => 'uuid-local-1' }));
 jest.mock('../api', () => ({
   listApprovedSightings: jest.fn(),
   listPendingSightings: jest.fn(),
@@ -72,11 +84,22 @@ function Providers({ role, children }: { role: Role; children: ReactNode }) {
 }
 
 async function renderAs(role: Role, ui: ReactElement) {
+  const isAuthenticated = role !== 'visitor';
+  jest.mocked(useSession).mockReturnValue({
+    status: isAuthenticated ? 'authenticated' : 'unauthenticated',
+    user: isAuthenticated
+      ? { id: 'user-1', firstName: 'Ana', lastName: 'Gómez', email: 'ana@example.com', role }
+      : null,
+    isAuthenticated,
+    role,
+  } as unknown as ReturnType<typeof useSession>);
   await render(ui, { wrapper: (props) => <Providers role={role} {...props} /> });
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   jest.mocked(useNetworkStatus).mockReturnValue({ status: 'online', refresh: jest.fn() });
+  resetSightingQueueForTests();
+  await setOfflineJson(SIGHTING_QUEUE_KEY, []);
 });
 
 beforeEach(() => {
@@ -279,5 +302,120 @@ describe('Ubicación del avistamiento en el mapa (SCRUM-72)', () => {
     await renderAs('user', <NewSightingScreen />);
     expect(screen.queryByRole('button', { name: 'Elegir en el mapa' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Usar mi ubicación actual' })).toBeTruthy();
+  });
+});
+
+const OFFLINE_INPUT: SightingInput = {
+  remarks: 'Tingua azul entre los juncos',
+  kingdom: 'animalia',
+  vernacularName: '',
+  location: null,
+  photo: null,
+};
+
+async function fillAndSend() {
+  await fireEvent.changeText(screen.getByLabelText('Lo que observaste'), 'Tingua azul');
+  await fireEvent.press(screen.getByRole('button', { name: 'Enviar reporte' }));
+}
+
+describe('Reporte sin conexión (HU-22)', () => {
+  it('CA1: sin red guarda el reporte en el teléfono como pendiente de sincronización', async () => {
+    jest.mocked(useNetworkStatus).mockReturnValue({ status: 'offline', refresh: jest.fn() });
+    await renderAs('user', <NewSightingScreen />);
+
+    await fillAndSend();
+
+    expect(
+      await screen.findByText(
+        'Tu reporte quedó guardado en el teléfono, pendiente de sincronización.',
+      ),
+    ).toBeTruthy();
+    expect(createSighting).not.toHaveBeenCalled();
+    expect(getSightingQueueState().items).toEqual([
+      expect.objectContaining({ id: 'uuid-local-1', ownerId: 'user-1', status: 'pending' }),
+    ]);
+  });
+
+  it('CA1: si el envío falla por la conexión, también lo guarda', async () => {
+    jest
+      .mocked(createSighting)
+      .mockRejectedValue(new ApiError({ status: 0, kind: 'timeout', path: '/api/x' }));
+    await renderAs('user', <NewSightingScreen />);
+
+    await fillAndSend();
+
+    expect(
+      await screen.findByText(
+        'Tu reporte quedó guardado en el teléfono, pendiente de sincronización.',
+      ),
+    ).toBeTruthy();
+    expect(getSightingQueueState().items).toHaveLength(1);
+  });
+
+  it('un error de la API (4xx) no se guarda: se muestra el mensaje como antes', async () => {
+    jest.mocked(createSighting).mockRejectedValue(
+      new ApiError({
+        status: 400,
+        kind: 'http',
+        path: '/api/x',
+        serverMessage: 'El formato de la imagen no es válido.',
+      }),
+    );
+    await renderAs('user', <NewSightingScreen />);
+
+    await fillAndSend();
+
+    expect(await screen.findByText('El formato de la imagen no es válido.')).toBeTruthy();
+    expect(getSightingQueueState().items).toEqual([]);
+  });
+
+  it('Comunidad muestra los reportes sin enviar con su estado y permite descartarlos', async () => {
+    jest.mocked(listApprovedSightings).mockResolvedValue(page([]));
+    jest.mocked(useNetworkStatus).mockReturnValue({ status: 'offline', refresh: jest.fn() });
+    await enqueueSighting(OFFLINE_INPUT, 'user-1');
+    await renderAs('user', <CommunityScreen />);
+
+    expect(await screen.findByText('Tus reportes sin enviar (1)')).toBeTruthy();
+    expect(screen.getByText('Tingua azul entre los juncos')).toBeTruthy();
+    expect(screen.getByText('Pendiente de sincronización')).toBeTruthy();
+    // Sin red, REINTENTAR no hace nada.
+    expect(screen.getByRole('button', { name: 'REINTENTAR' })).toBeDisabled();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'DESCARTAR' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Sí, descartar' }));
+
+    await waitFor(() => expect(screen.queryByText('Tus reportes sin enviar (1)')).toBeNull());
+    expect(getSightingQueueState().items).toEqual([]);
+  });
+
+  it('los reportes de otro usuario no se muestran', async () => {
+    jest.mocked(listApprovedSightings).mockResolvedValue(page([]));
+    await enqueueSighting(OFFLINE_INPUT, 'otro-usuario');
+    await renderAs('user', <CommunityScreen />);
+
+    await screen.findByText('Aún no hay avistamientos publicados.');
+    expect(screen.queryByText(/Tus reportes sin enviar/)).toBeNull();
+  });
+
+  it('CA2: con red envía la cola con el id del cliente y avisa "Datos sincronizados correctamente."', async () => {
+    jest.mocked(createSighting).mockResolvedValue(PENDING);
+    await enqueueSighting(OFFLINE_INPUT, 'user-1');
+    const notify = jest.fn();
+
+    await renderAs('user', <SightingQueueSync notify={notify} />);
+
+    await waitFor(() => expect(notify).toHaveBeenCalledWith('Datos sincronizados correctamente.'));
+    expect(createSighting).toHaveBeenCalledWith(OFFLINE_INPUT, 'uuid-local-1');
+    expect(notify).toHaveBeenCalledTimes(1);
+    expect(getSightingQueueState().items).toEqual([]);
+  });
+
+  it('CA2: sin red no intenta enviar', async () => {
+    jest.mocked(useNetworkStatus).mockReturnValue({ status: 'offline', refresh: jest.fn() });
+    await enqueueSighting(OFFLINE_INPUT, 'user-1');
+    await renderAs('user', <SightingQueueSync notify={jest.fn()} />);
+
+    expect(createSighting).not.toHaveBeenCalled();
+    expect(getSightingQueueState().items).toHaveLength(1);
   });
 });

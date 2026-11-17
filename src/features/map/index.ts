@@ -7,6 +7,8 @@ export { StationsListScreen } from './components/stations-list-screen';
 export { MapLocationPicker, type MapLocationPickerProps } from './components/map-location-picker';
 export { LOCATION_PICKER_LABELS, MAP_LABELS, STATION_LABELS } from './constants';
 export { getDistanceInMeters, getNearestStation, toTrailMap } from './api';
+// HU-21: fuente offline de estaciones que registra y sincroniza `features/offline`.
+export { prefetchStationsForOffline, stationsOfflineSource } from './hooks';
 export type {
   Coordinates,
   MapBounds,

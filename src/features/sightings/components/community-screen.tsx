@@ -10,13 +10,15 @@ import { useApprovedSightings, usePendingSightings } from '../hooks';
 import { type CommunityView, CommunityTabs } from './community-tabs';
 import { NewSightingFab } from './new-sighting-fab';
 import { PendingSightingCard } from './pending-sighting-card';
+import { QueuedSightingsSection } from './queued-sightings-section';
 import { SightingPost } from './sighting-post';
 import { SightingsList } from './sightings-list';
 
 /**
  * Pestaña "Comunidad" (HE-07). Todos los roles ven el foro de avistamientos aprobados (HU-20); quien
  * puede revisar reportes ve además la pestaña "Moderación" con la cola de pendientes (HU-19). El botón
- * flotante lleva al formulario de HU-18 o pide iniciar sesión.
+ * flotante lleva al formulario de HU-18 o pide iniciar sesión. Si el usuario tiene reportes guardados
+ * sin conexión (HU-22), aparecen arriba del foro con REINTENTAR y DESCARTAR.
  */
 export function CommunityScreen() {
   const canReview = usePermission('sightings:review');
@@ -32,6 +34,8 @@ export function CommunityScreen() {
         </View>
       </Can>
 
+      {/* HU-22: los reportes propios guardados sin conexión, encima del foro. */}
+      {activeView === 'feed' && <QueuedSightingsSection />}
       {activeView === 'feed' ? <ApprovedFeed /> : <ModerationQueue />}
 
       <NewSightingFab />

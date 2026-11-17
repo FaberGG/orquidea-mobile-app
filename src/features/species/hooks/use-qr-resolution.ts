@@ -35,6 +35,15 @@ export function useQrResolution() {
     [queryClient, sessionId],
   );
 
+  /**
+   * HU-21 / HU-11 CA3: con desconexión **confirmada** el QR no puede verificarse en la API; si la ficha se
+   * descargó antes, se abre la copia guardada (ADR-0017). Nunca se usa con conexión: ahí manda la API.
+   */
+  const hasSavedSpecies = useCallback(
+    (speciesId: string) => queryClient.getQueryData(speciesKeys.detail(speciesId)) !== undefined,
+    [queryClient],
+  );
+
   const cancel = useCallback(async () => {
     attempt.current += 1;
     const queryKey = activeKey.current;
@@ -42,5 +51,5 @@ export function useQrResolution() {
     if (queryKey) await queryClient.cancelQueries({ queryKey, exact: true });
   }, [queryClient]);
 
-  return { resolve, cancel };
+  return { resolve, cancel, hasSavedSpecies };
 }

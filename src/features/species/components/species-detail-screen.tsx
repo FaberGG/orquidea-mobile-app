@@ -32,9 +32,29 @@ export type SpeciesDetailScreenProps = {
  * acciones de edición y eliminación aparecen solo con su permiso (`<Can>`, ROLES-Y-PERMISOS §3).
  */
 export function SpeciesDetailScreen({ id, source }: SpeciesDetailScreenProps) {
-  const { data, isPending, isError, error, refetch } = useSpecies(id);
+  const { data, isPending, isError, error, fetchStatus, refetch } = useSpecies(id);
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+
+  const removed = isError && isApiError(error) && error.status === 404;
+  // HU-21: con la ficha guardada se muestra aunque falle el refresco (p. ej. sin conexión), salvo que la API
+  // confirme que ya no existe.
+  if (data !== undefined && !removed)
+    return <SpeciesDetailContent species={data} insetTop={insets.top} />;
+
+  // HU-21 CA2 (y HU-11 CA3 desde el QR): sin conexión y sin copia guardada de esta ficha.
+  if (isPending && fetchStatus === 'paused') {
+    return (
+      <ThemedView style={[styles.flex, { paddingTop: insets.top }]}>
+        <EmptyState
+          icon="wetland"
+          title={source === 'qr' ? SPECIES_QR_LABELS.offline : SPECIES_LABELS.offlineUnavailable}>
+          <Button label={SPECIES_LABELS.back} onPress={() => router.back()} variant="link" />
+          <Button label={SPECIES_LABELS.retry} onPress={() => void refetch()} />
+        </EmptyState>
+      </ThemedView>
+    );
+  }
 
   if (isPending) {
     return (
@@ -71,7 +91,7 @@ export function SpeciesDetailScreen({ id, source }: SpeciesDetailScreenProps) {
     );
   }
 
-  return <SpeciesDetailContent species={data} insetTop={insets.top} />;
+  return null;
 }
 
 function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTop: number }) {

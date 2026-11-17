@@ -3,4 +3,5 @@ export { AnnouncementsButton } from './components/announcements-button';
 export { CommunityScreen } from './components/community-screen';
 export { NewSightingScreen } from './components/new-sighting-screen';
 export { PhotoViewerScreen } from './components/photo-viewer-screen';
+export { SightingQueueSync } from './components/sighting-queue-sync';
 export { SIGHTINGS_LABELS } from './constants';
