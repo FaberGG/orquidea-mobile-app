@@ -37,11 +37,6 @@ export async function getSpecies(
   return toSpecies(response);
 }
 
-/** HU-9: `DELETE /api/fichas-taxonomicas/{id}`. `404` = la ficha ya no existe. */
-export async function deleteSpecies(id: string): Promise<void> {
-  await apiClient.delete<unknown>(`${SPECIES_PATH}/${encodeURIComponent(id)}`);
-}
-
 /** HU-11: descarga el PNG original; el backend exige permisos administrativos. */
 export async function getSpeciesQr(id: string, signal?: AbortSignal): Promise<Uint8Array> {
   const data = await apiClient.getBinary(`${SPECIES_PATH}/${encodeURIComponent(id)}/qr`, {

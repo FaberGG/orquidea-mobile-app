@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,16 +13,10 @@ import { useTheme } from '@/hooks/use-theme';
 import { isApiError } from '@/lib/api';
 import { Can } from '@/permissions';
 
-import {
-  CONSERVATION_STATUSES,
-  SPECIES_LABELS,
-  SPECIES_MESSAGES,
-  SPECIES_QR_LABELS,
-} from '../constants';
-import { useDeleteSpecies, useSpecies } from '../hooks';
+import { CONSERVATION_STATUSES, SPECIES_LABELS, SPECIES_QR_LABELS } from '../constants';
+import { useSpecies } from '../hooks';
 import { type Species } from '../types';
 import { ConservationBadge } from './conservation';
-import { DeleteSpeciesDialog } from './delete-species-dialog';
 import { SpeciesPhotoCarousel } from './species-photo-carousel';
 import { SpeciesQrExport } from './species-qr-export';
 
@@ -103,21 +97,6 @@ export function SpeciesDetailScreen({ id, source }: SpeciesDetailScreenProps) {
 function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTop: number }) {
   const theme = useTheme();
   const { label } = CONSERVATION_STATUSES[species.conservationStatus];
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const deleteMutation = useDeleteSpecies(species.id);
-
-  const confirmDelete = () =>
-    deleteMutation.mutate(undefined, {
-      onSuccess: () => {
-        setConfirmingDelete(false);
-        router.dismissTo('/');
-      },
-    });
-  const cancelDelete = () => {
-    if (deleteMutation.isPending) return;
-    deleteMutation.reset();
-    setConfirmingDelete(false);
-  };
 
   return (
     <ThemedView style={styles.flex}>
@@ -200,7 +179,8 @@ function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTo
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={SPECIES_LABELS.deleteButton}
-              onPress={() => setConfirmingDelete(true)}
+              // HU-9: la API aún no tiene DELETE /api/fichas-taxonomicas/{id} (docs/api B1).
+              disabled
               style={[styles.deleteButton, { borderColor: theme.danger }]}>
               <Icon name="delete" size={18} color="danger" />
               <ThemedText type="smallBold" themeColor="danger">
@@ -210,13 +190,6 @@ function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTo
           </Can>
         </View>
       </ScrollView>
-      <DeleteSpeciesDialog
-        isVisible={confirmingDelete}
-        isDeleting={deleteMutation.isPending}
-        errorMessage={deleteMutation.isError ? SPECIES_MESSAGES.deleteError : undefined}
-        onConfirm={confirmDelete}
-        onCancel={cancelDelete}
-      />
     </ThemedView>
   );
 }

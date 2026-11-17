@@ -1,7 +1,6 @@
 export {
   addSpeciesPhoto,
   createSpecies,
-  deleteSpecies,
   deleteSpeciesPhoto,
   getSpecies,
   getSpeciesQr,
