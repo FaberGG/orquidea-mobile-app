@@ -1,5 +1,5 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { ThemeProvider } from 'expo-router';
 import { type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
@@ -9,6 +9,8 @@ import { SightingQueueSync } from '@/features/sightings';
 import { connectOnlineManager, queryPersistOptions } from '@/lib/offline';
 import { queryClient } from '@/lib/query';
 import { RoleProvider } from '@/permissions';
+
+import { darkNavigationTheme, lightNavigationTheme } from './navigation-theme';
 
 // HU-21 (ADR-0017): las queries sin red quedan en pausa y las fuentes offline se guardan en el dispositivo.
 connectOnlineManager();
@@ -35,7 +37,8 @@ export function AppProviders({ children }: AppProvidersProps) {
         {/* HU-22: envía los reportes guardados sin conexión al volver la señal (necesita la sesión). */}
         <SightingQueueSync />
         <SessionRoleProvider>
-          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <ThemeProvider
+            value={colorScheme === 'dark' ? darkNavigationTheme : lightNavigationTheme}>
             {children}
           </ThemeProvider>
         </SessionRoleProvider>

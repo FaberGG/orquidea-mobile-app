@@ -16,6 +16,7 @@ export function AppDrawerLayout() {
       drawerContent={(props) => <AppDrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
+        sceneStyle: { backgroundColor: theme.background },
         drawerType: 'front',
         overlayColor: theme.scrim,
         drawerStyle: {
