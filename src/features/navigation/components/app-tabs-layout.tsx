@@ -93,7 +93,6 @@ export function AppTabsLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="admins" options={{ href: null, headerShown: false }} />
     </Tabs>
   );
 }

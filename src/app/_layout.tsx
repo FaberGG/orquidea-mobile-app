@@ -24,6 +24,8 @@ function RootNavigator() {
   const canManageContent = usePermission('species:create');
   // Escribir un reporte de avistamiento (HU-18): usuario registrado, administrador y superadministrador.
   const canCreateSighting = usePermission('sightings:create');
+  // Gesti�n de cuentas de administrador (HE-2): solo superadministrador.
+  const canReadAdmins = usePermission('admins:read');
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
@@ -42,6 +44,10 @@ function RootNavigator() {
 
       <Stack.Protected guard={canCreateSighting}>
         <Stack.Screen name="sightings/new" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={canReadAdmins}>
+        <Stack.Screen name="admins" />
       </Stack.Protected>
 
       <Stack.Protected guard={canManageContent}>
