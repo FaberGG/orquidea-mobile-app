@@ -10,8 +10,8 @@ import { SPECIES_CATEGORY_LABELS } from '../constants';
 import { type Species } from '../types';
 import { ConservationBadge, ConservationChip } from './conservation';
 
-/** Proporción de la foto (ancho 3 : alto 4); la imagen se recorta para llenarla, sin estirarse. */
-const PHOTO_ASPECT_RATIO = 3 / 4;
+/** Foto cuadrada (1:1); la imagen se recorta para llenarla, sin estirarse. */
+const PHOTO_ASPECT_RATIO = 1;
 
 export type SpeciesCardProps = {
   species: Species;
