@@ -29,7 +29,9 @@ export function SpeciesListScreen() {
   const showError = isError && data === undefined;
 
   const openDetail = (species: Species) => {
-    router.push({ pathname: '/species/[id]', params: { id: species.id } });
+    // `ids` permite deslizar en el detalle entre las fichas, en el orden de esta lista.
+    const ids = (data ?? []).map((item) => item.id).join(',');
+    router.push({ pathname: '/species/[id]', params: { id: species.id, ids } });
   };
 
   return (

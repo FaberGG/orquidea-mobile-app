@@ -50,7 +50,10 @@ export function SpeciesPhotoCarousel({ photos, name, height }: SpeciesPhotoCarou
             accessibilityLabel={SPECIES_LABELS.photoOf(name, position + 1, photos.length)}
             accessibilityHint={SPECIES_LABELS.photoZoomHint}
             onPress={() =>
-              router.push({ pathname: '/sightings/photo', params: { uri: photo.url } })
+              router.push({
+                pathname: '/sightings/photo',
+                params: { uri: photo.url, uris: JSON.stringify(photos.map((item) => item.url)) },
+              })
             }>
             <OfflineImage
               uri={photo.url}
