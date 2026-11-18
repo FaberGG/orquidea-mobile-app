@@ -35,7 +35,6 @@ const PUBLIC: Announcement = {
   description: 'Sábado a las 7 a. m.',
   publishedAt: '2026-10-30T20:00:00Z',
   expiresAt: null,
-  publisherName: null,
   priority: 'high',
 };
 const VISIBLE: AdminAnnouncement = { ...PUBLIC, visibility: 'visible' };

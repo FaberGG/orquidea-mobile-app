@@ -13,7 +13,6 @@ const ANNOUNCEMENT: Announcement = {
   description: 'Observación guiada en el humedal',
   publishedAt: '2026-11-04T12:00:00Z',
   expiresAt: '2026-12-31T23:00:00Z',
-  publisherName: null,
   priority: 'high',
 };
 

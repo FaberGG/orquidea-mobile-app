@@ -98,9 +98,6 @@ export const CONTENT_LABELS = {
   announcementsTabHidden: 'Ocultos',
   announcementsRetry: 'REINTENTAR',
   announcementsRefreshButton: 'ACTUALIZAR',
-  announcementsPublishedPrefix: 'Publicado el',
-  announcementsPublisherPrefix: 'por',
-  announcementsAvailableUntilPrefix: 'Disponible hasta el',
   announcementsRefresh: 'Actualizar anuncios',
   announcementPriority: (priority: 'high' | 'medium' | 'low') =>
     `Prioridad ${priority === 'high' ? 'alta' : priority === 'medium' ? 'media' : 'baja'}`,

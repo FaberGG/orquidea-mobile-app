@@ -7,7 +7,6 @@ export const announcementDtoSchema = z.object({
   descripcion: z.string(),
   fechaCreacion: z.iso.datetime(),
   fechaExpiracion: z.iso.datetime().nullish(),
-  nombrePublicador: z.string().nullish(),
   prioridad: z.enum(['ALTA', 'MEDIA', 'BAJA']),
 });
 

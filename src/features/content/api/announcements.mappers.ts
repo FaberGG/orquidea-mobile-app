@@ -21,7 +21,6 @@ export function toAnnouncementList(response: unknown): Announcement[] {
     description: dto.descripcion,
     publishedAt: dto.fechaCreacion,
     expiresAt: dto.fechaExpiracion ?? null,
-    publisherName: dto.nombrePublicador?.trim() || null,
     priority: toPriority(dto.prioridad),
   }));
 }
@@ -44,7 +43,6 @@ export function toAdminAnnouncementList(response: unknown): AdminAnnouncement[] 
     publishedAt: dto.fechaCreacion,
     priority: toPriority(dto.prioridad),
     expiresAt: dto.fechaExpiracion ?? null,
-    publisherName: dto.nombrePublicador?.trim() || null,
     visibility: toVisibility(dto.estado, dto.expirado),
   }));
 }
