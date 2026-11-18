@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
@@ -49,7 +49,9 @@ export type PhotoViewerScreenProps = {
 export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
   const gallery = uris && uris.length > 0 && uris.includes(uri) ? uris : [uri];
   const hasMany = gallery.length > 1;
-  const [index, setIndex] = useState(Math.max(0, gallery.indexOf(uri)));
+  const initialIndex = Math.max(0, gallery.indexOf(uri));
+  // `index` (estado) decide qué fotos están montadas; `pageIndex` y `base` viven en el hilo de animación.
+  const [index, setIndex] = useState(initialIndex);
   const lastIndex = gallery.length - 1;
 
   const { width, height } = useWindowDimensions();
@@ -57,17 +59,16 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
 
   const scale = useSharedValue(1);
   const savedScale = useSharedValue(1);
+  const pageIndex = useSharedValue(initialIndex);
+  /** Desplazamiento de la tira de fotos hasta la página actual (-índice × ancho). */
+  const base = useSharedValue(-initialIndex * width);
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
   const savedOffsetX = useSharedValue(0);
   const savedOffsetY = useSharedValue(0);
 
   const close = () => router.back();
-  const changePhoto = (step: number) => setIndex((current) => current + step);
-  // La foto vecina ya está a la vista al terminar de deslizar: al cambiar de índice se recoloca sin salto.
-  useLayoutEffect(() => {
-    offsetX.set(0);
-  }, [index, offsetX]);
+  const showPhoto = (target: number) => setIndex(target);
 
   const reset = () => {
     'worklet';
@@ -119,11 +120,17 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
       } else if (hasMany && Math.abs(event.translationX) > Math.abs(event.translationY)) {
         // Hacia la izquierda (translationX < 0) se ve la siguiente foto.
         const step = event.translationX < 0 ? 1 : -1;
-        const target = index + step;
+        const target = pageIndex.get() + step;
         if (Math.abs(event.translationX) > SWIPE_DISTANCE && target >= 0 && target <= lastIndex) {
           offsetX.set(
             withTiming(-step * width, { duration: 180 }, (finished) => {
-              if (finished) scheduleOnRN(changePhoto, step);
+              if (!finished) return;
+              // La tira queda donde estaba a la vista, pero ahora con la nueva foto como base: las dos
+              // asignaciones ocurren juntas en el hilo de animación, así no hay un cuadro intermedio.
+              base.set(base.get() - step * width);
+              offsetX.set(0);
+              pageIndex.set(target);
+              scheduleOnRN(showPhoto, target);
             }),
           );
         } else {
@@ -149,13 +156,11 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
 
   const gesture = Gesture.Race(doubleTap, Gesture.Simultaneous(pinch, pan));
 
-  const photoStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: offsetX.get() },
-      { translateY: offsetY.get() },
-      { scale: scale.get() },
-    ],
+  // La tira completa se mueve con el dedo; el zoom solo afecta a cada foto sobre su propio centro.
+  const stripStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: base.get() + offsetX.get() }, { translateY: offsetY.get() }],
   }));
+  const zoomStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
 
   // Las fotos vecinas solo se ven al deslizar sin zoom; con zoom, al recorrer el borde quedarían a la vista.
   const neighborStyle = useAnimatedStyle(() => ({ opacity: savedScale.get() > 1 ? 0 : 1 }));
@@ -171,35 +176,32 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
       <Animated.View style={[StyleSheet.absoluteFill, styles.backdrop, backdropStyle]} />
 
       <GestureDetector gesture={gesture}>
-        <Animated.View style={[styles.flex, photoStyle]}>
-          {gallery[index - 1] !== undefined && (
-            <Animated.View style={[styles.neighbor, { left: -width }, neighborStyle]}>
-              <Image
-                source={{ uri: gallery[index - 1] }}
-                style={styles.flex}
-                contentFit="contain"
-                accessibilityIgnoresInvertColors
-              />
-            </Animated.View>
-          )}
-          <Image
-            source={{ uri: gallery[index] }}
-            style={styles.flex}
-            contentFit="contain"
-            accessibilityIgnoresInvertColors
-            accessibilityLabel={SIGHTINGS_LABELS.photoHint}
-          />
-          {gallery[index + 1] !== undefined && (
-            <Animated.View style={[styles.neighbor, { left: width }, neighborStyle]}>
-              <Image
-                source={{ uri: gallery[index + 1] }}
-                style={styles.flex}
-                contentFit="contain"
-                accessibilityIgnoresInvertColors
-              />
-            </Animated.View>
-          )}
-        </Animated.View>
+        {/* Área táctil fija; la tira de fotos se mueve dentro de ella. */}
+        <View style={styles.flex}>
+          <Animated.View style={[styles.flex, stripStyle]}>
+            {/* Solo la foto actual y sus vecinas, cada una en su lugar de la tira (índice × ancho). */}
+            {gallery.map((photoUri, position) =>
+              Math.abs(position - index) > 1 ? null : (
+                <Animated.View
+                  key={position}
+                  style={[
+                    styles.page,
+                    { left: position * width, width },
+                    zoomStyle,
+                    position !== index && neighborStyle,
+                  ]}>
+                  <Image
+                    source={{ uri: photoUri }}
+                    style={styles.flex}
+                    contentFit="contain"
+                    accessibilityIgnoresInvertColors
+                    accessibilityLabel={position === index ? SIGHTINGS_LABELS.photoHint : undefined}
+                  />
+                </Animated.View>
+              ),
+            )}
+          </Animated.View>
+        </View>
       </GestureDetector>
 
       <Pressable
@@ -225,11 +227,10 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  neighbor: {
+  page: {
     position: 'absolute',
     top: 0,
     bottom: 0,
-    width: '100%',
   },
   backdrop: {
     backgroundColor: VIEWER_BACKGROUND,
