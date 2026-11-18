@@ -1,6 +1,8 @@
+import { useMemo, useState } from 'react';
 import { FlatList, useWindowDimensions, View } from 'react-native';
 
 import { SpeciesDetailScreen } from './species-detail-screen';
+import { SpeciesPagerContext } from './species-pager-context';
 
 export type SpeciesDetailPagerProps = {
   /** Fichas entre las que se desliza, en el orden en que se mostraban en la lista de origen. */
@@ -13,28 +15,34 @@ export type SpeciesDetailPagerProps = {
 /**
  * Detalle con paso a la ficha anterior o siguiente deslizando hacia los lados. Cada página es el detalle
  * normal de una ficha; solo se montan la actual y sus vecinas. Las fotos del encabezado tienen su propio
- * deslizamiento: para cambiar de ficha se desliza fuera de la foto (o sobre ella si la ficha tiene una sola).
+ * deslizamiento: el del paginador se apaga mientras el dedo está sobre la foto, así que para cambiar de ficha
+ * se desliza en el resto de la pantalla.
  */
 export function SpeciesDetailPager({ ids, initialId, source }: SpeciesDetailPagerProps) {
   const { width } = useWindowDimensions();
   const initialIndex = Math.max(0, ids.indexOf(initialId));
+  const [swipeEnabled, setSwipeEnabled] = useState(true);
+  const pager = useMemo(() => ({ setSwipeEnabled }), []);
 
   return (
-    <FlatList
-      horizontal
-      pagingEnabled
-      data={ids}
-      keyExtractor={(id) => id}
-      initialScrollIndex={initialIndex}
-      getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
-      initialNumToRender={1}
-      windowSize={3}
-      showsHorizontalScrollIndicator={false}
-      renderItem={({ item }) => (
-        <View style={{ width }}>
-          <SpeciesDetailScreen id={item} source={source} />
-        </View>
-      )}
-    />
+    <SpeciesPagerContext value={pager}>
+      <FlatList
+        horizontal
+        pagingEnabled
+        scrollEnabled={swipeEnabled}
+        data={ids}
+        keyExtractor={(id) => id}
+        initialScrollIndex={initialIndex}
+        getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
+        initialNumToRender={1}
+        windowSize={3}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <View style={{ width }}>
+            <SpeciesDetailScreen id={item} source={source} />
+          </View>
+        )}
+      />
+    </SpeciesPagerContext>
   );
 }

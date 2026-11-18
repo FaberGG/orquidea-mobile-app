@@ -8,6 +8,7 @@ import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 import { SPECIES_LABELS } from '../constants';
+import { useSpeciesPager } from './species-pager-context';
 import { type SpeciesPhotoItem } from '../types';
 
 export type SpeciesPhotoCarouselProps = {
@@ -26,6 +27,7 @@ export function SpeciesPhotoCarousel({ photos, name, height }: SpeciesPhotoCarou
   const theme = useTheme();
   const { width } = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const pager = useSpeciesPager();
 
   if (photos.length === 0) {
     return (
@@ -34,7 +36,12 @@ export function SpeciesPhotoCarousel({ photos, name, height }: SpeciesPhotoCarou
   }
 
   return (
-    <View style={StyleSheet.absoluteFill}>
+    <View
+      style={StyleSheet.absoluteFill}
+      // Sobre la foto no se cambia de ficha: el dedo sobre ella solo mueve las fotos.
+      onTouchStart={() => pager?.setSwipeEnabled(false)}
+      onTouchEnd={() => pager?.setSwipeEnabled(true)}
+      onTouchCancel={() => pager?.setSwipeEnabled(true)}>
       <ScrollView
         horizontal
         pagingEnabled
