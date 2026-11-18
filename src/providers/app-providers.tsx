@@ -3,6 +3,7 @@ import { ThemeProvider } from 'expo-router';
 import { type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
+import { ToastProvider } from '@/components/feedback/toast';
 import { SessionProvider, useSession } from '@/features/auth';
 import { configureOfflineQueries, OfflineSync } from '@/features/offline';
 import { SightingQueueSync } from '@/features/sightings';
@@ -32,17 +33,19 @@ export function AppProviders({ children }: AppProvidersProps) {
 
   return (
     <PersistQueryClientProvider client={queryClient} persistOptions={queryPersistOptions}>
-      <OfflineSync />
-      <SessionProvider>
-        {/* HU-22: envía los reportes guardados sin conexión al volver la señal (necesita la sesión). */}
-        <SightingQueueSync />
-        <SessionRoleProvider>
-          <ThemeProvider
-            value={colorScheme === 'dark' ? darkNavigationTheme : lightNavigationTheme}>
-            {children}
-          </ThemeProvider>
-        </SessionRoleProvider>
-      </SessionProvider>
+      <ToastProvider>
+        <OfflineSync />
+        <SessionProvider>
+          {/* HU-22: envía los reportes guardados sin conexión al volver la señal (necesita la sesión). */}
+          <SightingQueueSync />
+          <SessionRoleProvider>
+            <ThemeProvider
+              value={colorScheme === 'dark' ? darkNavigationTheme : lightNavigationTheme}>
+              {children}
+            </ThemeProvider>
+          </SessionRoleProvider>
+        </SessionProvider>
+      </ToastProvider>
     </PersistQueryClientProvider>
   );
 }
