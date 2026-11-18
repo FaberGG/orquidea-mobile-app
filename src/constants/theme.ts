@@ -47,6 +47,9 @@ export const Colors = {
     onPrimary: Palette.neutroWhite,
     danger: '#B3261E',
     dangerBackground: '#FCEEEE',
+    /** Avisos de atención moderada (prioridad media de los anuncios). */
+    warning: '#93370D',
+    warningBackground: '#FEF0C7',
     success: Palette.green500,
     successBackground: Palette.green50,
     border: Palette.neutro100,
@@ -70,6 +73,8 @@ export const Colors = {
     onPrimary: Palette.neutro900,
     danger: '#F2B8B5',
     dangerBackground: '#3A1614',
+    warning: '#FEDF89',
+    warningBackground: '#4A3410',
     success: Palette.green200,
     successBackground: Palette.green800,
     border: Palette.neutro600,
