@@ -11,6 +11,8 @@ import { useTheme } from '@/hooks/use-theme';
 import { LOCATION_PICKER_LABELS, WETLAND_CENTER } from '../constants';
 import { useTrailMap } from '../hooks/use-trail-map';
 import { type Coordinates, type TrailMap } from '../types';
+import { MapUnavailable } from './map-unavailable';
+import { isNativeMapAvailable } from '../utils/map-availability';
 import { getInitialMapRegion, getLocationMapRegion } from '../utils/map-region';
 
 export type MapLocationPickerProps = {
@@ -39,7 +41,16 @@ export function getPickerInitialRegion(value: Coordinates | null, map?: TrailMap
 export function MapLocationPicker({ visible, value, onConfirm, onCancel }: MapLocationPickerProps) {
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onCancel}>
-      {visible && <PickerContent value={value} onConfirm={onConfirm} onCancel={onCancel} />}
+      {visible &&
+        (isNativeMapAvailable() ? (
+          <PickerContent value={value} onConfirm={onConfirm} onCancel={onCancel} />
+        ) : (
+          <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+            <MapUnavailable>
+              <Button label={LOCATION_PICKER_LABELS.cancel} onPress={onCancel} />
+            </MapUnavailable>
+          </SafeAreaView>
+        ))}
     </Modal>
   );
 }

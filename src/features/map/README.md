@@ -32,10 +32,12 @@ la consulta directa y la gestión de estaciones.
 | `components/map-screen.tsx` | Estados de carga/error/vacío, ubicación actual y coordinación de la pantalla |
 | `components/trail-map-view.tsx` | Dibuja la geometría y las estaciones en el mapa nativo |
 | `components/map-location-picker.tsx` | SCRUM-72: `MapLocationPicker`, selector de un punto en pantalla completa (tocar el mapa o arrastrar el marcador, CONFIRMAR). Muestra el sendero como referencia. Lo usan estaciones (HU-13) y avistamientos (HU-18, vía `@/features/map`); solo se ofrece con conexión |
+| `components/map-unavailable.tsx` | Aviso que reemplaza al mapa cuando no se puede montar (Android sin API key de Google) |
 | `components/map-controls.tsx` | Cambia la capa del mapa y permite centrar en la ubicación |
 | `components/station-details-card.tsx` | Muestra detalles y abre fichas asociadas |
 | `api/`, `hooks/`, `schemas/`, `components/` de estaciones | CRUD de estaciones para HU-13, formularios, validación y pantallas administrativas |
 | `constants.ts` | Textos, claves de caché y mensajes de HU-12 |
+| `utils/map-availability.ts` | `isNativeMapAvailable()`: en Android exige `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY`; sin ella no se monta `MapView` |
 | `utils/map-region.ts` | Calcula la vista inicial del recorrido y el encuadre de ubicación |
 | `index.ts` | Exporta la API pública de la feature |
 
@@ -56,3 +58,8 @@ El recorrido (`/api/mapa`) se agregará como otra fuente en SCRUM-68 siguiendo
 
 **Dependencias:** usa `useSpeciesList` del barrel de `@/features/species` para el selector de fichas, y
 `getCurrentLocation` de `@/lib/location` para "Usar mi ubicación actual".
+
+**Android sin API key:** el Google Maps SDK lanza una excepción nativa que cierra la app y no se puede atrapar
+con un error boundary ni `try/catch`. Por eso `MapScreen` y `MapLocationPicker` consultan
+`isNativeMapAvailable()` antes de renderizar `MapView` y, si falta la key, muestran `MapUnavailable`. La key se
+define en `.env.local` (`EXPO_PUBLIC_GOOGLE_MAPS_API_KEY`) y `app.config.ts` la copia al manifiesto.

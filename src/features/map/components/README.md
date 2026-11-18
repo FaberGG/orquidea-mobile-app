@@ -29,3 +29,5 @@ Pruebas: `stations-screens.test.tsx` (criterios de HU-13 por rol).
 
 **Pendiente con el mapa (HU-12):** elegir el punto tocando el mapa en el formulario y abrir "Ver estación" desde
 el mapa.
+
+- `map-unavailable.tsx`: aviso que sustituye al mapa si `isNativeMapAvailable()` es falso (Android sin API key).

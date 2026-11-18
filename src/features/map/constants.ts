@@ -2,6 +2,10 @@
 export const MAP_LABELS = {
   loading: 'Cargando el mapa del sendero…',
   retry: 'REINTENTAR',
+  unavailableTitle: 'El mapa no está disponible',
+  unavailableDescription:
+    'Esta versión de la app no tiene el mapa configurado. Puedes consultar las estaciones del sendero en el listado.',
+  viewStationsList: 'VER ESTACIONES',
   loadError: 'No pudimos cargar el mapa. Revisa tu conexión e inténtalo de nuevo.',
   emptyTitle: 'El mapa aún no está disponible',
   emptyDescription: 'Todavía no se han publicado el recorrido y sus estaciones.',

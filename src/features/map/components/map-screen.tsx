@@ -17,12 +17,31 @@ import { MAP_LABELS } from '../constants';
 import { useTrailMap } from '../hooks';
 import { type Coordinates, type TrailStation } from '../types';
 import { MapControls } from './map-controls';
+import { MapUnavailable } from './map-unavailable';
 import { StationDetailsCard } from './station-details-card';
 import { TrailMapView } from './trail-map-view';
+import { isNativeMapAvailable } from '../utils/map-availability';
 import { getLocationMapRegion } from '../utils/map-region';
 
-/** HU-12: mapa del recorrido, estaciones, geolocalización y ficha de cada estación. */
+/**
+ * HU-12: mapa del recorrido, estaciones, geolocalización y ficha de cada estación. Si el mapa nativo no
+ * se puede montar (Android sin API key de Google) muestra un aviso en lugar de cerrar la app.
+ */
 export function MapScreen() {
+  if (!isNativeMapAvailable()) {
+    return (
+      <Screen>
+        <MapUnavailable>
+          <Button label={MAP_LABELS.viewStationsList} onPress={() => router.push('/stations')} />
+        </MapUnavailable>
+      </Screen>
+    );
+  }
+
+  return <AvailableMapScreen />;
+}
+
+function AvailableMapScreen() {
   const theme = useTheme();
   const mapRef = useRef<MapView>(null);
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
