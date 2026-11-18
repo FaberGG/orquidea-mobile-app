@@ -78,7 +78,7 @@ describe('SpeciesListScreen (HU-10)', () => {
     fireEvent.press(screen.getByRole('button', { name: 'Azulejo' }));
     expect(router.push).toHaveBeenCalledWith({
       pathname: '/species/[id]',
-      params: { id: 'ave-1' },
+      params: { id: 'ave-1', ids: 'ave-1,planta-1' },
     });
   });
 

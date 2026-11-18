@@ -24,6 +24,7 @@ export const SPECIES_LABELS = {
   editButton: 'Editar ficha',
   back: 'Volver',
   noData: 'Sin información',
+  photoZoomHint: 'Toca para ver la foto a pantalla completa y ampliarla',
   backToList: 'Volver al listado',
   photoOf: (name: string, position: number, total: number) =>
     `Foto ${position} de ${total} de ${name}`,
@@ -218,6 +219,7 @@ export const SPECIES_FORM_LABELS = {
   createSubmit: 'Crear ficha',
   editSubmit: 'Guardar cambios',
   cancel: 'Cancelar',
+  requiredHint: 'Los campos con * son obligatorios.',
   photoSection: 'Fotografías',
   photoUpload: 'Subir fotografías',
   photoAdd: 'Agregar',

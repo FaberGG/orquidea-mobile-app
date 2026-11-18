@@ -10,7 +10,8 @@ import { SPECIES_CATEGORY_LABELS } from '../constants';
 import { type Species } from '../types';
 import { ConservationBadge, ConservationChip } from './conservation';
 
-const PHOTO_HEIGHT = 320;
+/** Foto cuadrada (1:1); la imagen se recorta para llenarla, sin estirarse. */
+const PHOTO_ASPECT_RATIO = 1;
 
 export type SpeciesCardProps = {
   species: Species;
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
   },
   photo: {
     width: '100%',
-    height: PHOTO_HEIGHT,
+    aspectRatio: PHOTO_ASPECT_RATIO,
   },
   placeholder: {
     alignItems: 'center',

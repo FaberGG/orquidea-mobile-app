@@ -8,6 +8,7 @@ correcto, para que `src/app/_layout.tsx` solo tenga que montar `<AppProviders>`.
 | Archivo | Contenido |
 |---|---|
 | `app-providers.tsx` | Composición de providers |
+| `navigation-theme.ts` | Tema de React Navigation con los colores de la app (sin fondos grises entre pantallas) |
 | `index.ts` | Exporta `AppProviders` |
 
 Orden (de afuera hacia adentro):

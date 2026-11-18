@@ -6,6 +6,12 @@ import { ThemedText } from '@/components/themed-text';
 import { MinTouchSize, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
+/**
+ * Cuánto se sobrepone la barra al borde inferior de la pantalla (el radio de sus esquinas). Las pantallas
+ * de las pestañas suman este valor a su espacio inferior para que nada quede bajo la barra.
+ */
+export const TAB_BAR_OVERLAP = Spacing.four;
+
 /** Tamaño del ícono de cada pestaña en el diseño. */
 export const TAB_ICON_SIZE = 28;
 
@@ -25,13 +31,13 @@ export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTab
         styles.bar,
         {
           backgroundColor: theme.backgroundSelected,
-          paddingBottom: Math.max(insets.bottom, Spacing.three),
+          // Espacio extra bajo los íconos, además del área segura (botones o gesto de Android).
+          paddingBottom: insets.bottom + Spacing.three,
         },
       ]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         // `href: null` de Expo Router no se expone en BottomTabNavigationOptions.
-        if (route.name === 'announcements') return null;
         const isFocused = state.index === index;
         const label = options.title ?? route.name;
         const color = isFocused ? theme.navActive : theme.navInactive;
@@ -79,6 +85,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     borderTopLeftRadius: Spacing.four,
     borderTopRightRadius: Spacing.four,
+    // La barra se sobrepone al borde inferior de la pantalla: tras sus esquinas redondeadas se ve el
+    // contenido de la pantalla y no el fondo del contenedor de navegación.
+    marginTop: -TAB_BAR_OVERLAP,
   },
   item: {
     alignItems: 'center',

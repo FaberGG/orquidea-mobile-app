@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
-import { Alert } from 'react-native';
+import { useCallback, useEffect, useRef } from 'react';
 
+import { useToast } from '@/components/feedback/toast';
 import { useSession } from '@/features/auth';
 import { useNetworkStatus } from '@/hooks/use-network-status';
 
@@ -10,13 +10,9 @@ import { useSightingQueueState } from '../hooks';
 import { syncSightingQueue, type SightingQueueSyncResult } from '../queue';
 
 type SightingQueueSyncProps = {
-  /** Aviso al terminar. Por defecto, un diálogo del sistema (se reemplaza en pruebas). */
+  /** Aviso al terminar. Por defecto, un aviso breve (toast) arriba de la pantalla; se reemplaza en pruebas. */
   notify?: (message: string) => void;
 };
-
-function showAlert(message: string) {
-  Alert.alert(message);
-}
 
 /** Texto del aviso al terminar (CA2), o `null` si no hay nada que avisar. */
 export function getSyncNotice(result: SightingQueueSyncResult): string | null {
@@ -30,7 +26,19 @@ export function getSyncNotice(result: SightingQueueSyncResult): string | null {
  * la red no está confirmada como caída y el usuario tiene reportes pendientes: al abrir la app, al
  * volver la señal, al iniciar sesión de nuevo, al guardar uno nuevo o al pulsar REINTENTAR.
  */
-export function SightingQueueSync({ notify = showAlert }: SightingQueueSyncProps) {
+export function SightingQueueSync({ notify: notifyOverride }: SightingQueueSyncProps) {
+  const toast = useToast();
+  const showToast = toast.show;
+  const notify = useCallback(
+    (message: string) =>
+      notifyOverride
+        ? notifyOverride(message)
+        : showToast(
+            message,
+            message === SIGHTINGS_MESSAGES.syncedWithFailures ? 'error' : 'success',
+          ),
+    [notifyOverride, showToast],
+  );
   const queryClient = useQueryClient();
   const { user, isAuthenticated } = useSession();
   const { status } = useNetworkStatus();

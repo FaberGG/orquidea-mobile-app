@@ -22,8 +22,6 @@ export type AnnouncementResponseDto = {
   estado: 'ACTIVO' | 'INACTIVO';
   fechaExpiracion: string | null;
   expirado: boolean;
-  /** Pendiente del backend: nombre público del usuario que creó el anuncio. */
-  nombrePublicador?: string | null;
 };
 
 /** Cuerpo de `PATCH /api/anuncios/{id}/actualizar` (back: AnnouncementUpdateRequest). Todo opcional. */

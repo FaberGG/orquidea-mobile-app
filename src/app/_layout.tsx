@@ -3,6 +3,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { useSession } from '@/features/auth';
 import { useAppFonts } from '@/hooks/use-app-fonts';
+import { useTheme } from '@/hooks/use-theme';
 import { usePermission } from '@/permissions';
 import { AppProviders } from '@/providers';
 
@@ -20,6 +21,7 @@ function SplashScreenController({ areFontsReady }: { areFontsReady: boolean }) {
 
 function RootNavigator() {
   const { isAuthenticated } = useSession();
+  const theme = useTheme();
   // Gestión de contenido (fichas, y el resto de administración) solo para admin y superadmin.
   const canManageContent = usePermission('species:create');
   // Escribir un reporte de avistamiento (HU-18): usuario registrado, administrador y superadministrador.
@@ -28,12 +30,17 @@ function RootNavigator() {
   const canReadAdmins = usePermission('admins:read');
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack
+      screenOptions={{ headerShown: false, contentStyle: { backgroundColor: theme.background } }}>
       <Stack.Screen name="(drawer)" />
       {/* Foto de un reporte a pantalla completa (HU-20), abierta para todos los roles. */}
       <Stack.Screen
         name="sightings/photo"
-        options={{ presentation: 'transparentModal', animation: 'fade' }}
+        options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
       />
       <Stack.Screen name="qr" options={{ headerShown: false }} />
 

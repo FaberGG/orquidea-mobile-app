@@ -1,5 +1,6 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { OfflineImage } from '@/components/ui/offline-image';
@@ -7,21 +8,26 @@ import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 import { SPECIES_LABELS } from '../constants';
+import { useSpeciesPager } from './species-pager-context';
 import { type SpeciesPhotoItem } from '../types';
 
 export type SpeciesPhotoCarouselProps = {
   photos: SpeciesPhotoItem[];
   name: string;
+  /** Alto del encabezado: la foto lo ocupa completo, recortada para llenarlo. */
+  height: number;
 };
 
 /**
  * Fotos del encabezado del detalle (HU-7 v2.0): se pasan deslizando de lado y un contador indica la
- * posición. Ocupa todo el encabezado; sin fotos muestra el fondo neutro.
+ * posición. Ocupa todo el encabezado; sin fotos muestra el fondo neutro. Al tocar una foto se abre a
+ * pantalla completa para ampliarla (visor compartido con los reportes).
  */
-export function SpeciesPhotoCarousel({ photos, name }: SpeciesPhotoCarouselProps) {
+export function SpeciesPhotoCarousel({ photos, name, height }: SpeciesPhotoCarouselProps) {
   const theme = useTheme();
   const { width } = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const pager = useSpeciesPager();
 
   if (photos.length === 0) {
     return (
@@ -30,23 +36,42 @@ export function SpeciesPhotoCarousel({ photos, name }: SpeciesPhotoCarouselProps
   }
 
   return (
-    <View style={StyleSheet.absoluteFill}>
+    <View
+      style={StyleSheet.absoluteFill}
+      // Sobre la foto no se cambia de ficha: el dedo sobre ella solo mueve las fotos.
+      onTouchStart={() => pager?.setSwipeEnabled(false)}
+      onTouchEnd={() => pager?.setSwipeEnabled(true)}
+      onTouchCancel={() => pager?.setSwipeEnabled(true)}>
       <ScrollView
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         scrollEnabled={photos.length > 1}
-        onMomentumScrollEnd={(event) =>
-          setIndex(Math.round(event.nativeEvent.contentOffset.x / width))
-        }>
+        // Respaldo: si el sistema se queda con el gesto y no avisa del fin del toque, el paginador se reactiva aquí.
+        onScrollEndDrag={() => pager?.setSwipeEnabled(true)}
+        onMomentumScrollEnd={(event) => {
+          pager?.setSwipeEnabled(true);
+          setIndex(Math.round(event.nativeEvent.contentOffset.x / width));
+        }}>
         {photos.map((photo, position) => (
-          <OfflineImage
+          <Pressable
             key={photo.id ?? photo.url}
-            uri={photo.url}
-            style={[styles.photo, { width, backgroundColor: theme.backgroundSelected }]}
-            contentFit="cover"
+            accessibilityRole="imagebutton"
             accessibilityLabel={SPECIES_LABELS.photoOf(name, position + 1, photos.length)}
-          />
+            accessibilityHint={SPECIES_LABELS.photoZoomHint}
+            onPress={() =>
+              router.push({
+                pathname: '/sightings/photo',
+                params: { uri: photo.url, uris: JSON.stringify(photos.map((item) => item.url)) },
+              })
+            }>
+            <OfflineImage
+              uri={photo.url}
+              style={{ width, height, backgroundColor: theme.backgroundSelected }}
+              contentFit="cover"
+              accessibilityIgnoresInvertColors
+            />
+          </Pressable>
         ))}
       </ScrollView>
       {photos.length > 1 && (
@@ -61,9 +86,6 @@ export function SpeciesPhotoCarousel({ photos, name }: SpeciesPhotoCarouselProps
 }
 
 const styles = StyleSheet.create({
-  photo: {
-    height: '100%',
-  },
   counter: {
     position: 'absolute',
     top: Spacing.six,

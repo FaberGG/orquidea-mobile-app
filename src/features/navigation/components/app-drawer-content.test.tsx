@@ -118,7 +118,7 @@ describe('AppDrawerContent (menú lateral)', () => {
     await renderAs('visitor');
     await fireEvent.press(screen.getByText(NAVIGATION_LABELS.announcements));
     expect(closeDrawer).toHaveBeenCalled();
-    expect(router.push).toHaveBeenCalledWith('/(drawer)/(tabs)/announcements');
+    expect(router.navigate).toHaveBeenCalledWith('/announcements');
   });
 
   it('los destinos sin implementar no son presionables', async () => {

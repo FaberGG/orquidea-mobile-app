@@ -4,6 +4,7 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { Screen } from '@/components/layout/screen';
+import { TAB_BAR_OVERLAP } from '@/components/layout/tab-bar';
 import { Button } from '@/components/ui/button';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -28,7 +29,9 @@ export function SpeciesListScreen() {
   const showError = isError && data === undefined;
 
   const openDetail = (species: Species) => {
-    router.push({ pathname: '/species/[id]', params: { id: species.id } });
+    // `ids` permite deslizar en el detalle entre las fichas, en el orden de esta lista.
+    const ids = (data ?? []).map((item) => item.id).join(',');
+    router.push({ pathname: '/species/[id]', params: { id: species.id, ids } });
   };
 
   return (
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: Spacing.three,
-    paddingBottom: Spacing.four,
+    paddingBottom: Spacing.four + TAB_BAR_OVERLAP,
   },
   separator: {
     height: 12,

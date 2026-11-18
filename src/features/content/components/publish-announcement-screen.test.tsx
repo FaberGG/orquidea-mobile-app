@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import { type ReactNode } from 'react';
 
 import { ApiError } from '@/lib/api';
@@ -56,21 +57,19 @@ describe('PublishAnnouncementScreen (HU-16)', () => {
     queryClient.clear();
   });
 
-  it('CA1: con título y contenido publica el anuncio, confirma y limpia el formulario', async () => {
+  it('CA1: con título y contenido publica el anuncio, confirma y vuelve a la lista de anuncios', async () => {
     jest.mocked(createAnnouncement).mockResolvedValue(undefined);
     await render(<PublishAnnouncementScreen />, { wrapper: Providers });
 
     await fillAndPublish(' Jornada de aves ', 'Sábado a las 8 a. m.');
 
-    expect(await screen.findByText(CONTENT_MESSAGES.announcementPublished)).toBeTruthy();
+    await waitFor(() => expect(router.back).toHaveBeenCalled());
     expect(createAnnouncement).toHaveBeenCalledWith({
       title: 'Jornada de aves',
       description: 'Sábado a las 8 a. m.',
       priority: 'high',
       expiresAt: null,
     });
-    expect(screen.getByLabelText(CONTENT_LABELS.titleLabel).props.value).toBe('');
-    expect(screen.getByLabelText(CONTENT_LABELS.descriptionLabel).props.value).toBe('');
   });
 
   it.each([
@@ -107,7 +106,7 @@ describe('PublishAnnouncementScreen (HU-16)', () => {
     await fireEvent.press(screen.getByText('Elegir fecha de prueba'));
     await fillAndPublish('Jornada', 'Texto', 'Baja');
 
-    expect(await screen.findByText(CONTENT_MESSAGES.announcementPublished)).toBeTruthy();
+    await waitFor(() => expect(router.back).toHaveBeenCalled());
     expect(createAnnouncement).toHaveBeenCalledWith({
       title: 'Jornada',
       description: 'Texto',

@@ -30,7 +30,6 @@ const ANNOUNCEMENT: AdminAnnouncement = {
   description: 'Sábado a las 7 a. m.',
   publishedAt: '2026-10-30T20:00:00Z',
   expiresAt: '2026-01-10T15:00:00Z',
-  publisherName: null,
   priority: 'medium',
   visibility: 'expired',
 };

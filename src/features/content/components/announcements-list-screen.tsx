@@ -4,9 +4,10 @@ import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'r
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { FormMessage } from '@/components/feedback/form-message';
+import { AppHeader } from '@/components/layout/app-header';
 import { Screen } from '@/components/layout/screen';
-import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
+import { UnderlineTabs } from '@/components/ui/underline-tabs';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { usePermission } from '@/permissions';
@@ -19,22 +20,36 @@ import {
   useChangeAnnouncementVisibility,
 } from '../hooks';
 import { type ListedAnnouncement } from '../types';
-import { AnnouncementCard } from './announcement-card';
+import { AnnouncementCard, AnnouncementCardAction } from './announcement-card';
+import { CreateAnnouncementButton } from './create-announcement-button';
+
+type AnnouncementsView = 'visible' | 'hidden';
+
+const TABS = [
+  { id: 'visible', label: CONTENT_LABELS.announcementsTabVisible },
+  { id: 'hidden', label: CONTENT_LABELS.announcementsTabHidden },
+] as const satisfies readonly { id: AnnouncementsView; label: string }[];
 
 /**
- * Anuncios (HU-17) unificada con la gestión (SCRUM-71). Visitantes y usuarios registrados ven solo
- * los anuncios visibles y vigentes. Con `announcements:manage` se ven todos, con su estado (Visible,
- * Oculto o Expirado, HU-23/HU-24), y cada tarjeta trae EDITAR y OCULTAR o MOSTRAR. Publicar sigue en
- * el botón "+" del encabezado (`announcements:publish`).
+ * Anuncios (HU-17) unificada con la gestión (SCRUM-71). Pantalla completa fuera de las pestañas: el
+ * encabezado trae volver, título y, con `announcements:publish`, el botón "+". Visitantes y usuarios
+ * registrados ven solo los anuncios visibles y vigentes. Con `announcements:manage` se ven todos en dos
+ * pestañas, Visibles y Ocultos (los ocultos y los expirados, HU-23/HU-24), y cada tarjeta trae EDITAR y
+ * OCULTAR o MOSTRAR.
  */
 export function AnnouncementsListScreen() {
   const theme = useTheme();
   const canManage = usePermission('announcements:manage');
+  const canPublish = usePermission('announcements:publish');
   const { data, error, isError, isPending, isRefetchError, isRefetching, refetch } =
     useAnnouncementList(canManage);
   const changeVisibility = useChangeAnnouncementVisibility();
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [view, setView] = useState<AnnouncementsView>('visible');
   const announcements = data ?? [];
+  const shown = canManage
+    ? announcements.filter((item) => (item.visibility === 'visible') === (view === 'visible'))
+    : announcements;
   const refreshError = isRefetchError;
 
   const refresh = () => {
@@ -49,9 +64,27 @@ export function AnnouncementsListScreen() {
     );
   };
 
+  const header = (
+    <>
+      <AppHeader
+        title={CONTENT_LABELS.announcementsTitle}
+        leadingIcon="chevronLeft"
+        menuAccessibilityLabel={CONTENT_LABELS.announcementsBack}
+        onMenuPress={() => router.back()}
+        right={canPublish ? <CreateAnnouncementButton /> : undefined}
+      />
+      {canManage && (
+        <View style={styles.tabs}>
+          <UnderlineTabs tabs={TABS} value={view} onChange={setView} />
+        </View>
+      )}
+    </>
+  );
+
   if (isPending) {
     return (
       <Screen>
+        {header}
         <View style={styles.center}>
           <ActivityIndicator color={theme.primary} />
         </View>
@@ -62,6 +95,7 @@ export function AnnouncementsListScreen() {
   if (isError && data === undefined) {
     return (
       <Screen>
+        {header}
         <EmptyState icon="announcements" title={getAnnouncementsErrorMessage(error)}>
           <Button label={CONTENT_LABELS.announcementsRetry} onPress={refresh} />
         </EmptyState>
@@ -69,12 +103,20 @@ export function AnnouncementsListScreen() {
     );
   }
 
-  if (announcements.length === 0) {
+  const emptyTitle =
+    announcements.length === 0
+      ? CONTENT_MESSAGES.announcementsEmpty
+      : view === 'visible'
+        ? CONTENT_MESSAGES.announcementsEmptyVisible
+        : CONTENT_MESSAGES.announcementsEmptyHidden;
+
+  if (shown.length === 0) {
     return (
       <Screen>
+        {header}
         <View style={styles.emptyContent}>
           {refreshError && <FormMessage message={CONTENT_MESSAGES.announcementsRefreshError} />}
-          <EmptyState icon="announcements" title={CONTENT_MESSAGES.announcementsEmpty}>
+          <EmptyState icon="announcements" title={emptyTitle}>
             <Button
               label={CONTENT_LABELS.announcementsRefreshButton}
               onPress={refresh}
@@ -86,13 +128,14 @@ export function AnnouncementsListScreen() {
     );
   }
 
-  const hasHeader = canManage || refreshError || changeVisibility.isError;
+  const hasListHeader = refreshError || changeVisibility.isError;
 
   return (
     <Screen>
+      {header}
       <FlatList<ListedAnnouncement>
         accessibilityLabel={CONTENT_LABELS.announcementsTitle}
-        data={announcements}
+        data={shown}
         keyExtractor={(announcement) => announcement.id}
         renderItem={({ item }) => (
           <AnnouncementCard announcement={item}>
@@ -119,13 +162,8 @@ export function AnnouncementsListScreen() {
           />
         }
         ListHeaderComponent={
-          hasHeader ? (
-            <View style={styles.header}>
-              {canManage && (
-                <ThemedText type="small" themeColor="textSecondary">
-                  {CONTENT_LABELS.manageHint}
-                </ThemedText>
-              )}
+          hasListHeader ? (
+            <View style={styles.listHeader}>
               {refreshError && <FormMessage message={CONTENT_MESSAGES.announcementsRefreshError} />}
               {changeVisibility.isError && (
                 <FormMessage
@@ -141,9 +179,9 @@ export function AnnouncementsListScreen() {
 }
 
 /**
- * Acciones de gestión en cada tarjeta (SCRUM-71, antes en "Gestionar anuncios"). EDITAR abre la
- * edición de prioridad, vigencia y texto. OCULTAR / MOSTRAR (HU-24); los vencidos no se pueden
- * mostrar (la API responde 409), pero sí editar para ponerles una fecha nueva.
+ * Acciones de gestión en cada tarjeta (SCRUM-71). EDITAR abre la edición de prioridad, vigencia y
+ * texto. OCULTAR / MOSTRAR (HU-24); los vencidos no se pueden mostrar (la API responde 409), pero sí
+ * editar para ponerles una fecha nueva.
  */
 function ManageActions({
   announcement,
@@ -159,27 +197,22 @@ function ManageActions({
   const isVisible = announcement.visibility === 'visible';
   return (
     <View style={styles.actions}>
-      <View style={styles.action}>
-        <Button
-          label={CONTENT_LABELS.editButton}
-          variant="secondary"
-          accessibilityLabel={CONTENT_LABELS.editAnnouncement(announcement.title)}
-          disabled={isChanging}
-          onPress={() =>
-            router.push(`/announcements/${encodeURIComponent(announcement.id)}/edit` as Href)
-          }
-        />
-      </View>
+      <AnnouncementCardAction
+        label={CONTENT_LABELS.editButton}
+        accessibilityLabel={CONTENT_LABELS.editAnnouncement(announcement.title)}
+        disabled={isChanging}
+        onPress={() =>
+          router.push(`/announcements/${encodeURIComponent(announcement.id)}/edit` as Href)
+        }
+      />
       {announcement.visibility !== 'expired' && (
-        <View style={styles.action}>
-          <Button
-            label={isVisible ? CONTENT_LABELS.hideButton : CONTENT_LABELS.showButton}
-            variant={isVisible ? 'secondary' : 'primary'}
-            isLoading={isChanging}
-            disabled={isDisabled}
-            onPress={onToggleVisibility}
-          />
-        </View>
+        <AnnouncementCardAction
+          label={isVisible ? CONTENT_LABELS.hideButton : CONTENT_LABELS.showButton}
+          variant="tertiary"
+          isLoading={isChanging}
+          disabled={isDisabled}
+          onPress={onToggleVisibility}
+        />
       )}
     </View>
   );
@@ -191,13 +224,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  tabs: {
+    paddingBottom: Spacing.two,
+  },
   list: {
     flexGrow: 1,
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.two,
     paddingBottom: Spacing.four,
   },
-  header: {
+  listHeader: {
     gap: Spacing.two,
     paddingBottom: Spacing.three,
   },
@@ -210,9 +246,7 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     gap: Spacing.two,
-    paddingTop: Spacing.one,
-  },
-  action: {
-    flex: 1,
+    paddingHorizontal: Spacing.three,
+    paddingBottom: Spacing.three,
   },
 });

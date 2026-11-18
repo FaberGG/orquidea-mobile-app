@@ -146,7 +146,14 @@ function StationDetailContent({ station, insetTop }: { station: Station; insetTo
                     accessibilityRole="link"
                     accessibilityLabel={species.vernacularName}
                     onPress={() =>
-                      router.push({ pathname: '/species/[id]', params: { id: species.id } })
+                      router.push({
+                        pathname: '/species/[id]',
+                        // Desde la estación se desliza solo entre sus fichas, en este orden.
+                        params: {
+                          id: species.id,
+                          ids: station.species.map((item) => item.id).join(','),
+                        },
+                      })
                     }
                     style={({ pressed }) => [
                       styles.speciesRow,
