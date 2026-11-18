@@ -8,6 +8,9 @@ import { useTheme } from '@/hooks/use-theme';
 
 import { SIGHTING_FORM_LABELS } from '../constants';
 
+/** Texto e íconos sobre la foto: siempre claros, también en modo oscuro (donde `onPrimary` es oscuro). */
+const ON_PHOTO = '#F7F8F8';
+
 export type SightingPhotoFieldProps = {
   photoUri: string | null;
   onPick: () => void;
@@ -74,8 +77,8 @@ function PhotoAction({
       onPress={onPress}
       hitSlop={Spacing.one}
       style={styles.photoAction}>
-      <Icon name={icon} size={16} color="onPrimary" />
-      <ThemedText type="captionBold" themeColor="onPrimary">
+      <Icon name={icon} size={16} fixedColor={ON_PHOTO} />
+      <ThemedText type="captionBold" style={{ color: ON_PHOTO }}>
         {label}
       </ThemedText>
     </Pressable>
