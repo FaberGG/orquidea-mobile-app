@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
@@ -64,6 +64,10 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
 
   const close = () => router.back();
   const changePhoto = (step: number) => setIndex((current) => current + step);
+  // La foto vecina ya está a la vista al terminar de deslizar: al cambiar de índice se recoloca sin salto.
+  useLayoutEffect(() => {
+    offsetX.set(0);
+  }, [index, offsetX]);
 
   const reset = () => {
     'worklet';
@@ -118,12 +122,8 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
         const target = index + step;
         if (Math.abs(event.translationX) > SWIPE_DISTANCE && target >= 0 && target <= lastIndex) {
           offsetX.set(
-            withTiming(-step * width, { duration: 140 }, (finished) => {
-              if (!finished) return;
-              scheduleOnRN(changePhoto, step);
-              // La nueva foto entra desde el lado contrario.
-              offsetX.set(step * width);
-              offsetX.set(withTiming(0, { duration: 160 }));
+            withTiming(-step * width, { duration: 180 }, (finished) => {
+              if (finished) scheduleOnRN(changePhoto, step);
             }),
           );
         } else {
@@ -157,6 +157,9 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
     ],
   }));
 
+  // Las fotos vecinas solo se ven al deslizar sin zoom; con zoom, al recorrer el borde quedarían a la vista.
+  const neighborStyle = useAnimatedStyle(() => ({ opacity: savedScale.get() > 1 ? 0 : 1 }));
+
   // Al arrastrar para cerrar, el fondo se aclara para anticipar el cierre.
   const backdropStyle = useAnimatedStyle(() => ({
     opacity: savedScale.get() > 1 ? 1 : 1 - Math.min(Math.abs(offsetY.get()) / (height / 2), 0.7),
@@ -169,6 +172,16 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
 
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.flex, photoStyle]}>
+          {gallery[index - 1] !== undefined && (
+            <Animated.View style={[styles.neighbor, { left: -width }, neighborStyle]}>
+              <Image
+                source={{ uri: gallery[index - 1] }}
+                style={styles.flex}
+                contentFit="contain"
+                accessibilityIgnoresInvertColors
+              />
+            </Animated.View>
+          )}
           <Image
             source={{ uri: gallery[index] }}
             style={styles.flex}
@@ -176,6 +189,16 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
             accessibilityIgnoresInvertColors
             accessibilityLabel={SIGHTINGS_LABELS.photoHint}
           />
+          {gallery[index + 1] !== undefined && (
+            <Animated.View style={[styles.neighbor, { left: width }, neighborStyle]}>
+              <Image
+                source={{ uri: gallery[index + 1] }}
+                style={styles.flex}
+                contentFit="contain"
+                accessibilityIgnoresInvertColors
+              />
+            </Animated.View>
+          )}
         </Animated.View>
       </GestureDetector>
 
@@ -201,6 +224,12 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
+  },
+  neighbor: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: '100%',
   },
   backdrop: {
     backgroundColor: VIEWER_BACKGROUND,
