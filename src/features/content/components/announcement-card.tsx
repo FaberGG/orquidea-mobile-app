@@ -1,168 +1,203 @@
 import { type ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type PressableProps } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { FontFamily, Radius, Spacing, type ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 import { CONTENT_LABELS } from '../constants';
-import { type AnnouncementVisibility, type ListedAnnouncement } from '../types';
+import { type AnnouncementPriority, type ListedAnnouncement } from '../types';
+import { formatExpiration, formatRelativeTime } from './format-date';
 
 type AnnouncementCardProps = {
   announcement: ListedAnnouncement;
   /** Acciones al pie (solo para quien gestiona anuncios, SCRUM-71). */
   children?: ReactNode;
+  /** Instante de referencia para las fechas relativas (se reemplaza en pruebas). */
+  now?: Date;
 };
 
-/** Estado que solo ve quien gestiona anuncios (HU-23 CA4 y HU-24). */
-const VISIBILITY_STYLE: Record<
-  AnnouncementVisibility,
-  { label: string; text: ThemeColor; background: ThemeColor }
-> = {
-  visible: {
-    label: CONTENT_LABELS.visibilityVisible,
-    text: 'success',
-    background: 'successBackground',
-  },
-  hidden: {
-    label: CONTENT_LABELS.visibilityHidden,
-    text: 'textSecondary',
-    background: 'backgroundSelected',
-  },
-  expired: {
-    label: CONTENT_LABELS.visibilityExpired,
-    text: 'danger',
-    background: 'dangerBackground',
-  },
+/** Franja de prioridad: la alta es lo único saturado de la tarjeta; media y baja son discretas. */
+const PRIORITY_BAND: Record<AnnouncementPriority, { background: ThemeColor; text: ThemeColor }> = {
+  high: { background: 'danger', text: 'onPrimary' },
+  medium: { background: 'warningBackground', text: 'warning' },
+  low: { background: 'backgroundSelected', text: 'textLabel' },
 };
 
-function formatPublishedDate(value: string): string {
-  return new Date(value).toLocaleDateString('es-CO', {
-    day: 'numeric',
-    month: 'long',
-    timeZone: 'America/Bogota',
-    year: 'numeric',
-  });
-}
-
-function formatExpirationDate(value: string): string {
-  const date = new Date(value);
-  const time = date.toLocaleTimeString('es-CO', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-    timeZone: 'America/Bogota',
-  });
-  return `${formatPublishedDate(value)}, ${time}`;
-}
+/** Cuerpo atenuado cuando el anuncio no se ve en la lista pública (oculto o expirado). */
+const INACTIVE_BODY_OPACITY = 0.6;
 
 /**
- * Tarjeta de anuncio: título con el chip de prioridad, contenido y metadatos al final. Los de prioridad
- * alta llevan además un borde del color del chip para que resalten en la lista (SCRUM-71). Si el
- * anuncio trae `visibility`, se muestra su estado (Visible, Oculto o Expirado) junto a la prioridad.
+ * Tarjeta de anuncio en tres franjas: cabecera de prioridad con la fecha relativa de creación, cuerpo
+ * (título, descripción y vigencia) y, para quien gestiona anuncios, la fila de acciones (`children`).
+ * Un anuncio expirado usa la franja discreta con la etiqueta "· Expirado"; si está oculto o expirado el
+ * cuerpo se atenúa, pero las acciones no, para que se sigan usando sin parecer deshabilitadas.
  */
-export function AnnouncementCard({ announcement, children }: AnnouncementCardProps) {
+export function AnnouncementCard({
+  announcement,
+  children,
+  now = new Date(),
+}: AnnouncementCardProps) {
   const theme = useTheme();
-  const priorityStyle =
-    announcement.priority === 'high'
-      ? { backgroundColor: theme.dangerBackground, color: theme.danger }
-      : announcement.priority === 'medium'
-        ? { backgroundColor: theme.primarySoft, color: theme.primary }
-        : { backgroundColor: theme.backgroundElement, color: theme.textSecondary };
-
-  const isHighPriority = announcement.priority === 'high';
-  const visibility = announcement.visibility ? VISIBILITY_STYLE[announcement.visibility] : null;
+  const isExpired = announcement.visibility === 'expired';
+  const isInactive = isExpired || announcement.visibility === 'hidden';
+  const band = PRIORITY_BAND[isExpired ? 'low' : announcement.priority];
+  const priorityLabel = CONTENT_LABELS.announcementBandLabel(announcement.priority);
 
   return (
     <View
-      style={[
-        styles.card,
-        { backgroundColor: theme.background, borderColor: theme.border },
-        isHighPriority && [styles.highlighted, { borderLeftColor: theme.danger }],
-      ]}>
-      <View style={styles.heading}>
+      accessibilityLabel={
+        announcement.visibility
+          ? CONTENT_LABELS.visibilityState(
+              announcement.visibility === 'visible'
+                ? CONTENT_LABELS.visibilityVisible
+                : announcement.visibility === 'hidden'
+                  ? CONTENT_LABELS.visibilityHidden
+                  : CONTENT_LABELS.visibilityExpired,
+            )
+          : undefined
+      }
+      style={[styles.card, { backgroundColor: theme.background, borderColor: theme.border }]}>
+      <View style={[styles.band, { backgroundColor: theme[band.background] }]}>
         <ThemedText
-          type="default"
-          themeColor="textLabel"
-          accessibilityRole="header"
-          style={styles.title}>
+          accessibilityLabel={CONTENT_LABELS.announcementPriority(announcement.priority)}
+          style={[styles.priority, { color: theme[band.text] }]}>
+          {(isExpired
+            ? `${priorityLabel} · ${CONTENT_LABELS.visibilityExpired}`
+            : priorityLabel
+          ).toUpperCase()}
+        </ThemedText>
+        <ThemedText style={[styles.date, { color: theme[band.text] }]}>
+          {formatRelativeTime(announcement.publishedAt, now)}
+        </ThemedText>
+      </View>
+
+      <View style={[styles.body, isInactive && { opacity: INACTIVE_BODY_OPACITY }]}>
+        <ThemedText themeColor="textLabel" accessibilityRole="header" style={styles.title}>
           {announcement.title}
         </ThemedText>
-        <View style={[styles.priorityBadge, { backgroundColor: priorityStyle.backgroundColor }]}>
-          <ThemedText
-            type="captionBold"
-            accessibilityLabel={CONTENT_LABELS.announcementPriority(announcement.priority)}
-            style={{ color: priorityStyle.color }}>
-            {CONTENT_LABELS.announcementPriorityLabel(announcement.priority)}
-          </ThemedText>
-        </View>
-      </View>
-      {visibility && (
-        <View
-          style={[styles.visibilityBadge, { backgroundColor: theme[visibility.background] }]}
-          accessibilityLabel={CONTENT_LABELS.visibilityState(visibility.label)}>
-          <ThemedText type="captionBold" themeColor={visibility.text}>
-            {visibility.label}
-          </ThemedText>
-        </View>
-      )}
-      <ThemedText type="default" themeColor="text" style={styles.description} selectable>
-        {announcement.description}
-      </ThemedText>
-      <View style={[styles.metadata, { borderTopColor: theme.border }]}>
-        <ThemedText type="caption" themeColor="textMuted">
-          {`${CONTENT_LABELS.announcementsPublishedPrefix} ${formatPublishedDate(announcement.publishedAt)}${announcement.publisherName ? ` · ${CONTENT_LABELS.announcementsPublisherPrefix} ${announcement.publisherName}` : ''}`}
+        <ThemedText themeColor="textSecondary" style={styles.description} selectable>
+          {announcement.description}
         </ThemedText>
         {announcement.expiresAt && (
-          <ThemedText type="caption" themeColor="textMuted">
-            {`${CONTENT_LABELS.announcementsAvailableUntilPrefix} ${formatExpirationDate(announcement.expiresAt)}`}
+          <ThemedText themeColor="textSecondary" style={styles.expiration}>
+            {formatExpiration(announcement.expiresAt, now)}
           </ThemedText>
         )}
       </View>
+
       {children}
     </View>
   );
 }
 
+type CardActionProps = Omit<PressableProps, 'children' | 'style'> & {
+  label: string;
+  /** `secondary`: fondo de la tarjeta con borde. `tertiary`: fondo gris suave, sin borde. */
+  variant?: 'secondary' | 'tertiary';
+  isLoading?: boolean;
+};
+
+/** Botón de la fila de acciones de la tarjeta: sin ícono, sin color de énfasis, de 44 px de alto. */
+export function AnnouncementCardAction({
+  label,
+  variant = 'secondary',
+  isLoading = false,
+  disabled,
+  ...rest
+}: CardActionProps) {
+  const theme = useTheme();
+  const isDisabled = Boolean(disabled) || isLoading;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled, busy: isLoading }}
+      disabled={isDisabled}
+      style={({ pressed }) => [
+        styles.action,
+        variant === 'secondary'
+          ? { backgroundColor: theme.background, borderColor: theme.border, borderWidth: 1 }
+          : { backgroundColor: theme.backgroundSelected },
+        isDisabled && styles.disabled,
+        pressed && styles.pressed,
+      ]}
+      {...rest}>
+      {isLoading ? (
+        <ActivityIndicator color={theme.primary} />
+      ) : (
+        <ThemedText themeColor="textLabel" style={styles.actionLabel}>
+          {label}
+        </ThemedText>
+      )}
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   card: {
-    gap: Spacing.two,
-    padding: Spacing.three,
-    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    borderWidth: 1,
     borderRadius: Radius.card,
   },
-  heading: {
+  band: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
     gap: Spacing.two,
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.three,
+  },
+  priority: {
+    flexShrink: 1,
+    fontFamily: FontFamily.semiBold,
+    fontSize: 12,
+    lineHeight: 16,
+    letterSpacing: 0.4,
+  },
+  date: {
+    fontFamily: FontFamily.medium,
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  body: {
+    gap: 6,
+    paddingTop: 14,
+    paddingHorizontal: Spacing.three,
+    paddingBottom: Spacing.three,
   },
   title: {
-    flex: 1,
     fontFamily: FontFamily.bold,
+    fontSize: 17,
+    lineHeight: 23,
   },
   description: {
-    paddingVertical: Spacing.one,
+    fontFamily: FontFamily.regular,
+    fontSize: 14,
+    lineHeight: 20,
   },
-  metadata: {
-    gap: Spacing.one,
-    paddingTop: Spacing.two,
-    borderTopWidth: StyleSheet.hairlineWidth,
+  expiration: {
+    paddingTop: Spacing.one,
+    fontFamily: FontFamily.regular,
+    fontSize: 12,
+    lineHeight: 16,
   },
-  highlighted: {
-    borderLeftWidth: 4,
-  },
-  visibilityBadge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: Spacing.two,
-    paddingVertical: 2,
-    borderRadius: Radius.full,
-  },
-  priorityBadge: {
-    minHeight: 24,
+  action: {
+    flex: 1,
+    minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: Spacing.two,
-    borderRadius: Radius.full,
+    borderRadius: 10,
+  },
+  actionLabel: {
+    fontFamily: FontFamily.semiBold,
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  pressed: {
+    opacity: 0.8,
   },
 });
