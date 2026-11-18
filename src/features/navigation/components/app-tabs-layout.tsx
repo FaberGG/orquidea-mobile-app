@@ -1,3 +1,4 @@
+import { router, type Href } from 'expo-router';
 import { DrawerActions } from 'expo-router/react-navigation';
 import { Tabs } from 'expo-router/tabs';
 import { View } from 'react-native';
@@ -5,7 +6,6 @@ import { View } from 'react-native';
 import { AppHeader } from '@/components/layout/app-header';
 import { TAB_ICON_SIZE, TabBar } from '@/components/layout/tab-bar';
 import { Icon, type IconName } from '@/components/ui/icon';
-import { CreateAnnouncementButton } from '@/features/content';
 import { AnnouncementsButton } from '@/features/sightings';
 import { CreateSpeciesButton, ScanSpeciesQrButton } from '@/features/species';
 import { useTheme } from '@/hooks/use-theme';
@@ -75,7 +75,7 @@ export function AppTabsLayout() {
               title={NAVIGATION_LABELS.tabCommunity}
               menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
               onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              right={<AnnouncementsButton onPress={() => navigation.navigate('announcements')} />}
+              right={<AnnouncementsButton onPress={() => router.push('/announcements' as Href)} />}
             />
           ),
         }}
@@ -87,21 +87,6 @@ export function AppTabsLayout() {
       <Tabs.Screen
         name="account"
         options={{ title: NAVIGATION_LABELS.tabUser, tabBarIcon: tabIcon('user', 'userFilled') }}
-      />
-      <Tabs.Screen
-        name="announcements"
-        options={{
-          title: NAVIGATION_LABELS.announcements,
-          header: ({ navigation }) => (
-            <AppHeader
-              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
-              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              title={NAVIGATION_LABELS.announcements}
-              // Acta 17: nuevo anuncio desde la lista (solo con announcements:publish).
-              right={<CreateAnnouncementButton />}
-            />
-          ),
-        }}
       />
     </Tabs>
   );

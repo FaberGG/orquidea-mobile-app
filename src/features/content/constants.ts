@@ -19,6 +19,8 @@ export const CONTENT_MESSAGES = {
   announcementPublished: 'El anuncio se publicó correctamente.',
   // HU-17 CA2
   announcementsEmpty: 'Aún no hay anuncios publicados.',
+  announcementsEmptyVisible: 'No hay anuncios visibles.',
+  announcementsEmptyHidden: 'No hay anuncios ocultos ni expirados.',
   announcementsLoadError:
     'No pudimos cargar los anuncios. Revisa tu conexión e inténtalo de nuevo.',
   announcementsRefreshError: 'No pudimos actualizar los anuncios. Inténtalo de nuevo.',
@@ -81,8 +83,6 @@ export const CONTENT_LABELS = {
     'Puedes cambiar la fecha de finalización, pero no quitarla. Si ya no quieres mostrarlo, usa OCULTAR.',
   editAnnouncement: (title: string) => `Editar el anuncio ${title}`,
   // HU-24 (en la lista unificada, solo para quien gestiona anuncios)
-  manageHint:
-    'Como administrador ves también los anuncios ocultos y vencidos. Oculta uno para retirarlo sin eliminarlo, o vuelve a mostrarlo.',
   visibilityVisible: 'Visible',
   // HU-24 CA1: "se marca como 'Oculto' en la vista del administrador"
   visibilityHidden: 'Oculto',
@@ -93,6 +93,9 @@ export const CONTENT_LABELS = {
   hideButton: 'OCULTAR',
   showButton: 'MOSTRAR',
   announcementsTitle: 'Anuncios',
+  announcementsBack: 'Volver',
+  announcementsTabVisible: 'Visibles',
+  announcementsTabHidden: 'Ocultos',
   announcementsRetry: 'REINTENTAR',
   announcementsRefreshButton: 'ACTUALIZAR',
   announcementsPublishedPrefix: 'Publicado el',
@@ -103,6 +106,9 @@ export const CONTENT_LABELS = {
     `Prioridad ${priority === 'high' ? 'alta' : priority === 'medium' ? 'media' : 'baja'}`,
   announcementPriorityLabel: (priority: 'high' | 'medium' | 'low') =>
     priority === 'high' ? 'Alta' : priority === 'medium' ? 'Media' : 'Baja',
+  // Franja de la tarjeta de anuncio
+  announcementBandLabel: (priority: 'high' | 'medium' | 'low') =>
+    priority === 'high' ? 'Importante' : priority === 'medium' ? 'Aviso' : 'Informativo',
 } as const;
 
 /** Textos de la interfaz de HU-14 y HU-15 (sin diseño en Figma). */

@@ -18,7 +18,6 @@ src/app/
 │       ├── community.tsx           /community   Comunidad: avistamientos (HU-18, HU-19, HU-20)
 │       ├── map.tsx                 /map         Mapas: mapa del sendero (HU-12, HU-13)
 │       ├── account.tsx             /account     Usuario: visitante → iniciar sesión · con sesión → datos, rol y cerrar sesión (HU-3)
-│       ├── announcements.tsx        /announcements Anuncios (HU-17) + gestión vía <Can> (SCRUM-71: estado, EDITAR, OCULTAR/MOSTRAR)
 │
 ├── species/
 │   └── [id].tsx                    /species/:id Detalle de ficha (todos) + acciones admin vía <Can> (HU-8, HU-9)

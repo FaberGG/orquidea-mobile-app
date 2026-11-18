@@ -93,22 +93,57 @@ describe('AnnouncementsListScreen unificada (HU-17 + SCRUM-71)', () => {
   );
 
   it.each<Role>(['admin', 'superadmin'])(
-    '%s ve todos los anuncios con su estado y las acciones de gestión',
+    '%s ve los anuncios separados en las pestañas Visibles y Ocultos, con las acciones de gestión',
     async (role) => {
       jest.mocked(listAdminAnnouncements).mockResolvedValue([VISIBLE, HIDDEN, EXPIRED]);
       await renderAs(role);
 
-      expect(await screen.findByText('Feria pasada')).toBeTruthy();
+      // Visibles: solo el visible, que se puede editar y ocultar.
+      expect(await screen.findByText('Jornada de aves')).toBeTruthy();
       expect(listAnnouncements).not.toHaveBeenCalled();
-      expect(screen.getByText(CONTENT_LABELS.visibilityVisible)).toBeTruthy();
-      expect(screen.getByText(CONTENT_LABELS.visibilityHidden)).toBeTruthy();
-      expect(screen.getByText(CONTENT_LABELS.visibilityExpired)).toBeTruthy();
-      // Todos se pueden editar; el vencido no se puede mostrar (la API responde 409).
-      expect(screen.getAllByText(CONTENT_LABELS.editButton)).toHaveLength(3);
+      expect(screen.queryByText('Taller')).toBeNull();
+      expect(screen.queryByText('Feria pasada')).toBeNull();
+      expect(screen.getAllByText(CONTENT_LABELS.editButton)).toHaveLength(1);
       expect(screen.getAllByText(CONTENT_LABELS.hideButton)).toHaveLength(1);
+
+      // Ocultos: el oculto y el expirado. Ambos se editan; el vencido no se puede mostrar (409).
+      await fireEvent.press(
+        screen.getByRole('tab', { name: CONTENT_LABELS.announcementsTabHidden }),
+      );
+      expect(screen.getByText('Taller')).toBeTruthy();
+      expect(screen.getByText('Feria pasada')).toBeTruthy();
+      expect(screen.queryByText('Jornada de aves')).toBeNull();
+      expect(screen.getAllByText(CONTENT_LABELS.editButton)).toHaveLength(2);
       expect(screen.getAllByText(CONTENT_LABELS.showButton)).toHaveLength(1);
+      expect(screen.queryByText(CONTENT_LABELS.hideButton)).toBeNull();
     },
   );
+
+  it('no muestra el aviso de administrador al inicio de la lista', async () => {
+    jest.mocked(listAdminAnnouncements).mockResolvedValue([VISIBLE]);
+    await renderAs('admin');
+
+    await screen.findByText('Jornada de aves');
+    expect(screen.queryByText(/Como administrador ves/)).toBeNull();
+  });
+
+  it('quien no gestiona anuncios no ve las pestañas', async () => {
+    jest.mocked(listAnnouncements).mockResolvedValue([PUBLIC]);
+    await renderAs('user');
+
+    await screen.findByText('Jornada de aves');
+    expect(screen.queryByRole('tab')).toBeNull();
+  });
+
+  it('el encabezado trae volver y, con permiso de publicar, el botón de nuevo anuncio', async () => {
+    jest.mocked(listAdminAnnouncements).mockResolvedValue([VISIBLE]);
+    await renderAs('admin');
+
+    await fireEvent.press(await screen.findByLabelText(CONTENT_LABELS.announcementsBack));
+    expect(router.back).toHaveBeenCalled();
+    await fireEvent.press(screen.getByLabelText(CONTENT_LABELS.publishTitle));
+    expect(router.push).toHaveBeenCalledWith('/announcements/new');
+  });
 
   it('HU-24 CA1: OCULTAR llama a la API y refresca la lista', async () => {
     jest.mocked(listAdminAnnouncements).mockResolvedValue([VISIBLE]);
@@ -126,6 +161,9 @@ describe('AnnouncementsListScreen unificada (HU-17 + SCRUM-71)', () => {
     jest.mocked(showAnnouncement).mockResolvedValue();
     await renderAs('admin');
 
+    await fireEvent.press(
+      await screen.findByRole('tab', { name: CONTENT_LABELS.announcementsTabHidden }),
+    );
     await fireEvent.press(await screen.findByText(CONTENT_LABELS.showButton));
 
     await waitFor(() => expect(showAnnouncement).toHaveBeenCalledWith('a-2'));
@@ -143,6 +181,9 @@ describe('AnnouncementsListScreen unificada (HU-17 + SCRUM-71)', () => {
     );
     await renderAs('admin');
 
+    await fireEvent.press(
+      await screen.findByRole('tab', { name: CONTENT_LABELS.announcementsTabHidden }),
+    );
     await fireEvent.press(await screen.findByText(CONTENT_LABELS.showButton));
 
     expect(await screen.findByText(CONTENT_MESSAGES.announcementExpiredCannotShow)).toBeTruthy();

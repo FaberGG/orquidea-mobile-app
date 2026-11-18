@@ -36,11 +36,6 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
     navigation.closeDrawer();
   };
 
-  const goToAnnouncements = () => {
-    navigation.closeDrawer();
-    router.push('/(drawer)/(tabs)/announcements');
-  };
-
   return (
     <ScrollView
       style={{ backgroundColor: theme.background }}
@@ -134,7 +129,7 @@ export function AppDrawerContent({ navigation }: DrawerContentComponentProps) {
         <DrawerItem
           icon="announcements"
           label={NAVIGATION_LABELS.announcements}
-          onPress={goToAnnouncements}
+          onPress={() => goTo('/announcements' as Href)}
         />
         <DrawerItem icon="offline" label={NAVIGATION_LABELS.offlineDownloads} isComingSoon />
       </DrawerSection>
