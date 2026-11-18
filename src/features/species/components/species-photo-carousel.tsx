@@ -1,5 +1,6 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { OfflineImage } from '@/components/ui/offline-image';
@@ -12,13 +13,16 @@ import { type SpeciesPhotoItem } from '../types';
 export type SpeciesPhotoCarouselProps = {
   photos: SpeciesPhotoItem[];
   name: string;
+  /** Alto del encabezado: la foto lo ocupa completo, recortada para llenarlo. */
+  height: number;
 };
 
 /**
  * Fotos del encabezado del detalle (HU-7 v2.0): se pasan deslizando de lado y un contador indica la
- * posición. Ocupa todo el encabezado; sin fotos muestra el fondo neutro.
+ * posición. Ocupa todo el encabezado; sin fotos muestra el fondo neutro. Al tocar una foto se abre a
+ * pantalla completa para ampliarla (visor compartido con los reportes).
  */
-export function SpeciesPhotoCarousel({ photos, name }: SpeciesPhotoCarouselProps) {
+export function SpeciesPhotoCarousel({ photos, name, height }: SpeciesPhotoCarouselProps) {
   const theme = useTheme();
   const { width } = useWindowDimensions();
   const [index, setIndex] = useState(0);
@@ -40,13 +44,21 @@ export function SpeciesPhotoCarousel({ photos, name }: SpeciesPhotoCarouselProps
           setIndex(Math.round(event.nativeEvent.contentOffset.x / width))
         }>
         {photos.map((photo, position) => (
-          <OfflineImage
+          <Pressable
             key={photo.id ?? photo.url}
-            uri={photo.url}
-            style={[styles.photo, { width, backgroundColor: theme.backgroundSelected }]}
-            contentFit="cover"
+            accessibilityRole="imagebutton"
             accessibilityLabel={SPECIES_LABELS.photoOf(name, position + 1, photos.length)}
-          />
+            accessibilityHint={SPECIES_LABELS.photoZoomHint}
+            onPress={() =>
+              router.push({ pathname: '/sightings/photo', params: { uri: photo.url } })
+            }>
+            <OfflineImage
+              uri={photo.url}
+              style={{ width, height, backgroundColor: theme.backgroundSelected }}
+              contentFit="cover"
+              accessibilityIgnoresInvertColors
+            />
+          </Pressable>
         ))}
       </ScrollView>
       {photos.length > 1 && (
@@ -61,9 +73,6 @@ export function SpeciesPhotoCarousel({ photos, name }: SpeciesPhotoCarouselProps
 }
 
 const styles = StyleSheet.create({
-  photo: {
-    height: '100%',
-  },
   counter: {
     position: 'absolute',
     top: Spacing.six,

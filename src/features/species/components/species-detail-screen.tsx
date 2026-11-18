@@ -1,12 +1,20 @@
 import { router } from 'expo-router';
 import { type ReactNode } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
+import { EdgeGradient } from '@/components/ui/edge-gradient';
 import { Icon } from '@/components/ui/icon';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -20,7 +28,11 @@ import { ConservationBadge } from './conservation';
 import { SpeciesPhotoCarousel } from './species-photo-carousel';
 import { SpeciesQrExport } from './species-qr-export';
 
-const HERO_HEIGHT = 376;
+/** El encabezado con la foto ocupa la mitad de la pantalla, con un mínimo para pantallas bajas. */
+const HERO_MIN_HEIGHT = 376;
+const HERO_HEIGHT_RATIO = 0.5;
+/** Texto e íconos sobre la foto: siempre claros, también en modo oscuro (donde `onPrimary` es oscuro). */
+const ON_PHOTO = '#F7F8F8';
 
 export type SpeciesDetailScreenProps = {
   id: string;
@@ -97,20 +109,32 @@ export function SpeciesDetailScreen({ id, source }: SpeciesDetailScreenProps) {
 function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTop: number }) {
   const theme = useTheme();
   const { label } = CONSERVATION_STATUSES[species.conservationStatus];
+  const { height: windowHeight } = useWindowDimensions();
+  const heroHeight = Math.max(HERO_MIN_HEIGHT, Math.round(windowHeight * HERO_HEIGHT_RATIO));
 
   return (
     <ThemedView style={styles.flex}>
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.hero}>
-          <SpeciesPhotoCarousel photos={species.photos} name={species.vernacularName} />
-          <View style={styles.scrim} pointerEvents="none" />
+        <View style={[styles.hero, { height: heroHeight }]}>
+          <SpeciesPhotoCarousel
+            photos={species.photos}
+            name={species.vernacularName}
+            height={heroHeight}
+          />
+          {/* Degradados sutiles solo donde hay controles (arriba) y texto (abajo). */}
+          <EdgeGradient
+            edge="top"
+            intensity={0.4}
+            style={[styles.gradientTop, { height: insetTop + 96 }]}
+          />
+          <EdgeGradient edge="bottom" intensity={0.5} style={styles.gradientBottom} />
 
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={SPECIES_LABELS.back}
             onPress={() => router.back()}
             style={[styles.backButton, { top: insetTop + Spacing.two }]}>
-            <Icon name="chevronLeft" size={20} color="onPrimary" />
+            <Icon name="chevronLeft" size={20} fixedColor={ON_PHOTO} />
           </Pressable>
 
           <View style={styles.heroLabel} pointerEvents="none">
@@ -241,17 +265,21 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.six,
   },
   hero: {
-    height: HERO_HEIGHT,
     justifyContent: 'flex-end',
     overflow: 'hidden',
   },
-  scrim: {
+  gradientTop: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
+  },
+  gradientBottom: {
+    position: 'absolute',
     bottom: 0,
-    backgroundColor: 'rgba(0, 15, 10, 0.4)',
+    left: 0,
+    right: 0,
+    height: 160,
   },
   backButton: {
     position: 'absolute',
@@ -269,13 +297,13 @@ const styles = StyleSheet.create({
     gap: Spacing.one,
   },
   heroName: {
-    color: '#F7F8F8',
+    color: ON_PHOTO,
     fontFamily: FontFamily.bold,
     fontSize: 26,
     lineHeight: 30,
   },
   heroScientific: {
-    color: '#F7F8F8',
+    color: ON_PHOTO,
     fontFamily: FontFamily.regular,
     fontStyle: 'italic',
     fontSize: 14,
