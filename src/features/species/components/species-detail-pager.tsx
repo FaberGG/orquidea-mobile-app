@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { FlatList, useWindowDimensions, View } from 'react-native';
 
 import { SpeciesDetailScreen } from './species-detail-screen';
@@ -21,12 +21,24 @@ export type SpeciesDetailPagerProps = {
 export function SpeciesDetailPager({ ids, initialId, source }: SpeciesDetailPagerProps) {
   const { width } = useWindowDimensions();
   const initialIndex = Math.max(0, ids.indexOf(initialId));
+  const listRef = useRef<FlatList<string>>(null);
   const [swipeEnabled, setSwipeEnabled] = useState(true);
-  const pager = useMemo(() => ({ setSwipeEnabled }), []);
+  const pager = useMemo(
+    () => ({
+      setSwipeEnabled: (enabled: boolean) => {
+        // Se apaga directo en el componente nativo: el estado de React se aplica un cuadro después y un
+        // deslizamiento rápido sobre la foto podría empezar antes, moviendo el paginador.
+        listRef.current?.getNativeScrollRef()?.setNativeProps({ scrollEnabled: enabled });
+        setSwipeEnabled(enabled);
+      },
+    }),
+    [],
+  );
 
   return (
     <SpeciesPagerContext value={pager}>
       <FlatList
+        ref={listRef}
         horizontal
         pagingEnabled
         scrollEnabled={swipeEnabled}

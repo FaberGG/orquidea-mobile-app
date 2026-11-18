@@ -47,9 +47,12 @@ export function SpeciesPhotoCarousel({ photos, name, height }: SpeciesPhotoCarou
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         scrollEnabled={photos.length > 1}
-        onMomentumScrollEnd={(event) =>
-          setIndex(Math.round(event.nativeEvent.contentOffset.x / width))
-        }>
+        // Respaldo: si el sistema se queda con el gesto y no avisa del fin del toque, el paginador se reactiva aquí.
+        onScrollEndDrag={() => pager?.setSwipeEnabled(true)}
+        onMomentumScrollEnd={(event) => {
+          pager?.setSwipeEnabled(true);
+          setIndex(Math.round(event.nativeEvent.contentOffset.x / width));
+        }}>
         {photos.map((photo, position) => (
           <Pressable
             key={photo.id ?? photo.url}
