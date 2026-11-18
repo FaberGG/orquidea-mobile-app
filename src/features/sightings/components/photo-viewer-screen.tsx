@@ -162,8 +162,12 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
   }));
   const zoomStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
 
-  // Las fotos vecinas solo se ven al deslizar sin zoom; con zoom, al recorrer el borde quedarían a la vista.
-  const neighborStyle = useAnimatedStyle(() => ({ opacity: savedScale.get() > 1 ? 0 : 1 }));
+  // Las fotos vecinas solo se ven con la foto actual sin zoom (para deslizar entre fotos). Se decide con la
+  // escala visible, no con la guardada: esa cambia al terminar el gesto, y mientras se pellizca por primera
+  // vez o se anima el regreso de un doble toque la foto actual ya está ampliada.
+  const neighborStyle = useAnimatedStyle(() => ({
+    opacity: Math.abs(scale.get() - 1) < 0.01 ? 1 : 0,
+  }));
 
   // Al arrastrar para cerrar, el fondo se aclara para anticipar el cierre.
   const backdropStyle = useAnimatedStyle(() => ({
@@ -187,8 +191,8 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
                   style={[
                     styles.page,
                     { left: position * width, width },
-                    zoomStyle,
-                    position !== index && neighborStyle,
+                    // El zoom es solo de la foto actual; las vecinas no se amplían.
+                    position === index ? zoomStyle : neighborStyle,
                   ]}>
                   <Image
                     source={{ uri: photoUri }}
