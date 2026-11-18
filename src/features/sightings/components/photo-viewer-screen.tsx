@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
@@ -20,6 +21,8 @@ import { SIGHTINGS_LABELS } from '../constants';
 
 const MAX_SCALE = 4;
 const DOUBLE_TAP_SCALE = 2.5;
+/** Distancia horizontal (sin zoom) a partir de la cual soltar la foto pasa a la siguiente o anterior. */
+const SWIPE_DISTANCE = 80;
 /** Distancia vertical (sin zoom) a partir de la cual soltar la foto cierra el visor. */
 const DISMISS_DISTANCE = 120;
 // El visor es siempre oscuro (como en Facebook o Instagram), sin importar el tema del teléfono.
@@ -34,13 +37,21 @@ function clampOffset(offset: number, scale: number, size: number): number {
 
 export type PhotoViewerScreenProps = {
   uri: string;
+  /** Todas las fotos de la galería (incluida `uri`): permite pasar a la anterior o siguiente deslizando. */
+  uris?: string[];
 };
 
 /**
  * Foto de un reporte a pantalla completa, sin recorte. Se amplía pellizcando o tocando dos veces y,
- * ampliada, se recorre arrastrando. Sin zoom, deslizarla hacia arriba o abajo cierra el visor.
+ * ampliada, se recorre arrastrando. Sin zoom, deslizarla hacia arriba o abajo cierra el visor y, si hay
+ * varias fotos, deslizarla hacia los lados pasa a la anterior o siguiente.
  */
-export function PhotoViewerScreen({ uri }: PhotoViewerScreenProps) {
+export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
+  const gallery = uris && uris.length > 0 && uris.includes(uri) ? uris : [uri];
+  const hasMany = gallery.length > 1;
+  const [index, setIndex] = useState(Math.max(0, gallery.indexOf(uri)));
+  const lastIndex = gallery.length - 1;
+
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
@@ -52,6 +63,7 @@ export function PhotoViewerScreen({ uri }: PhotoViewerScreenProps) {
   const savedOffsetY = useSharedValue(0);
 
   const close = () => router.back();
+  const changePhoto = (step: number) => setIndex((current) => current + step);
 
   const reset = () => {
     'worklet';
@@ -88,7 +100,11 @@ export function PhotoViewerScreen({ uri }: PhotoViewerScreenProps) {
       if (savedScale.get() > 1) {
         offsetX.set(clampOffset(savedOffsetX.get() + event.translationX, scale.get(), width));
         offsetY.set(clampOffset(savedOffsetY.get() + event.translationY, scale.get(), height));
+      } else if (hasMany && Math.abs(event.translationX) > Math.abs(event.translationY)) {
+        offsetY.set(0);
+        offsetX.set(event.translationX);
       } else {
+        offsetX.set(0);
         offsetY.set(event.translationY);
       }
     })
@@ -96,6 +112,23 @@ export function PhotoViewerScreen({ uri }: PhotoViewerScreenProps) {
       if (savedScale.get() > 1) {
         savedOffsetX.set(offsetX.get());
         savedOffsetY.set(offsetY.get());
+      } else if (hasMany && Math.abs(event.translationX) > Math.abs(event.translationY)) {
+        // Hacia la izquierda (translationX < 0) se ve la siguiente foto.
+        const step = event.translationX < 0 ? 1 : -1;
+        const target = index + step;
+        if (Math.abs(event.translationX) > SWIPE_DISTANCE && target >= 0 && target <= lastIndex) {
+          offsetX.set(
+            withTiming(-step * width, { duration: 140 }, (finished) => {
+              if (!finished) return;
+              scheduleOnRN(changePhoto, step);
+              // La nueva foto entra desde el lado contrario.
+              offsetX.set(step * width);
+              offsetX.set(withTiming(0, { duration: 160 }));
+            }),
+          );
+        } else {
+          offsetX.set(withSpring(0));
+        }
       } else if (Math.abs(event.translationY) > DISMISS_DISTANCE) {
         scheduleOnRN(close);
       } else {
@@ -137,7 +170,7 @@ export function PhotoViewerScreen({ uri }: PhotoViewerScreenProps) {
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.flex, photoStyle]}>
           <Image
-            source={{ uri }}
+            source={{ uri: gallery[index] }}
             style={styles.flex}
             contentFit="contain"
             accessibilityIgnoresInvertColors
@@ -157,6 +190,7 @@ export function PhotoViewerScreen({ uri }: PhotoViewerScreenProps) {
 
       <View style={[styles.hint, { bottom: insets.bottom + Spacing.three }]} pointerEvents="none">
         <ThemedText type="caption" style={styles.hintText}>
+          {hasMany ? `${index + 1}/${gallery.length} · ` : ''}
           {SIGHTINGS_LABELS.photoHint}
         </ThemedText>
       </View>
