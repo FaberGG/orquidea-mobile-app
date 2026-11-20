@@ -7,6 +7,7 @@ gestión de esas estaciones.
 |---|---|---|---|
 | HU-12 | Ver el mapa con las estaciones (y la más cercana con geolocalización) | Todos | ✅ Consumo público de `GET /api/mapa` |
 | HU-13 | Crear, editar y eliminar estaciones; "Ver estación" con sus fichas | Admin+ (gestión) · Todos (consulta) | ✅ Integrado con el contrato de `dev` |
+| Trazado GPX local | Dibujar un recorrido tocando mapa/estaciones y compartirlo como GPX | Admin+ | ✅ Exportación local; publicación desde la app requiere endpoint de Back |
 
 ## Flujo de estaciones de HU-13
 
@@ -33,13 +34,15 @@ la consulta directa y la gestión de estaciones.
 | `components/trail-map-view.tsx` | Dibuja la geometría y las estaciones en el mapa nativo |
 | `components/map-location-picker.tsx` | SCRUM-72: `MapLocationPicker`, selector de un punto en pantalla completa (tocar el mapa o arrastrar el marcador, CONFIRMAR). Muestra el sendero como referencia. Lo usan estaciones (HU-13) y avistamientos (HU-18, vía `@/features/map`); solo se ofrece con conexión |
 | `components/map-controls.tsx` | Cambia la capa del mapa y permite centrar en la ubicación |
+| `components/trail-drawing-panel.tsx` | Captura el nombre, los puntos y las acciones para exportar un GPX |
+| `utils/trail-gpx.ts` | Convierte puntos del mapa en un archivo GPX 1.1 |
 | `components/station-details-card.tsx` | Muestra detalles y abre fichas asociadas |
 | `api/`, `hooks/`, `schemas/`, `components/` de estaciones | CRUD de estaciones para HU-13, formularios, validación y pantallas administrativas |
 | `constants.ts` | Textos, claves de caché y mensajes de HU-12 |
 | `utils/map-region.ts` | Calcula la vista inicial del recorrido y el encuadre de ubicación |
 | `index.ts` | Exporta la API pública de la feature |
 
-La vista nativa usa `react-native-maps` 1.27.2, instalado con `npx expo install` para respetar Expo SDK 57.
+La vista nativa usa `react-native-maps` 1.29.11, instalado con `npx expo install` para respetar Expo SDK 58.
 El mapa estándar y satelital se apoyan en Apple Maps en iOS y Google Maps en Android; ambos se pueden
 abrir en Expo Go para pruebas.
 
@@ -49,9 +52,59 @@ recorrido GPX, `tramos` puede venir vacío y el mapa sigue mostrando las estacio
 **Permiso:** `stations:manage` (admin y superadmin) para **+**, **Editar estación** y **ELIMINAR**. Las rutas de
 crear y editar viven en `src/app/(admin)/stations/`.
 
+## Trazado de un recorrido
+
+Con `stations:manage`, el mapa muestra **Gestionar mapa** con dos acciones: **Crear estación**, que abre el
+formulario de HU-13, y **Trazar sendero**. Toca las estaciones en orden para añadir paradas conectadas; los
+marcadores muestran su número y no se puede añadir la misma estación dos veces. Toca el mapa para agregar
+puntos intermedios y arrástralos para ajustar el camino. El panel permite deshacer el último punto, limpiar el
+trazado, cancelar o exportar un GPX cuando hay al menos dos puntos. **Guardar en mapa** conserva el trazado en
+el almacenamiento privado del dispositivo y lo restaura al volver a abrir la app; **Exportar GPX** genera un
+archivo separado y abre la hoja de compartir. El backend actual solo ofrece `GET /api/mapa`, por lo que la app
+no puede publicar la ruta para los demás visitantes; para eso se necesita un endpoint protegido de escritura en
+Back.
+
+## Descargas sin conexión
+
+Desde el menú, **Descargas sin conexión** consulta los tramos publicados en `GET /api/mapa`. Cada tramo se
+guarda por separado con sus puntos, las estaciones a 250 metros o menos y copias compactas de las fotos de
+estación disponibles en el servidor del proyecto. El visor dibuja el esquema con SVG, muestra las fotos locales
+e informa cuántas se descargaron; las estaciones sin foto local quedan identificadas. Permite abrir las
+descargas aunque el servidor no responda. Funciona con el mismo código en Android e iOS, incluido Expo Go.
+El GPS consulta manualmente la ubicación; no hace seguimiento continuo y puede no obtener una posición si no hay
+señal suficiente. El trazado privado guardado desde el editor también aparece entre los recorridos disponibles
+para copiar al paquete sin conexión. No incluye un fondo satelital.
+
+Se retiró la integración de Mapbox, su dependencia nativa y su variable de entorno. Las descargas anteriores
+siguen recuperando el recorrido y las estaciones; se ignora su antigua referencia a imágenes del proveedor.
+La eliminación de una descarga borra su JSON local. Las aplicaciones ya compiladas necesitan una nueva
+compilación para dejar de incluir el SDK retirado.
+
+## Mejoras del trazado y descargas
+
+El requisito acordado es evitar suscripciones obligatorias o cobros por uso para las funciones de senderos.
+Esto permite bibliotecas de código abierto y datos propios; no exige eliminar toda herramienta externa.
+No debe dependerse de que el nivel gratuito de un proveedor comercial permanezca disponible.
+
+- El trazado ya conecta estaciones según el orden elegido, admite puntos intermedios movibles y se puede copiar
+  a una descarga local. Los borradores continúan siendo privados del dispositivo; el servidor no ofrece escritura.
+- Los paquetes ya incluyen geometría, estaciones y fotos reducidas de estaciones. Falta añadir una imagen
+  georreferenciada del sector con permiso de almacenamiento y redistribución. El visor no debe pedir mosaicos a
+  un proveedor comercial.
+- Para mostrar ruta y GPS sobre esa imagen se deben verificar sus coordenadas y proyección. Una fotografía o
+  captura sin referencia geográfica no permite situar correctamente al visitante.
+- Permitir reconocer las estaciones por sus fotos cuando no se obtenga la ubicación, y abrir el paquete aunque
+  fallen los mapas en línea. No se debe anunciar una descarga con imágenes si falta algún archivo requerido.
+
+Falta obtener la imagen del sector y sus derechos de reutilización. El editor aún no publica recorridos para los
+demás usuarios; el backend necesita un contrato de escritura para eso. Los mapas en línea actuales siguen usando
+Apple/Google; pueden conservarse como una capa opcional, mientras que la descarga propia funciona sin esa capa.
+El alojamiento de la API y la distribución de la app siguen siendo servicios distintos que pueden tener costes.
+
 **Modo sin conexión (HU-21):** `stationsOfflineSource` (en `index.ts`) guarda las estaciones y las fotos de
 las estaciones y de sus fichas; las pantallas de estaciones muestran la copia guardada o el mensaje del CA2.
-El recorrido (`/api/mapa`) se agregará como otra fuente en SCRUM-68 siguiendo
+Los paquetes de recorrido de esta entrega se guardan desde `/offline-downloads` de forma independiente;
+integrarlos como otra fuente del gestor general de HU-21 sigue pendiente según
 [docs/architecture/OFFLINE.md](../../../docs/architecture/OFFLINE.md).
 
 **Dependencias:** usa `useSpeciesList` del barrel de `@/features/species` para el selector de fichas, y

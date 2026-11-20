@@ -1,3 +1,5 @@
+import { resolveMediaUrl } from '@/lib/resolve-media-url';
+
 import { stationDtoSchema, stationListDtoSchema } from '../schemas/station-dto.schema';
 import { type Station, type StationInput } from '../types';
 
@@ -8,12 +10,12 @@ export function toStation(dto: unknown): Station {
     id: parsed.id,
     name: parsed.nombre,
     description: parsed.descripcion ?? '',
-    photoUrl: parsed.urlFoto || null,
+    photoUrl: resolveMediaUrl(parsed.urlFoto),
     location: { latitude: parsed.decimalLatitude, longitude: parsed.decimalLongitude },
     species: (parsed.fichas ?? []).map((species) => ({
       id: species.id,
       vernacularName: species.vernacularName,
-      photoUrl: species.urlFoto || null,
+      photoUrl: resolveMediaUrl(species.urlFoto),
     })),
   };
 }
