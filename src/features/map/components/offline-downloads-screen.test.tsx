@@ -54,10 +54,10 @@ it('guarda el recorrido y permite abrirlo desde las descargas', async () => {
       <OfflineDownloadsScreen />
     </SafeAreaProvider>,
   );
-  await fireEvent.press(await screen.findByText('DESCARGAR RECORRIDO'));
+  await fireEvent.press(await screen.findByText('DESCARGAR RUTA Y FOTOS'));
   await waitFor(() => expect(downloadTrail).toHaveBeenCalledWith(map, id));
   expect(
-    await screen.findByText(/Recorrido y estaciones guardados en este dispositivo/),
+    await screen.findByText(/Recorrido y estaciones guardados/),
   ).toBeTruthy();
   expect(await screen.findByText('VER SIN CONEXIÓN')).toBeTruthy();
 });
@@ -69,7 +69,7 @@ it('informa un error de almacenamiento sin anunciar una descarga completada', as
       <OfflineDownloadsScreen />
     </SafeAreaProvider>,
   );
-  await fireEvent.press(await screen.findByText('DESCARGAR RECORRIDO'));
+  await fireEvent.press(await screen.findByText('DESCARGAR RUTA Y FOTOS'));
   expect(await screen.findByText(/No pudimos guardar el recorrido/)).toBeTruthy();
   expect(screen.queryByText(/Recorrido y estaciones guardados/)).toBeNull();
   expect(screen.queryByText('VER SIN CONEXIÓN')).toBeNull();
