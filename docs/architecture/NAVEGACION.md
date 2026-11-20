@@ -18,8 +18,6 @@ src/app/
 │       ├── community.tsx           /community   Comunidad: avistamientos (HU-18, HU-19, HU-20)
 │       ├── map.tsx                 /map         Mapas: mapa del sendero (HU-12, HU-13)
 │       ├── account.tsx             /account     Usuario: visitante → iniciar sesión · con sesión → datos, rol y cerrar sesión (HU-3)
-│       ├── announcements.tsx        /announcements Anuncios (HU-17) + gestión vía <Can> (SCRUM-71: estado, EDITAR, OCULTAR/MOSTRAR)
-│       └── admins/                /admins      Ruta oculta de la barra inferior; gestión HE-2 (solo superadmin)
 │
 ├── species/
 │   └── [id].tsx                    /species/:id Detalle de ficha (todos) + acciones admin vía <Can> (HU-8, HU-9)
@@ -50,7 +48,7 @@ src/app/
     ├── stations/
     │   ├── new.tsx                 /stations/new        HU-13 (stations:manage)
     │   └── [id]/edit.tsx           /stations/:id/edit   HU-13 (stations:manage)
-    └── admins/                     reservado en la arquitectura; HE-2 vive actualmente bajo (drawer)/(tabs)
+    └── admins/                     /admins, gestión HE-2 (solo superadmin, Stack.Protected en el layout raíz)
 ```
 
 > Los grupos `( )` no agregan segmentos a la URL. Expo Router prioriza rutas estáticas

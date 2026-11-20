@@ -1,12 +1,20 @@
 import { router } from 'expo-router';
 import { type ReactNode } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/components/ui/button';
+import { EdgeGradient } from '@/components/ui/edge-gradient';
 import { Icon } from '@/components/ui/icon';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -20,7 +28,11 @@ import { ConservationBadge } from './conservation';
 import { SpeciesPhotoCarousel } from './species-photo-carousel';
 import { SpeciesQrExport } from './species-qr-export';
 
-const HERO_HEIGHT = 376;
+/** El encabezado con la foto ocupa la mitad de la pantalla, con un mínimo para pantallas bajas. */
+const HERO_MIN_HEIGHT = 376;
+const HERO_HEIGHT_RATIO = 0.5;
+/** Texto e íconos sobre la foto: siempre claros, también en modo oscuro (donde `onPrimary` es oscuro). */
+const ON_PHOTO = '#F7F8F8';
 
 export type SpeciesDetailScreenProps = {
   id: string;
@@ -28,13 +40,33 @@ export type SpeciesDetailScreenProps = {
 };
 
 /**
- * Detalle de una ficha (Figma: "Detalle ficha"). Es la misma pantalla para todos los roles: las
- * acciones de edición y eliminación aparecen solo con su permiso (`<Can>`, ROLES-Y-PERMISOS §3).
+ * Detalle de una ficha (Figma: "Detalle ficha"). Es la misma pantalla para todos los roles: la
+ * acción de edición aparece solo con su permiso (`<Can>`, ROLES-Y-PERMISOS §3).
  */
 export function SpeciesDetailScreen({ id, source }: SpeciesDetailScreenProps) {
-  const { data, isPending, isError, error, refetch } = useSpecies(id);
+  const { data, isPending, isError, error, fetchStatus, refetch } = useSpecies(id);
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+
+  const removed = isError && isApiError(error) && error.status === 404;
+  // HU-21: con la ficha guardada se muestra aunque falle el refresco (p. ej. sin conexión), salvo que la API
+  // confirme que ya no existe.
+  if (data !== undefined && !removed)
+    return <SpeciesDetailContent species={data} insetTop={insets.top} />;
+
+  // HU-21 CA2 (y HU-11 CA3 desde el QR): sin conexión y sin copia guardada de esta ficha.
+  if (isPending && fetchStatus === 'paused') {
+    return (
+      <ThemedView style={[styles.flex, { paddingTop: insets.top }]}>
+        <EmptyState
+          icon="wetland"
+          title={source === 'qr' ? SPECIES_QR_LABELS.offline : SPECIES_LABELS.offlineUnavailable}>
+          <Button label={SPECIES_LABELS.back} onPress={() => router.back()} variant="link" />
+          <Button label={SPECIES_LABELS.retry} onPress={() => void refetch()} />
+        </EmptyState>
+      </ThemedView>
+    );
+  }
 
   if (isPending) {
     return (
@@ -71,26 +103,38 @@ export function SpeciesDetailScreen({ id, source }: SpeciesDetailScreenProps) {
     );
   }
 
-  return <SpeciesDetailContent species={data} insetTop={insets.top} />;
+  return null;
 }
 
 function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTop: number }) {
   const theme = useTheme();
   const { label } = CONSERVATION_STATUSES[species.conservationStatus];
+  const { height: windowHeight } = useWindowDimensions();
+  const heroHeight = Math.max(HERO_MIN_HEIGHT, Math.round(windowHeight * HERO_HEIGHT_RATIO));
 
   return (
     <ThemedView style={styles.flex}>
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.hero}>
-          <SpeciesPhotoCarousel photos={species.photos} name={species.vernacularName} />
-          <View style={styles.scrim} pointerEvents="none" />
+        <View style={[styles.hero, { height: heroHeight }]}>
+          <SpeciesPhotoCarousel
+            photos={species.photos}
+            name={species.vernacularName}
+            height={heroHeight}
+          />
+          {/* Degradados sutiles solo donde hay controles (arriba) y texto (abajo). */}
+          <EdgeGradient
+            edge="top"
+            intensity={0.4}
+            style={[styles.gradientTop, { height: insetTop + 96 }]}
+          />
+          <EdgeGradient edge="bottom" intensity={0.5} style={styles.gradientBottom} />
 
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={SPECIES_LABELS.back}
             onPress={() => router.back()}
             style={[styles.backButton, { top: insetTop + Spacing.two }]}>
-            <Icon name="chevronLeft" size={20} color="onPrimary" />
+            <Icon name="chevronLeft" size={20} fixedColor={ON_PHOTO} />
           </Pressable>
 
           <View style={styles.heroLabel} pointerEvents="none">
@@ -153,20 +197,6 @@ function SpeciesDetailContent({ species, insetTop }: { species: Species; insetTo
                 router.push({ pathname: '/species/[id]/edit', params: { id: species.id } })
               }
             />
-          </Can>
-
-          <Can permission="species:delete">
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={SPECIES_LABELS.deleteButton}
-              // HU-9: la API aún no tiene DELETE /api/fichas-taxonomicas/{id} (docs/api B1).
-              disabled
-              style={[styles.deleteButton, { borderColor: theme.danger }]}>
-              <Icon name="delete" size={18} color="danger" />
-              <ThemedText type="smallBold" themeColor="danger">
-                {SPECIES_LABELS.deleteButton}
-              </ThemedText>
-            </Pressable>
           </Can>
         </View>
       </ScrollView>
@@ -235,17 +265,21 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.six,
   },
   hero: {
-    height: HERO_HEIGHT,
     justifyContent: 'flex-end',
     overflow: 'hidden',
   },
-  scrim: {
+  gradientTop: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
+  },
+  gradientBottom: {
+    position: 'absolute',
     bottom: 0,
-    backgroundColor: 'rgba(0, 15, 10, 0.4)',
+    left: 0,
+    right: 0,
+    height: 160,
   },
   backButton: {
     position: 'absolute',
@@ -263,13 +297,13 @@ const styles = StyleSheet.create({
     gap: Spacing.one,
   },
   heroName: {
-    color: '#F7F8F8',
+    color: ON_PHOTO,
     fontFamily: FontFamily.bold,
     fontSize: 26,
     lineHeight: 30,
   },
   heroScientific: {
-    color: '#F7F8F8',
+    color: ON_PHOTO,
     fontFamily: FontFamily.regular,
     fontStyle: 'italic',
     fontSize: 14,
@@ -330,15 +364,5 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     lineHeight: 22,
-  },
-  deleteButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.two,
-    minHeight: 52,
-    borderWidth: 1,
-    borderRadius: Radius.pill,
-    backgroundColor: 'transparent',
   },
 });

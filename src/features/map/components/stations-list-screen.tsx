@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { router, type Href } from 'expo-router';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
@@ -7,6 +6,7 @@ import { FormScreen } from '@/components/layout/form-screen';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
+import { OfflineImage } from '@/components/ui/offline-image';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { Can } from '@/permissions';
@@ -24,7 +24,7 @@ const THUMB_SIZE = 72;
  * ven el botón **+** para crear (`stations:manage`).
  */
 export function StationsListScreen() {
-  const { data, isPending, isError, refetch } = useStations();
+  const { data, isPending, isError, fetchStatus, refetch } = useStations();
   const theme = useTheme();
 
   return (
@@ -47,15 +47,20 @@ export function StationsListScreen() {
         {STATION_LABELS.listSubtitle}
       </ThemedText>
 
-      {isPending ? (
+      {data === undefined && fetchStatus === 'paused' ? (
+        // HU-21 CA2: sin conexión y sin copia guardada.
+        <EmptyState icon="location" title={STATION_MESSAGES.offlineUnavailable}>
+          <Button label={STATION_LABELS.retry} onPress={() => void refetch()} />
+        </EmptyState>
+      ) : isPending ? (
         <View style={styles.center}>
           <ActivityIndicator color={theme.primary} />
         </View>
-      ) : isError ? (
+      ) : isError && data === undefined ? (
         <EmptyState icon="location" title={STATION_MESSAGES.loadError}>
           <Button label={STATION_LABELS.retry} onPress={() => void refetch()} />
         </EmptyState>
-      ) : data.length === 0 ? (
+      ) : data === undefined || data.length === 0 ? (
         <EmptyState icon="location" title={STATION_MESSAGES.empty} />
       ) : (
         <View style={styles.list}>
@@ -90,7 +95,7 @@ function StationCard({ station, onPress }: { station: Station; onPress: () => vo
         pressed && styles.pressed,
       ]}>
       {station.photoUrl ? (
-        <Image source={{ uri: station.photoUrl }} style={styles.thumb} contentFit="cover" />
+        <OfflineImage uri={station.photoUrl} style={styles.thumb} contentFit="cover" />
       ) : (
         <View style={[styles.thumb, styles.placeholder, { backgroundColor: theme.primarySoft }]}>
           <Icon name="location" size={28} color="primary" />

@@ -9,6 +9,9 @@ export const SPECIES_LABELS = {
   noSpeciesAtAll: 'Aún no hay especies registradas.',
   notFound: 'Esta ficha no existe o ya no está disponible.',
   loadError: 'No pudimos cargar las fichas. Revisa tu conexión e inténtalo de nuevo.',
+  /** HU-21 CA2: la ficha o sección no se descargó antes de quedarse sin conexión. */
+  offlineUnavailable:
+    'Esta información no está disponible sin conexión. Conéctate a internet para descargarla.',
   retry: 'REINTENTAR',
   sectionTaxonomy: 'Taxonomía',
   sectionDiet: 'Alimentación',
@@ -19,9 +22,9 @@ export const SPECIES_LABELS = {
   rowSpecies: 'Especie',
   conservationLabel: 'Estado de conservación',
   editButton: 'Editar ficha',
-  deleteButton: 'Eliminar ficha',
   back: 'Volver',
   noData: 'Sin información',
+  photoZoomHint: 'Toca para ver la foto a pantalla completa y ampliarla',
   backToList: 'Volver al listado',
   photoOf: (name: string, position: number, total: number) =>
     `Foto ${position} de ${total} de ${name}`,
@@ -216,6 +219,7 @@ export const SPECIES_FORM_LABELS = {
   createSubmit: 'Crear ficha',
   editSubmit: 'Guardar cambios',
   cancel: 'Cancelar',
+  requiredHint: 'Los campos con * son obligatorios.',
   photoSection: 'Fotografías',
   photoUpload: 'Subir fotografías',
   photoAdd: 'Agregar',

@@ -37,6 +37,17 @@ export const SIGHTINGS_LABELS = {
   notNow: 'Ahora no',
   // Confirmación de HU-18
   backToCommunity: 'Volver a la comunidad',
+  // HU-22: reportes guardados sin conexión (la HU no define estos textos)
+  queueTitle: 'Tus reportes sin enviar',
+  queueStatusPending: 'Pendiente de sincronización',
+  queueStatusFailed: 'No se pudo enviar',
+  queueStatusNeedsLogin: 'Inicia sesión de nuevo para enviarlo',
+  queueRetry: 'REINTENTAR',
+  queueDiscard: 'DESCARTAR',
+  queueDiscardQuestion: '¿Descartar este reporte? Se borrará del teléfono y no se enviará.',
+  queueDiscardConfirm: 'Sí, descartar',
+  queueSavedAt: (date: string) => `Guardado el ${date}`,
+  queueWithPhoto: 'Con foto',
 } as const;
 
 /** Textos del formulario de HU-18 (Figma: "Publicar reporte ciudadano"). */
@@ -91,6 +102,14 @@ export const SIGHTINGS_MESSAGES = {
   locationError: 'No pudimos obtener tu ubicación. Inténtalo de nuevo.',
   approved: 'El reporte fue aprobado y ya aparece en el foro.',
   rejected: 'El reporte fue rechazado y no se publicará.',
+  // HU-22 CA2
+  synced: 'Datos sincronizados correctamente.',
+  // HU-22 CA1 (la HU no define el texto de la confirmación local)
+  savedOffline: 'Tu reporte quedó guardado en el teléfono, pendiente de sincronización.',
+  savedOfflineDescription:
+    'Se enviará automáticamente cuando recuperes la señal. Puedes verlo en Comunidad, en "Tus reportes sin enviar".',
+  syncedWithFailures:
+    'Algunos reportes no se pudieron enviar. Revísalos en Comunidad, en "Tus reportes sin enviar".',
 } as const;
 
 /** Límites de `OccurrenceRequest`. */

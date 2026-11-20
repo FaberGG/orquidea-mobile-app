@@ -140,7 +140,7 @@ describe('StationDetailScreen ("Ver estación")', () => {
     await fireEvent.press(screen.getByRole('link', { name: 'Garza real' }));
     expect(router.push).toHaveBeenCalledWith({
       pathname: '/species/[id]',
-      params: { id: 'ave-1' },
+      params: { id: 'ave-1', ids: 'ave-1' },
     });
   });
 

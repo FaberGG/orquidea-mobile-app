@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
+import { TAB_BAR_OVERLAP } from '@/components/layout/tab-bar';
 import { Icon } from '@/components/ui/icon';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: Spacing.three,
-    bottom: Spacing.three,
+    bottom: Spacing.three + TAB_BAR_OVERLAP,
     width: FAB_SIZE,
     height: FAB_SIZE,
     borderRadius: Radius.full,

@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { ChipButton } from '@/components/ui/chip-button';
 import { Icon } from '@/components/ui/icon';
+import { RequiredMark } from '@/components/ui/required-mark';
 import { TextField } from '@/components/ui/text-field';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -153,8 +154,11 @@ export function SpeciesForm({
   return (
     <FormScreen>
       <SpeciesFormHeader title={title} />
+      <ThemedText type="caption" themeColor="textMuted">
+        {SPECIES_FORM_LABELS.requiredHint}
+      </ThemedText>
 
-      <FormSection title={SPECIES_FORM_LABELS.photoSection}>
+      <FormSection title={SPECIES_FORM_LABELS.photoSection} required>
         <SpeciesPhotosField
           savedPhotos={keptPhotos}
           newPhotos={newPhotos}
@@ -182,6 +186,7 @@ export function SpeciesForm({
             <View style={styles.group}>
               <ThemedText type="label" themeColor="textLabel">
                 {SPECIES_FORM_LABELS.categoryLabel}
+                <RequiredMark />
               </ThemedText>
               <View style={styles.chipRow}>
                 {SPECIES_FORM_CATEGORY_OPTIONS.map((option) => (
@@ -249,7 +254,7 @@ export function SpeciesForm({
         />
       </FormSection>
 
-      <FormSection title={SPECIES_FORM_LABELS.conservationSection}>
+      <FormSection title={SPECIES_FORM_LABELS.conservationSection} required>
         <ThemedText type="captionBold" themeColor="textMuted">
           {SPECIES_FORM_LABELS.conservationHint}
         </ThemedText>
@@ -319,11 +324,20 @@ function SpeciesFormHeader({ title }: { title: string }) {
   );
 }
 
-function FormSection({ title, children }: { title: string; children: ReactNode }) {
+function FormSection({
+  title,
+  required = false,
+  children,
+}: {
+  title: string;
+  required?: boolean;
+  children: ReactNode;
+}) {
   return (
     <View style={styles.section}>
       <ThemedText style={styles.sectionTitle} themeColor="textLabel" accessibilityRole="header">
         {title}
+        {required && <RequiredMark />}
       </ThemedText>
       {children}
     </View>
@@ -392,6 +406,7 @@ function TextFieldController({
           onChangeText={onChange}
           onBlur={onBlur}
           hasError={invalid}
+          required
           multiline={multiline}
           autoCapitalize="sentences"
         />

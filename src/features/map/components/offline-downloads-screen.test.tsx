@@ -56,9 +56,7 @@ it('guarda el recorrido y permite abrirlo desde las descargas', async () => {
   );
   await fireEvent.press(await screen.findByText('DESCARGAR RUTA Y FOTOS'));
   await waitFor(() => expect(downloadTrail).toHaveBeenCalledWith(map, id));
-  expect(
-    await screen.findByText(/Recorrido y estaciones guardados/),
-  ).toBeTruthy();
+  expect(await screen.findByText(/Recorrido y estaciones guardados/)).toBeTruthy();
   expect(await screen.findByText('VER SIN CONEXIÓN')).toBeTruthy();
 });
 

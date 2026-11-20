@@ -30,12 +30,10 @@ Cada anuncio responde además `estado` (`ACTIVO` / `INACTIVO`), `expirado` (lo c
 `fechaCreacion` (inicio de la vigencia). En la vista del administrador se muestra **Expirado** si
 `expirado` es `true`, **Oculto** si está `INACTIVO` y **Visible** en otro caso. La app no usa la respuesta del
 `POST` ni de los `PATCH`: refresca las listas.
-En el listado público se indica la fecha y hora de finalización cuando `fechaExpiracion` está presente;
-los anuncios sin fecha solo muestran la fecha de publicación.
-La tarjeta pública deja título y descripción arriba y las fechas al pie. Está preparada para añadir
-`por [nombre]` junto a la fecha cuando la API incluya `nombrePublicador`. El backend actual no guarda
-ni devuelve al publicador: debe registrar al usuario autenticado al crear el anuncio y exponer su
-nombre público en `GET /api/anuncios`. Para anuncios anteriores sin autor registrado, omitir el nombre.
+La tarjeta tiene tres franjas: cabecera de prioridad con la fecha relativa de creación (`fechaCreacion`), cuerpo con
+título, descripción y vigencia (`fechaExpiracion`: "Vence el…", "Vence en N días" o "Expirado el…") y, para quien
+gestiona anuncios, la fila EDITAR / OCULTAR o MOSTRAR. La API no expone quién publicó el anuncio, así que la tarjeta no
+muestra autor.
 
 ## Contrato (HU-14 y HU-15)
 

@@ -78,7 +78,7 @@ describe('SpeciesListScreen (HU-10)', () => {
     fireEvent.press(screen.getByRole('button', { name: 'Azulejo' }));
     expect(router.push).toHaveBeenCalledWith({
       pathname: '/species/[id]',
-      params: { id: 'ave-1' },
+      params: { id: 'ave-1', ids: 'ave-1,planta-1' },
     });
   });
 
@@ -178,7 +178,8 @@ describe('SpeciesDetailScreen (HU-10 detalle, HU-8 y HU-9 por rol)', () => {
   it('el administrador ve editar y eliminar', async () => {
     await renderDetail('admin');
     expect(screen.getByText('Editar ficha')).toBeTruthy();
-    expect(screen.getByText('Eliminar ficha')).toBeTruthy();
+    // HU-9 bloqueada: sin DELETE en la API, el botón no se muestra.
+    expect(screen.queryByText('Eliminar ficha')).toBeNull();
   });
 
   it('muestra el mensaje de no encontrada cuando la ficha no existe', async () => {

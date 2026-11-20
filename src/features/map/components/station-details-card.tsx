@@ -1,8 +1,8 @@
-import { Image } from 'expo-image';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
+import { OfflineImage } from '@/components/ui/offline-image';
 import { MinTouchSize, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -34,7 +34,7 @@ export function StationDetailsCard({ station, onClose, onSpeciesPress }: Station
         </Pressable>
       </View>
       {station.photoUrl ? (
-        <Image source={{ uri: station.photoUrl }} contentFit="cover" style={styles.photo} />
+        <OfflineImage uri={station.photoUrl} contentFit="cover" style={styles.photo} />
       ) : (
         <View style={[styles.photoPlaceholder, { backgroundColor: theme.backgroundElement }]}>
           <ThemedText type="caption" themeColor="textSecondary">

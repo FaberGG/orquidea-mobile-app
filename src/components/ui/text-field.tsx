@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, TextInput, View, type TextInputProps } from 'rea
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon, type IconName } from '@/components/ui/icon';
+import { RequiredMark } from '@/components/ui/required-mark';
 import { FontFamily, MinTouchSize, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -13,6 +14,8 @@ export type TextFieldProps = Omit<TextInputProps, 'style' | 'secureTextEntry'> &
   /** Muestra el campo como contraseña, con botón para mostrar u ocultar el texto. */
   isPassword?: boolean;
   hasError?: boolean;
+  /** Campo obligatorio: agrega un asterisco al final de la etiqueta. */
+  required?: boolean;
 };
 
 /** Campo de texto con etiqueta. El mensaje de error lo muestra quien lo usa (p. ej. `FormMessage`). */
@@ -21,6 +24,7 @@ export function TextField({
   icon,
   isPassword = false,
   hasError = false,
+  required = false,
   ...inputProps
 }: TextFieldProps) {
   const theme = useTheme();
@@ -31,6 +35,7 @@ export function TextField({
     <View style={styles.container}>
       <ThemedText type="label" themeColor="textLabel">
         {label}
+        {required && <RequiredMark />}
       </ThemedText>
       <View
         style={[

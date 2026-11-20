@@ -1,11 +1,21 @@
-import { QueryClientProvider } from '@tanstack/react-query';
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { ThemeProvider } from 'expo-router';
 import { type ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
+import { ToastProvider } from '@/components/feedback/toast';
 import { SessionProvider, useSession } from '@/features/auth';
+import { configureOfflineQueries, OfflineSync } from '@/features/offline';
+import { SightingQueueSync } from '@/features/sightings';
+import { connectOnlineManager, queryPersistOptions } from '@/lib/offline';
 import { queryClient } from '@/lib/query';
 import { RoleProvider } from '@/permissions';
+
+import { darkNavigationTheme, lightNavigationTheme } from './navigation-theme';
+
+// HU-21 (ADR-0017): las queries sin red quedan en pausa y las fuentes offline se guardan en el dispositivo.
+connectOnlineManager();
+configureOfflineQueries(queryClient);
 
 type AppProvidersProps = {
   children: ReactNode;
@@ -22,14 +32,20 @@ export function AppProviders({ children }: AppProvidersProps) {
   const colorScheme = useColorScheme();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider>
-        <SessionRoleProvider>
-          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            {children}
-          </ThemeProvider>
-        </SessionRoleProvider>
-      </SessionProvider>
-    </QueryClientProvider>
+    <PersistQueryClientProvider client={queryClient} persistOptions={queryPersistOptions}>
+      <ToastProvider>
+        <OfflineSync />
+        <SessionProvider>
+          {/* HU-22: envía los reportes guardados sin conexión al volver la señal (necesita la sesión). */}
+          <SightingQueueSync />
+          <SessionRoleProvider>
+            <ThemeProvider
+              value={colorScheme === 'dark' ? darkNavigationTheme : lightNavigationTheme}>
+              {children}
+            </ThemeProvider>
+          </SessionRoleProvider>
+        </SessionProvider>
+      </ToastProvider>
+    </PersistQueryClientProvider>
   );
 }

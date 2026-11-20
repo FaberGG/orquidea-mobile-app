@@ -1,8 +1,8 @@
-import { Image } from 'expo-image';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
+import { OfflineImage } from '@/components/ui/offline-image';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -10,7 +10,8 @@ import { SPECIES_CATEGORY_LABELS } from '../constants';
 import { type Species } from '../types';
 import { ConservationBadge, ConservationChip } from './conservation';
 
-const PHOTO_HEIGHT = 320;
+/** Foto cuadrada (1:1); la imagen se recorta para llenarla, sin estirarse. */
+const PHOTO_ASPECT_RATIO = 1;
 
 export type SpeciesCardProps = {
   species: Species;
@@ -31,7 +32,7 @@ export function SpeciesCard({ species, onPress }: SpeciesCardProps) {
         pressed && styles.pressed,
       ]}>
       {species.photoUrl ? (
-        <Image source={{ uri: species.photoUrl }} style={styles.photo} contentFit="cover" />
+        <OfflineImage uri={species.photoUrl} style={styles.photo} contentFit="cover" />
       ) : (
         <View
           style={[styles.photo, styles.placeholder, { backgroundColor: theme.backgroundSelected }]}>
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
   },
   photo: {
     width: '100%',
-    height: PHOTO_HEIGHT,
+    aspectRatio: PHOTO_ASPECT_RATIO,
   },
   placeholder: {
     alignItems: 'center',

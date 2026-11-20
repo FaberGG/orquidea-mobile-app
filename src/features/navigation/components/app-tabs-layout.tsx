@@ -1,3 +1,4 @@
+import { router, type Href } from 'expo-router';
 import { DrawerActions } from 'expo-router/react-navigation';
 import { Tabs } from 'expo-router/tabs';
 import { View } from 'react-native';
@@ -5,15 +6,22 @@ import { View } from 'react-native';
 import { AppHeader } from '@/components/layout/app-header';
 import { TAB_ICON_SIZE, TabBar } from '@/components/layout/tab-bar';
 import { Icon, type IconName } from '@/components/ui/icon';
-import { CreateAnnouncementButton } from '@/features/content';
 import { AnnouncementsButton } from '@/features/sightings';
 import { CreateSpeciesButton, ScanSpeciesQrButton } from '@/features/species';
+import { useTheme } from '@/hooks/use-theme';
 
 import { NAVIGATION_LABELS } from '../constants';
 
-function tabIcon(name: IconName) {
+/** Ícono de pestaña: contorno en reposo y sólido cuando la pestaña está activa. */
+function tabIcon(outline: IconName, filled: IconName) {
   function TabIcon({ focused }: { focused: boolean }) {
-    return <Icon name={name} size={TAB_ICON_SIZE} color={focused ? 'navActive' : 'navInactive'} />;
+    return (
+      <Icon
+        name={focused ? filled : outline}
+        size={TAB_ICON_SIZE}
+        color={focused ? 'navActive' : 'navInactive'}
+      />
+    );
   }
   return TabIcon;
 }
@@ -23,10 +31,12 @@ function tabIcon(name: IconName) {
  * se resuelve dentro de cada pantalla con permisos. Orden y estilo del Figma ("Listar fichas").
  */
 export function AppTabsLayout() {
+  const theme = useTheme();
   return (
     <Tabs
       tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
+        sceneStyle: { backgroundColor: theme.background },
         header: ({ navigation }) => (
           <AppHeader
             menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
@@ -38,7 +48,7 @@ export function AppTabsLayout() {
         name="index"
         options={{
           title: NAVIGATION_LABELS.tabHome,
-          tabBarIcon: tabIcon('home'),
+          tabBarIcon: tabIcon('home', 'homeFilled'),
           // Inicio lleva el botón "+" a la derecha (HU-7), en el lugar del buscador descartado.
           header: ({ navigation }) => (
             <AppHeader
@@ -58,42 +68,26 @@ export function AppTabsLayout() {
         name="community"
         options={{
           title: NAVIGATION_LABELS.tabCommunity,
-          tabBarIcon: tabIcon('community'),
+          tabBarIcon: tabIcon('community', 'communityFilled'),
           // Comunidad lleva título y la campana de anuncios a la derecha (Figma: HE-07).
           header: ({ navigation }) => (
             <AppHeader
               title={NAVIGATION_LABELS.tabCommunity}
               menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
               onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              right={<AnnouncementsButton onPress={() => navigation.navigate('announcements')} />}
+              right={<AnnouncementsButton onPress={() => router.push('/announcements' as Href)} />}
             />
           ),
         }}
       />
       <Tabs.Screen
         name="map"
-        options={{ title: NAVIGATION_LABELS.tabMap, tabBarIcon: tabIcon('map') }}
+        options={{ title: NAVIGATION_LABELS.tabMap, tabBarIcon: tabIcon('map', 'mapFilled') }}
       />
       <Tabs.Screen
         name="account"
-        options={{ title: NAVIGATION_LABELS.tabUser, tabBarIcon: tabIcon('user') }}
+        options={{ title: NAVIGATION_LABELS.tabUser, tabBarIcon: tabIcon('user', 'userFilled') }}
       />
-      <Tabs.Screen
-        name="announcements"
-        options={{
-          title: NAVIGATION_LABELS.announcements,
-          header: ({ navigation }) => (
-            <AppHeader
-              menuAccessibilityLabel={NAVIGATION_LABELS.openMenu}
-              onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              title={NAVIGATION_LABELS.announcements}
-              // Acta 17: nuevo anuncio desde la lista (solo con announcements:publish).
-              right={<CreateAnnouncementButton />}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen name="admins" options={{ href: null, headerShown: false }} />
     </Tabs>
   );
 }

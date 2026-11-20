@@ -4,6 +4,7 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { Screen } from '@/components/layout/screen';
+import { TAB_BAR_OVERLAP } from '@/components/layout/tab-bar';
 import { Button } from '@/components/ui/button';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -21,10 +22,16 @@ import { SpeciesCard } from './species-card';
 export function SpeciesListScreen() {
   const theme = useTheme();
   const [category, setCategory] = useState<CategoryFilter>('all');
-  const { data, isPending, isError, refetch } = useSpeciesList(category);
+  const { data, isPending, isError, fetchStatus, refetch } = useSpeciesList(category);
+  // HU-21: sin conexión la query queda en pausa; si no hay copia guardada se muestra el CA2.
+  const offlineWithoutData = data === undefined && fetchStatus === 'paused';
+  // Con datos guardados se siguen mostrando aunque falle el refresco.
+  const showError = isError && data === undefined;
 
   const openDetail = (species: Species) => {
-    router.push({ pathname: '/species/[id]', params: { id: species.id } });
+    // `ids` permite deslizar en el detalle entre las fichas, en el orden de esta lista.
+    const ids = (data ?? []).map((item) => item.id).join(',');
+    router.push({ pathname: '/species/[id]', params: { id: species.id, ids } });
   };
 
   return (
@@ -33,19 +40,25 @@ export function SpeciesListScreen() {
         <CategoryChips value={category} onChange={setCategory} />
       </View>
 
-      {isPending && (
+      {offlineWithoutData && (
+        <EmptyState icon="wetland" title={SPECIES_LABELS.offlineUnavailable}>
+          <Button label={SPECIES_LABELS.retry} onPress={() => void refetch()} />
+        </EmptyState>
+      )}
+
+      {isPending && !offlineWithoutData && (
         <View style={styles.center}>
           <ActivityIndicator color={theme.primary} />
         </View>
       )}
 
-      {isError && (
+      {showError && (
         <EmptyState icon="wetland" title={SPECIES_LABELS.loadError}>
           <Button label={SPECIES_LABELS.retry} onPress={() => void refetch()} />
         </EmptyState>
       )}
 
-      {!isPending && !isError && data.length === 0 && (
+      {data !== undefined && data.length === 0 && (
         <EmptyState
           icon="wetland"
           title={
@@ -54,7 +67,7 @@ export function SpeciesListScreen() {
         />
       )}
 
-      {!isPending && !isError && data.length > 0 && (
+      {data !== undefined && data.length > 0 && (
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
@@ -79,7 +92,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: Spacing.three,
-    paddingBottom: Spacing.four,
+    paddingBottom: Spacing.four + TAB_BAR_OVERLAP,
   },
   separator: {
     height: 12,

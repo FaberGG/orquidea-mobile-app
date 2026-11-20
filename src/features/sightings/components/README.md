@@ -7,7 +7,7 @@
 | Componente | Ruta | Descripción |
 |---|---|---|
 | `CommunityScreen` | `/community` (pestaña) | Foro (HU-20) para todos; pestañas Comunidad / Moderación con `<Can permission="sightings:review">` (HU-19); botón flotante |
-| `NewSightingScreen` | `/sightings/new` | Formulario de HU-18 y confirmación de envío (CA1) |
+| `NewSightingScreen` | `/sightings/new` | Formulario de HU-18 y confirmación de envío (CA1). Sin red guarda el reporte en el teléfono (HU-22 CA1) |
 | `PhotoViewerScreen` | `/sightings/photo?uri=` | Foto completa con zoom (pellizcar, doble toque), arrastre y deslizar para cerrar |
 
 ## Piezas
@@ -28,6 +28,8 @@
 | `sighting-photo-field.tsx` | Foto opcional: subir, cambiar o quitar (una sola: límite de la API) |
 | `sighting-location-field.tsx` | Ubicación actual del teléfono con `expo-location` (ADR-0013) o, con conexión, "Elegir en el mapa" con `MapLocationPicker` de `@/features/map` (SCRUM-72) |
 | `info-note.tsx` | Nota verde de "Revisión administrativa" |
+| `queued-sightings-section.tsx` | HU-22: "Tus reportes sin enviar" con estado, REINTENTAR y DESCARTAR |
+| `sighting-queue-sync.tsx` | HU-22 CA2: `SightingQueueSync`, envía la cola sin interfaz y avisa al terminar (montado en `AppProviders`) |
 | `pick-sighting-photo.ts` | Galería + validación jpg/png ≤ 10 MB |
 | `format-sighting.ts` | Fecha `dd/mm/aaaa · hh:mm`, iniciales, coordenadas, enlace a mapas y proporción acotada |
 

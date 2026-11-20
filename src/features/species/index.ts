@@ -1,6 +1,7 @@
 // API pública de la feature de fichas taxonómicas (HE-03).
 export { CreateSpeciesButton } from './components/create-species-button';
 export { SpeciesCreateScreen } from './components/species-create-screen';
+export { SpeciesDetailPager } from './components/species-detail-pager';
 export { SpeciesDetailScreen } from './components/species-detail-screen';
 export { SpeciesEditScreen } from './components/species-edit-screen';
 export { SpeciesListScreen } from './components/species-list-screen';
@@ -9,4 +10,6 @@ export { ScanSpeciesQrButton } from './components/scan-species-qr-button';
 export { SPECIES_LABELS } from './constants';
 // Lo usan otras features (p. ej. el selector de fichas de una estación, HU-13).
 export { useSpeciesList } from './hooks';
+// HU-21: fuente offline que registra y sincroniza `features/offline`.
+export { prefetchSpeciesForOffline, speciesOfflineSource } from './hooks';
 export { type Species } from './types';

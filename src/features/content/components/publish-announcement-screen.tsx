@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { router } from 'expo-router';
+
+import { useToast } from '@/components/feedback/toast';
 
 import { CONTENT_LABELS, CONTENT_MESSAGES } from '../constants';
 import { getPublishAnnouncementErrorMessage, useCreateAnnouncement } from '../hooks';
@@ -15,11 +17,11 @@ const EMPTY_VALUES: AnnouncementFormValues = {
 /**
  * HU-16 y HU-23: publicar un anuncio o información educativa con su prioridad (CA3) y, si se quiere,
  * una fecha y hora de finalización. Solo se llega con `announcements:publish` (el grupo `(admin)` ya
- * exige permisos de administrador). Al publicar, limpia el formulario y muestra la confirmación.
+ * exige permisos de administrador). Al publicar muestra la confirmación y vuelve a la lista de anuncios.
  */
 export function PublishAnnouncementScreen() {
   const publish = useCreateAnnouncement();
-  const [hasPublished, setHasPublished] = useState(false);
+  const toast = useToast();
 
   return (
     <AnnouncementForm
@@ -29,14 +31,12 @@ export function PublishAnnouncementScreen() {
       defaultValues={EMPTY_VALUES}
       isPending={publish.isPending}
       serverError={publish.isError ? getPublishAnnouncementErrorMessage(publish.error) : undefined}
-      successMessage={hasPublished ? CONTENT_MESSAGES.announcementPublished : undefined}
-      onEdit={() => setHasPublished(false)}
-      onSubmit={(values, reset) => {
-        setHasPublished(false);
+      onEdit={() => publish.reset()}
+      onSubmit={(values) => {
         publish.mutate(values, {
           onSuccess: () => {
-            reset(EMPTY_VALUES);
-            setHasPublished(true);
+            toast.show(CONTENT_MESSAGES.announcementPublished);
+            router.back();
           },
         });
       }}

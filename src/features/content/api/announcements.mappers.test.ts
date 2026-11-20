@@ -12,16 +12,14 @@ const BASE = {
 };
 
 describe('toAnnouncementList (HU-17)', () => {
-  it('conserva la fecha de finalización y el nombre del publicador cuando existen', () => {
+  it('conserva la fecha de finalización cuando existe', () => {
     const [withExpiration, withoutExpiration] = toAnnouncementList([
-      { ...BASE, fechaExpiracion: '2026-11-12T23:00:00Z', nombrePublicador: ' Ana Gómez ' },
+      { ...BASE, fechaExpiracion: '2026-11-12T23:00:00Z' },
       { ...BASE, fechaExpiracion: null },
     ]);
 
     expect(withExpiration.expiresAt).toBe('2026-11-12T23:00:00Z');
-    expect(withExpiration.publisherName).toBe('Ana Gómez');
     expect(withoutExpiration.expiresAt).toBeNull();
-    expect(withoutExpiration.publisherName).toBeNull();
   });
 });
 
@@ -35,7 +33,6 @@ describe('toAdminAnnouncementList (HU-24)', () => {
         publishedAt: BASE.fechaCreacion,
         priority: 'high',
         expiresAt: null,
-        publisherName: null,
         visibility: 'visible',
       },
     ]);

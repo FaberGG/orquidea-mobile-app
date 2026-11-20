@@ -6,6 +6,7 @@ import { clearToken, getToken, saveToken } from '@/lib/storage';
 
 import { getMe } from '../api';
 import { authKeys } from '../constants';
+import { isSessionDependentQuery } from '../hooks/session-queries';
 import { type LoginResult, type SessionStatus, type User } from '../types';
 
 export type SessionContextValue = {
@@ -61,7 +62,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
     if ((queryClient.getQueryData<User | null>(authKeys.me()) ?? null) !== previousUser) return;
     if (previousUser?.role !== updatedUser.role) {
       // Los datos obtenidos con el rol anterior no deben permanecer en caché.
-      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
+      queryClient.removeQueries({ predicate: isSessionDependentQuery });
     }
     queryClient.setQueryData(authKeys.me(), updatedUser);
   }, [queryClient]);
@@ -69,7 +70,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
   // Un 401 vence la sesión; un 403 vuelve a consultar el rol antes de actualizar las rutas.
   useEffect(() => {
     const removeUnauthorizedHandler = setUnauthorizedHandler(() => {
-      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
+      queryClient.removeQueries({ predicate: isSessionDependentQuery });
       queryClient.setQueryData(authKeys.me(), null);
     });
     const removeForbiddenHandler = setForbiddenHandler(() =>
@@ -92,14 +93,14 @@ export function SessionProvider({ children }: SessionProviderProps) {
     },
     signOut: async () => {
       await clearToken();
-      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
+      queryClient.removeQueries({ predicate: isSessionDependentQuery });
       queryClient.setQueryData(authKeys.me(), null);
     },
     refreshSession,
     applyConfirmedRole: (role) => {
       const currentUser = queryClient.getQueryData<User | null>(authKeys.me());
       if (!currentUser || currentUser.role === role) return;
-      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== authKeys.all[0] });
+      queryClient.removeQueries({ predicate: isSessionDependentQuery });
       queryClient.setQueryData(authKeys.me(), { ...currentUser, role });
     },
   };
