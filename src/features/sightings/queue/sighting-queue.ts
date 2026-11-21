@@ -13,7 +13,10 @@ import { type SightingInput } from '../types';
 export type QueuedSightingStatus = 'pending' | 'failed' | 'needs-login';
 
 export type QueuedSighting = {
-  /** UUID generado en el teléfono. Viaja como `id` para que el back no lo duplique (SCRUM-66). */
+  /**
+   * UUID generado en el teléfono. Viaja como `id`: si el back ya lo tiene (del mismo autor) responde
+   * `200` con el existente en vez de crear otro (SCRUM-66).
+   */
   id: string;
   /** Usuario que lo creó: solo él lo ve y solo con su sesión se envía. */
   ownerId: string;
@@ -87,12 +90,15 @@ async function updateQueue(
 /**
  * HU-22 CA1: guarda el reporte en el dispositivo como "pendiente de sincronización". Copia la foto a
  * una carpeta propia: la URI del selector puede dejar de existir.
+ *
+ * `id` es el UUID con el que ya se intentó enviar (si el envío falló por la conexión): conservarlo
+ * evita un duplicado si el back alcanzó a guardarlo. Si ya está en la cola, se reemplaza.
  */
 export async function enqueueSighting(
   input: SightingInput,
   ownerId: string,
+  id: string = randomUUID(),
 ): Promise<QueuedSighting> {
-  const id = randomUUID();
   const photo = input.photo
     ? {
         ...input.photo,
@@ -111,7 +117,7 @@ export async function enqueueSighting(
     status: 'pending',
     errorMessage: null,
   };
-  await updateQueue((items) => [...items, item]);
+  await updateQueue((items) => [...items.filter((queued) => queued.id !== id), item]);
   return item;
 }
 

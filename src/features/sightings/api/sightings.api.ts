@@ -35,8 +35,9 @@ export async function listPendingSightings(page: number): Promise<SightingPage> 
  * HU-18: `POST /api/reportes-avistamiento` (multipart). El autor lo pone el servidor a partir del
  * token (CA4). Con foto se usa la subida nativa; sin foto, `multipart` de texto.
  *
- * HU-22 (SCRUM-70): los reportes guardados sin conexión llevan `clientId`, un UUID generado en el
- * teléfono, que viaja en el campo `id` para que reenviarlo no duplique el reporte (SCRUM-66 en el back).
+ * HU-22 (idempotencia, SCRUM-66): `clientId` es un UUID generado en el teléfono que viaja en el campo
+ * `id`. Reenviar el mismo `id` no duplica: si ya existe y es del mismo autor, la API responde `200`
+ * con el reporte guardado (igual de válido que el `201`); si es de otro usuario, `409`.
  */
 export async function createSighting(input: SightingInput, clientId?: string): Promise<Sighting> {
   const fields = toSightingFields(input);

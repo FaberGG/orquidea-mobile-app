@@ -252,13 +252,16 @@ describe('NewSightingScreen (HU-18)', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Enviar reporte' }));
 
     await waitFor(() =>
-      expect(createSighting).toHaveBeenCalledWith({
-        remarks: 'Escuché un canto extraño',
-        kingdom: 'unknown',
-        vernacularName: '',
-        location: null,
-        photo: null,
-      }),
+      expect(createSighting).toHaveBeenCalledWith(
+        {
+          remarks: 'Escuché un canto extraño',
+          kingdom: 'unknown',
+          vernacularName: '',
+          location: null,
+          photo: null,
+        },
+        'uuid-local-1',
+      ),
     );
     expect(
       await screen.findByText('Tu reporte fue enviado y será revisado por un administrador.'),
@@ -349,7 +352,11 @@ describe('Reporte sin conexión (HU-22)', () => {
         'Tu reporte quedó guardado en el teléfono, pendiente de sincronización.',
       ),
     ).toBeTruthy();
-    expect(getSightingQueueState().items).toHaveLength(1);
+    // Mismo UUID que el envío cortado: si el back alcanzó a guardarlo, el reenvío no lo duplica.
+    expect(createSighting).toHaveBeenCalledWith(expect.anything(), 'uuid-local-1');
+    expect(getSightingQueueState().items).toEqual([
+      expect.objectContaining({ id: 'uuid-local-1', status: 'pending' }),
+    ]);
   });
 
   it('un error de la API (4xx) no se guarda: se muestra el mensaje como antes', async () => {

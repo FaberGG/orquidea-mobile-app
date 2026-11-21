@@ -1,3 +1,4 @@
+import { randomUUID } from 'expo-crypto';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -28,6 +29,10 @@ function isConnectionError(error: unknown): boolean {
  *
  * HU-22 CA1: sin red (o si el envío falla por la conexión) el reporte se guarda en el teléfono como
  * "pendiente de sincronización" y se envía solo al volver la señal (`SightingQueueSync`).
+ *
+ * Idempotencia (SCRUM-66): el UUID del reporte se genera una vez por formulario y se usa en el envío
+ * directo, en cada reintento y en la cola. Si el envío se corta después de que el back lo guardó, el
+ * reenvío recibe `200` con el mismo reporte en vez de crear un duplicado.
  */
 export function NewSightingScreen() {
   const create = useCreateSighting();
@@ -36,13 +41,14 @@ export function NewSightingScreen() {
   const [savedOffline, setSavedOffline] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | undefined>();
+  const [clientId] = useState(randomUUID);
 
   const saveOffline = async (input: SightingInput) => {
     if (!user) return;
     setIsSaving(true);
     setSaveError(undefined);
     try {
-      await enqueueSighting(input, user.id);
+      await enqueueSighting(input, user.id, clientId);
       setSavedOffline(true);
     } catch {
       setSaveError(SIGHTINGS_MESSAGES.saveError);
@@ -57,11 +63,14 @@ export function NewSightingScreen() {
       void saveOffline(input);
       return;
     }
-    create.mutate(input, {
-      onError: (error) => {
-        if (isConnectionError(error)) void saveOffline(input);
+    create.mutate(
+      { input, clientId },
+      {
+        onError: (error) => {
+          if (isConnectionError(error)) void saveOffline(input);
+        },
       },
-    });
+    );
   };
 
   if (create.isSuccess || savedOffline) {

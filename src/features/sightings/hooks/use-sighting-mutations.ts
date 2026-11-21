@@ -6,11 +6,17 @@ import { createSighting, reviewSighting } from '../api';
 import { SIGHTINGS_MESSAGES, sightingsKeys } from '../constants';
 import { type SightingInput } from '../types';
 
+export type CreateSightingVariables = {
+  input: SightingInput;
+  /** UUID del teléfono (HU-22): reintentar con el mismo no duplica el reporte. */
+  clientId: string;
+};
+
 /** HU-18: envía el reporte. Nace pendiente, así que el foro no cambia; la cola de revisión sí. */
 export function useCreateSighting() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: SightingInput) => createSighting(input),
+    mutationFn: ({ input, clientId }: CreateSightingVariables) => createSighting(input, clientId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: sightingsKeys.pending() }),
   });
 }
@@ -28,7 +34,7 @@ export function useReviewSighting() {
 }
 
 /**
- * Mensaje para un fallo al enviar el reporte. Se prefiere el `mensaje` del servidor (400, 403, 413);
+ * Mensaje para un fallo al enviar el reporte. Se prefiere el `mensaje` del servidor (400, 403, 409, 413);
  * los textos locales son respaldo (CODIGO §10).
  */
 export function getCreateSightingErrorMessage(error: unknown): string {

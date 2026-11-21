@@ -88,6 +88,19 @@ describe('cola de reportes sin conexión (HU-22 CA1)', () => {
     expect(item.input.photo?.uri).toBe('file:///pending-sightings/uuid-1.jpg');
   });
 
+  it('conserva el id con el que ya se intentó enviar y no lo repite en la cola', async () => {
+    await enqueueSighting(INPUT, 'user-1', 'uuid-del-formulario');
+    const item = await enqueueSighting(WITH_PHOTO, 'user-1', 'uuid-del-formulario');
+
+    expect(item.id).toBe('uuid-del-formulario');
+    expect(storeLocalFile).toHaveBeenCalledWith(
+      'file:///cache/picker/abc.jpg',
+      'pending-sightings',
+      'uuid-del-formulario.jpg',
+    );
+    expect(getSightingQueueState().items).toEqual([item]);
+  });
+
   it('se recupera del dispositivo al volver a abrir la app', async () => {
     await enqueueSighting(INPUT, 'user-1');
     resetSightingQueueForTests();
@@ -162,6 +175,23 @@ describe('sincronización (HU-22 CA2)', () => {
         id: 'uuid-1',
         status: 'failed',
         errorMessage: 'El formato de la imagen no es válido.',
+      }),
+    ]);
+  });
+
+  it('409 (el id es de otro usuario): queda "failed" con el mensaje de la API', async () => {
+    await enqueueSighting(INPUT, 'user-1');
+    const send = jest
+      .fn()
+      .mockRejectedValue(httpError(409, 'Ya existe un reporte con ese identificador.'));
+
+    const result = await syncSightingQueue('user-1', send);
+
+    expect(result).toEqual({ sent: 0, failed: 1, stoppedBy: null });
+    expect(getSightingQueueState().items).toEqual([
+      expect.objectContaining({
+        status: 'failed',
+        errorMessage: 'Ya existe un reporte con ese identificador.',
       }),
     ]);
   });
