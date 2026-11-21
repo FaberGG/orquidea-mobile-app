@@ -90,7 +90,9 @@ con `setOfflineJson` y enviarlo en `If-None-Match`; con `304` devolver los datos
   del selector puede desaparecer.
 - Para reaccionar a la reconexión usar `useNetworkStatus` (o `onlineManager.subscribe`), como `OfflineSync`.
 - Las mutaciones tienen `retry: false` (`src/lib/query`); el reintento lo controla la cola.
-- El backend acepta el `id` del cliente (SCRUM-66) para que reenviar no duplique.
+- El backend acepta el `id` del cliente (SCRUM-66) para que reenviar no duplique: responde `200` con el
+  reporte existente si es del mismo autor y `409` si es de otro. El mismo UUID se usa desde el primer
+  envío del formulario, no solo al encolar.
 - Implementado en SCRUM-70: ver `src/features/sightings/README.md` (sección *Reportes sin conexión*).
   `storeLocalFile` / `removeLocalFile` de `@/lib/offline` copian y borran la foto.
 

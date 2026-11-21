@@ -7,7 +7,7 @@ DTO ⇄ `Sighting`. Contrato: [`docs/api/reportes-avistamiento.md`](../../../../
 |---|---|---|---|
 | `listApprovedSightings(page)` | `GET /api/reportes-avistamiento?pagina=&tamano=` | Público (`authenticated: false`) | HU-20 |
 | `listPendingSightings(page)` | `GET /api/reportes-avistamiento/pendientes?pagina=&tamano=` | Admin+ | HU-19 |
-| `createSighting(input)` | `POST /api/reportes-avistamiento` (`multipart/form-data`; con foto usa `uploadMultipart`) | Usuario registrado | HU-18 |
+| `createSighting(input, clientId?)` | `POST /api/reportes-avistamiento` (`multipart/form-data`; con foto usa `uploadMultipart`). `clientId` viaja como `id`: reenviarlo no duplica (`200` con el existente si es del mismo autor, `409` si es de otro) | `sightings:create` | HU-18, HU-22 |
 | `reviewSighting(id, 'approve' \| 'reject')` | `POST /api/reportes-avistamiento/{id}/aprobar` · `/rechazar` | Admin+ | HU-19 |
 
 `sightings.mappers.ts` valida con `schemas/sighting-dto.schema.ts` y traduce:

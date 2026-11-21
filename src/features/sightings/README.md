@@ -11,7 +11,7 @@ Diferencias con el diseño y pendientes: [`docs/sprints/he-07-pendientes.md`](..
 | HU-20 | Foro de avistamientos aprobados | Todos (incluido visitante) | ✅ Feed paginado con foto de borde a borde y visor con zoom |
 | HU-18 | Crear reporte | Usuario registrado, administrador y superadministrador (`sightings:create`, v2.0) | ✅ `/sightings/new`; el visitante ve un aviso para iniciar sesión |
 | HU-19 | Revisar y aprobar / rechazar reportes | Admin+ (`sightings:review`) | ✅ Pestaña "Moderación" con la cola de pendientes |
-| HU-22 | Crear reporte sin conexión y sincronizar al volver la señal | Quien puede crear reportes (`sightings:create`) | ✅ Front (SCRUM-70): cola en el teléfono, envío automático, REINTENTAR / DESCARTAR. Falta el back (SCRUM-66) para que reenviar no duplique |
+| HU-22 | Crear reporte sin conexión y sincronizar al volver la señal | Quien puede crear reportes (`sightings:create`) | ✅ Cola en el teléfono, envío automático, REINTENTAR / DESCARTAR (SCRUM-70) e idempotencia con el `id` del cliente (SCRUM-66) |
 
 ## Misma pantalla, distintas capacidades
 
@@ -59,7 +59,9 @@ Usa la base offline de SCRUM-63 (`@/lib/offline`, guía `docs/architecture/OFFLI
   REINTENTAR (deshabilitado sin red) / DESCARTAR (con confirmación).
 - **Solo del dueño:** cada usuario ve y envía solo sus reportes; si inicia sesión otra persona en el mismo
   teléfono, los de la primera se quedan guardados hasta que ella vuelva.
-- **Duplicados:** un reporte sale de la cola solo cuando la API confirma. Si la respuesta se pierde después
-  de que el back guardó, el reenvío podría duplicarlo hasta que el back use el `id` (SCRUM-66, brecha B15).
-  Mientras tanto, la moderación filtra el duplicado.
+- **Sin duplicados (SCRUM-66):** el formulario genera el UUID una sola vez y lo usa en el envío directo,
+  en sus reintentos y, si la conexión falla, en la cola. Un reporte sale de la cola solo cuando la API
+  confirma: `201` (creado) o `200` (ya existía con ese `id` y es del mismo autor; se devuelve el guardado).
+  Así, si la respuesta se pierde después de que el back guardó, el reenvío no crea otro. Un `409` (el `id`
+  es de otro usuario) se trata como cualquier `4xx`: queda `failed` con el mensaje de la API.
 - **CA3 (conflictos):** no aplica a reportes (solo se crean, no se editan).
