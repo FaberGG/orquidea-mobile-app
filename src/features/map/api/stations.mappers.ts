@@ -6,16 +6,19 @@ import { type Station, type StationInput } from '../types';
 /** Valida y traduce un `EstacionDto` a `Station`. Lanza si la respuesta no cumple el contrato. */
 export function toStation(dto: unknown): Station {
   const parsed = stationDtoSchema.parse(dto);
+  const photoUrl = resolveMediaUrl(parsed.urlFoto);
   return {
     id: parsed.id,
     name: parsed.nombre,
     description: parsed.descripcion ?? '',
-    photoUrl: resolveMediaUrl(parsed.urlFoto),
+    photoUrl,
+    thumbnailUrl: resolveMediaUrl(parsed.urlMiniatura) ?? photoUrl,
     location: { latitude: parsed.decimalLatitude, longitude: parsed.decimalLongitude },
     species: (parsed.fichas ?? []).map((species) => ({
       id: species.id,
       vernacularName: species.vernacularName,
       photoUrl: resolveMediaUrl(species.urlFoto),
+      thumbnailUrl: resolveMediaUrl(species.urlMiniatura) ?? resolveMediaUrl(species.urlFoto),
     })),
   };
 }

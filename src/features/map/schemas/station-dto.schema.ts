@@ -6,6 +6,8 @@ export const stationSpeciesDtoSchema = z.object({
   id: z.string().min(1),
   vernacularName: z.string(),
   urlFoto: z.string().nullish(),
+  /** Miniatura de 480 px de la foto principal de la ficha. */
+  urlMiniatura: z.string().nullish(),
 });
 
 export const stationDtoSchema = z.object({
@@ -13,6 +15,8 @@ export const stationDtoSchema = z.object({
   nombre: z.string(),
   descripcion: z.string().nullish(),
   urlFoto: z.string().nullish(),
+  /** Miniatura de 480 px de la foto, para los listados. */
+  urlMiniatura: z.string().nullish(),
   decimalLatitude: z.number(),
   decimalLongitude: z.number(),
   fichas: z.array(stationSpeciesDtoSchema).nullish(),

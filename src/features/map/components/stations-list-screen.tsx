@@ -84,6 +84,8 @@ export function StationsListScreen() {
 
 function StationCard({ station, onPress }: { station: Station; onPress: () => void }) {
   const theme = useTheme();
+  // Miniatura de la API; las copias offline antiguas no la tienen.
+  const thumbnailUrl = station.thumbnailUrl ?? station.photoUrl;
   return (
     <Pressable
       accessibilityRole="button"
@@ -94,8 +96,8 @@ function StationCard({ station, onPress }: { station: Station; onPress: () => vo
         { backgroundColor: theme.backgroundElement, borderColor: theme.border },
         pressed && styles.pressed,
       ]}>
-      {station.photoUrl ? (
-        <OfflineImage uri={station.photoUrl} style={styles.thumb} contentFit="cover" />
+      {thumbnailUrl ? (
+        <OfflineImage uri={thumbnailUrl} style={styles.thumb} contentFit="cover" />
       ) : (
         <View style={[styles.thumb, styles.placeholder, { backgroundColor: theme.primarySoft }]}>
           <Icon name="location" size={28} color="primary" />

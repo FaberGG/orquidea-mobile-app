@@ -36,9 +36,29 @@ describe('stations mappers (contrato inferido SCRUM-40)', () => {
       name: 'Mirador de la laguna',
       description: 'Se observan garzas.',
       photoUrl: DTO.urlFoto,
+      thumbnailUrl: DTO.urlFoto,
       location: { latitude: 2.4598, longitude: -76.6115 },
-      species: [{ id: 'ave-1', vernacularName: 'Garza real', photoUrl: null }],
+      species: [{ id: 'ave-1', vernacularName: 'Garza real', photoUrl: null, thumbnailUrl: null }],
     });
+  });
+
+  it('usa las miniaturas de la estación y de sus fichas si la API las envía', () => {
+    const station = toStation({
+      ...DTO,
+      urlMiniatura: 'http://localhost:9000/estaciones/miniaturas/e-1.jpg',
+      fichas: [
+        {
+          id: 'ave-1',
+          vernacularName: 'Garza real',
+          urlFoto: 'http://localhost:9000/fichas/ave-1.jpg',
+          urlMiniatura: 'http://localhost:9000/fichas/miniaturas/ave-1.jpg',
+        },
+      ],
+    });
+    expect(station.thumbnailUrl).toBe('http://localhost:9000/estaciones/miniaturas/e-1.jpg');
+    expect(station.species[0].thumbnailUrl).toBe(
+      'http://localhost:9000/fichas/miniaturas/ave-1.jpg',
+    );
   });
 
   it('acepta una estación sin fichas ni foto', () => {

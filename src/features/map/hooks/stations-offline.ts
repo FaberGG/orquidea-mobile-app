@@ -7,7 +7,8 @@ import { stationKeys } from '../constants';
 
 /**
  * HU-21: descarga las estaciones para consultarlas sin conexión y siembra el detalle de cada una
- * (`stationKeys.detail(id)`). Devuelve las URLs de las fotos de las estaciones y de las fichas asociadas.
+ * (`stationKeys.detail(id)`). Devuelve las URLs de las fotos y miniaturas de las estaciones y de las miniaturas
+ * de las fichas asociadas.
  *
  * El recorrido del mapa (`/api/mapa`) se agrega como otra fuente en SCRUM-68.
  */
@@ -26,10 +27,15 @@ export async function prefetchStationsForOffline(queryClient: QueryClient): Prom
     queryKey: [...stationKeys.all, 'detail'],
     predicate: (query) => !ids.has(String(query.queryKey[2])),
   });
-  return stations.flatMap((station) => [
-    ...(station.photoUrl ? [station.photoUrl] : []),
-    ...station.species.flatMap((species) => (species.photoUrl ? [species.photoUrl] : [])),
-  ]);
+  // Foto del detalle, miniatura del listado y miniaturas de las fichas asociadas (las fotos completas de las
+  // fichas las descarga su propia fuente).
+  return stations.flatMap((station) =>
+    [
+      station.photoUrl,
+      station.thumbnailUrl,
+      ...station.species.map((species) => species.thumbnailUrl),
+    ].filter((url): url is string => Boolean(url)),
+  );
 }
 
 /** Fuente offline de las estaciones (la registra `features/offline`). */

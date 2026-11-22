@@ -4,7 +4,7 @@
 
 | Tipo | Descripción |
 |---|---|
-| `Station` | Estación: nombre, descripción, foto, `location` (`Coordinates` de `@/lib/location`) y fichas asociadas |
-| `StationSpecies` | Resumen de una ficha asociada: `id`, `vernacularName`, `photoUrl` |
+| `Station` | Estación: nombre, descripción, foto y su miniatura (`thumbnailUrl`), `location` (`Coordinates` de `@/lib/location`) y fichas asociadas |
+| `StationSpecies` | Resumen de una ficha asociada: `id`, `vernacularName`, `photoUrl`, `thumbnailUrl` (miniatura) |
 | `StationInput` | Datos para crear o editar: texto, ubicación, `speciesIds` y foto nueva (opcional al editar) |
 | `StationPhoto` | Foto elegida en el dispositivo (jpg o png) |

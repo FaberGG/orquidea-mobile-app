@@ -160,9 +160,9 @@ function StationDetailContent({ station, insetTop }: { station: Station; insetTo
                       { borderColor: theme.border },
                       pressed && styles.pressed,
                     ]}>
-                    {species.photoUrl ? (
+                    {(species.thumbnailUrl ?? species.photoUrl) ? (
                       <OfflineImage
-                        uri={species.photoUrl}
+                        uri={species.thumbnailUrl ?? species.photoUrl}
                         style={styles.speciesThumb}
                         contentFit="cover"
                       />
