@@ -17,8 +17,9 @@ Pensada para quien implemente el mapa offline (SCRUM-68), el mapa base (SCRUM-69
 | `connectOnlineManager`, `toNetworkStatus` | `@/lib/offline` | TanStack Query pausa las queries sin red confirmada |
 | `useNetworkStatus` | `@/hooks/use-network-status` | Estado `online` / `offline` / `unknown` en un componente |
 
-Fuentes registradas hoy: `speciesOfflineSource` (fichas y sus fotos) y `stationsOfflineSource` (estaciones y
-fotos de estaciones y de sus fichas).
+Fuentes registradas hoy: `speciesOfflineSource` (copia local de todas las fichas, sincronizada por cambios, con
+sus miniaturas y fotos) y `stationsOfflineSource` (estaciones con su foto y miniatura, y las miniaturas de sus
+fichas).
 
 ## 2. Cómo se comporta una query
 
@@ -72,6 +73,15 @@ mensajes de criterios de aceptación.
 5. Pruebas: simular sin red con `onlineManager.setOnline(false)` y registrar el prefijo con
    `registerOfflineQueries(queryClient, prefijo)` (ver `species-offline.test.tsx`).
 
+**Sincronización por cambios (fichas, HU-21).** Si la API ofrece un endpoint con cursor (como
+`GET /api/fichas-taxonomicas/sincronizacion?modificadoDesde=`), guardar los datos y el cursor **en la misma
+entrada** de la caché (`SpeciesCatalog` en `speciesKeys.catalog()`): si la copia se pierde, el cursor también, y
+la siguiente petición vuelve a ser completa. Aplicar los cambios por `id`, quitar los eliminados, aceptar una
+respuesta completa en cualquier momento y, ante un cursor rechazado (`400`), repetir sin cursor. Hacer la
+sincronización la `queryFn` de esa clave, para que la pantalla y `OfflineSync` compartan la misma petición, y
+devolver las URLs de **toda** la copia (no solo de los cambios) para que `pruneOfflineFiles` no borre fotos
+vigentes. Ver `src/features/species/hooks/species-offline.ts`.
+
 Si la fuente necesita un `ETag` (como `/api/mapa`), guardar el último valor dentro de los datos de la query o
 con `setOfflineJson` y enviarlo en `If-None-Match`; con `304` devolver los datos guardados.
 
@@ -101,5 +111,8 @@ con `setOfflineJson` y enviarlo en `If-None-Match`; con `304` devolver los datos
 - Persistir solo datos **públicos** o del propio dispositivo. Lo que depende del rol no se marca `persist`.
 - Iniciar o cerrar sesión no borra las queries persistidas (`isSessionDependentQuery` en `features/auth`).
 - Si cambia la forma de un modelo persistido, subir `OFFLINE_CACHE_BUSTER` en
-  `src/lib/offline/query-persistence.ts`.
+  `src/lib/offline/query-persistence.ts`. Ojo: eso borra toda la copia, y una actualización puede abrirse por
+  primera vez sin red. Si el cambio lo permite, es mejor usar una clave nueva y mostrar la anterior hasta la
+  primera sincronización (así se migraron las fichas: `LEGACY_SPECIES_LIST_KEY`), o agregar campos que la UI
+  trate como opcionales (`thumbnailUrl ?? photoUrl`).
 - No llamar a `expo-sqlite` ni a `expo-file-system` directamente para datos offline: usar `@/lib/offline`.
