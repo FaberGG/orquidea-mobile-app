@@ -1,4 +1,4 @@
-import { type QueryClient } from '@tanstack/react-query';
+import { type QueryClient, useQuery } from '@tanstack/react-query';
 
 import { type OfflineSource } from '@/lib/offline';
 
@@ -44,3 +44,19 @@ export const stationsOfflineSource: OfflineSource = {
   queryKey: stationKeys.all,
   prefetch: prefetchStationsForOffline,
 };
+
+const countStations = (stations: readonly unknown[]) => stations.length;
+
+/**
+ * HU-21: cuántas estaciones hay en la copia local, para la pantalla "Contenido sin conexión". Solo lee la copia
+ * guardada: no pide nada a la API. `undefined` si aún no hay copia.
+ */
+export function useStationsOfflineCount(): number | undefined {
+  const { data } = useQuery({
+    queryKey: stationKeys.list(),
+    queryFn: listStations,
+    select: countStations,
+    enabled: false,
+  });
+  return data;
+}
