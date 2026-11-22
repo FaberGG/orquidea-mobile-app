@@ -63,7 +63,7 @@ src/app/
 | Inicio | Acción **Escanear QR** junto a Crear ficha | Todos |
 | Menú lateral: identidad | Usuario: iniciales, nombre, correo y rol (lleva a `/account`). Visitante: botón **INICIAR SESIÓN** | Todos |
 | Menú lateral: Gestión de contenido | **Nueva ficha** y **Publicar anuncio** según permisos; **Escanear QR** para todos. La gestión de anuncios (antes "Gestionar anuncios") vive en la propia lista de Anuncios (SCRUM-71) | Según acción |
-| Menú lateral: Humedal | Componentes del humedal (HU-14), **Estaciones del sendero** (HU-13, `/stations`; provisional hasta que el mapa HU-12 sea la entrada), Anuncios (HU-17) abre `/announcements`, Descargas sin conexión (HU-21) — *Próximamente* | Todos |
+| Menú lateral: Humedal | Componentes del humedal (HU-14), **Estaciones del sendero** (HU-13, `/stations`; provisional hasta que el mapa HU-12 sea la entrada), Anuncios (HU-17) abre `/announcements`, Contenido sin conexión (HU-21) abre `/offline-downloads` | Todos |
 | Menú lateral: Administración | Gestionar cuentas abre `/admins`; creación HU-4 y gestión HU-5 | `<Can permission="admins:read">` |
 
 Lo que depende del rol dentro de cada pestaña se resuelve con `<Can>` en la propia pantalla
