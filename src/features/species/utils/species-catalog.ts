@@ -41,8 +41,35 @@ export function filterSpeciesByCategory(
  * detalle. Siempre de la copia completa, para que la limpieza de archivos no borre fotos vigentes.
  */
 export function speciesOfflinePhotoUrls(species: readonly Species[]): string[] {
-  return species.flatMap((item) => [
+  return species.flatMap(speciesPhotoUrls);
+}
+
+/** Fotos que necesita una ficha para verse completa sin conexión: su miniatura y las fotos del detalle. */
+export function speciesPhotoUrls(item: Species): string[] {
+  return [
     ...(item.thumbnailUrl ? [item.thumbnailUrl] : []),
     ...item.photos.map((photo) => photo.url),
-  ]);
+  ].filter(Boolean);
+}
+
+/**
+ * HU-21: una ficha está descargada (`complete`) cuando su texto está guardado y también todas sus fotos.
+ * Una ficha sin fotos cuenta como completa. `hasFile` dice si una URL ya está en el dispositivo.
+ */
+export type SpeciesOfflineState = 'complete' | 'missing-photos';
+
+export function getSpeciesOfflineState(
+  item: Species,
+  hasFile: (url: string) => boolean,
+): SpeciesOfflineState {
+  return speciesPhotoUrls(item).every(hasFile) ? 'complete' : 'missing-photos';
+}
+
+/** Cuántas fichas de la copia local están completas (texto y fotos). */
+export function summarizeSpeciesOffline(
+  species: readonly Species[],
+  hasFile: (url: string) => boolean,
+): { total: number; complete: number } {
+  const complete = species.filter((item) => getSpeciesOfflineState(item, hasFile) === 'complete');
+  return { total: species.length, complete: complete.length };
 }

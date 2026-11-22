@@ -4,11 +4,14 @@ import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
 import { OfflineImage } from '@/components/ui/offline-image';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
+import { useConnectivity } from '@/hooks/use-connectivity';
 import { useTheme } from '@/hooks/use-theme';
 
-import { SPECIES_CATEGORY_LABELS } from '../constants';
+import { SPECIES_CATEGORY_LABELS, SPECIES_OFFLINE_LABELS } from '../constants';
+import { useSpeciesOfflineState } from '../hooks';
 import { type Species } from '../types';
 import { ConservationBadge, ConservationChip } from './conservation';
+import { PhotoUnavailable } from './photo-unavailable';
 
 /** Foto cuadrada (1:1); la imagen se recorta para llenarla, sin estirarse. */
 const PHOTO_ASPECT_RATIO = 1;
@@ -18,15 +21,25 @@ export type SpeciesCardProps = {
   onPress: (species: Species) => void;
 };
 
-/** Tarjeta del listado (Figma: "card-…"): foto, nombre común, código UICN, nombre científico y chips. */
+/**
+ * Tarjeta del listado (Figma: "card-…"): foto, nombre común, código UICN, nombre científico y chips.
+ * HU-21: sin conexión, si la ficha no tiene todas sus fotos en el dispositivo lo indica con una etiqueta.
+ */
 export function SpeciesCard({ species, onPress }: SpeciesCardProps) {
   const theme = useTheme();
+  const connectivity = useConnectivity();
+  const offlineState = useSpeciesOfflineState(species);
+  const photosUnavailable = connectivity === 'offline' && offlineState === 'missing-photos';
   // Miniatura de la API para el listado; las copias offline antiguas no la tienen.
   const thumbnailUrl = species.thumbnailUrl ?? species.photoUrl;
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={species.vernacularName}
+      accessibilityLabel={
+        photosUnavailable
+          ? `${species.vernacularName}. ${SPECIES_OFFLINE_LABELS.photosUnavailable}`
+          : species.vernacularName
+      }
       onPress={() => onPress(species)}
       style={({ pressed }) => [
         styles.card,
@@ -34,7 +47,12 @@ export function SpeciesCard({ species, onPress }: SpeciesCardProps) {
         pressed && styles.pressed,
       ]}>
       {thumbnailUrl ? (
-        <OfflineImage uri={thumbnailUrl} style={styles.photo} contentFit="cover" />
+        <OfflineImage
+          uri={thumbnailUrl}
+          style={styles.photo}
+          contentFit="cover"
+          unavailableFallback={<PhotoUnavailable compact style={styles.photo} />}
+        />
       ) : (
         <View
           style={[styles.photo, styles.placeholder, { backgroundColor: theme.backgroundSelected }]}>
@@ -59,6 +77,14 @@ export function SpeciesCard({ species, onPress }: SpeciesCardProps) {
             </ThemedText>
           </View>
         </View>
+        {photosUnavailable && (
+          <View style={styles.offlineNote}>
+            <Icon name="offline" size={16} color="textMuted" />
+            <ThemedText type="caption" themeColor="textSecondary">
+              {SPECIES_OFFLINE_LABELS.photosUnavailable}
+            </ThemedText>
+          </View>
+        )}
       </View>
     </Pressable>
   );
@@ -113,6 +139,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: Spacing.two,
     paddingTop: Spacing.two,
+  },
+  offlineNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.one,
+    paddingTop: Spacing.one,
   },
   categoryChip: {
     paddingHorizontal: 10,

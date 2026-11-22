@@ -5,9 +5,12 @@ import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 're
 import { ThemedText } from '@/components/themed-text';
 import { OfflineImage } from '@/components/ui/offline-image';
 import { Radius, Spacing } from '@/constants/theme';
+import { useConnectivity } from '@/hooks/use-connectivity';
+import { useLocalOfflineFileUri } from '@/hooks/use-offline-file-uri';
 import { useTheme } from '@/hooks/use-theme';
 
 import { SPECIES_LABELS } from '../constants';
+import { PhotoUnavailable } from './photo-unavailable';
 import { useSpeciesPager } from './species-pager-context';
 import { type SpeciesPhotoItem } from '../types';
 
@@ -54,24 +57,19 @@ export function SpeciesPhotoCarousel({ photos, name, height }: SpeciesPhotoCarou
           setIndex(Math.round(event.nativeEvent.contentOffset.x / width));
         }}>
         {photos.map((photo, position) => (
-          <Pressable
+          <CarouselPhoto
             key={photo.id ?? photo.url}
-            accessibilityRole="imagebutton"
-            accessibilityLabel={SPECIES_LABELS.photoOf(name, position + 1, photos.length)}
-            accessibilityHint={SPECIES_LABELS.photoZoomHint}
+            url={photo.url}
+            label={SPECIES_LABELS.photoOf(name, position + 1, photos.length)}
+            width={width}
+            height={height}
             onPress={() =>
               router.push({
                 pathname: '/sightings/photo',
                 params: { uri: photo.url, uris: JSON.stringify(photos.map((item) => item.url)) },
               })
-            }>
-            <OfflineImage
-              uri={photo.url}
-              style={{ width, height, backgroundColor: theme.backgroundSelected }}
-              contentFit="cover"
-              accessibilityIgnoresInvertColors
-            />
-          </Pressable>
+            }
+          />
         ))}
       </ScrollView>
       {photos.length > 1 && (
@@ -82,6 +80,45 @@ export function SpeciesPhotoCarousel({ photos, name, height }: SpeciesPhotoCarou
         </View>
       )}
     </View>
+  );
+}
+
+/**
+ * Una foto del carrusel. HU-21: si no está en el dispositivo y no hay conexión, muestra el aviso en su lugar
+ * y no abre el visor (no habría nada que ampliar).
+ */
+function CarouselPhoto({
+  url,
+  label,
+  width,
+  height,
+  onPress,
+}: {
+  url: string;
+  label: string;
+  width: number;
+  height: number;
+  onPress: () => void;
+}) {
+  const theme = useTheme();
+  const local = useLocalOfflineFileUri(url);
+  const connectivity = useConnectivity();
+  const unavailable = local === null && connectivity === 'offline';
+  return (
+    <Pressable
+      accessibilityRole="imagebutton"
+      accessibilityLabel={label}
+      accessibilityHint={unavailable ? undefined : SPECIES_LABELS.photoZoomHint}
+      disabled={unavailable}
+      onPress={onPress}>
+      <OfflineImage
+        uri={url}
+        style={{ width, height, backgroundColor: theme.backgroundSelected }}
+        contentFit="cover"
+        accessibilityIgnoresInvertColors
+        unavailableFallback={<PhotoUnavailable style={{ width, height }} />}
+      />
+    </Pressable>
   );
 }
 

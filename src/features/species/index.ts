@@ -12,4 +12,6 @@ export { SPECIES_LABELS } from './constants';
 export { useSpeciesList } from './hooks';
 // HU-21: fuente offline que registra y sincroniza `features/offline`.
 export { prefetchSpeciesForOffline, speciesOfflineSource } from './hooks';
+// HU-21: resumen de la copia local para la pantalla "Contenido sin conexión" (`features/offline`).
+export { useSpeciesOfflineSummary } from './hooks';
 export { type Species } from './types';
