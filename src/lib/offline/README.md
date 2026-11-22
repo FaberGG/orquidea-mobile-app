@@ -14,7 +14,9 @@ uso para nuevas features: [docs/architecture/OFFLINE.md](../../../docs/architect
 | `offline-source.ts` | Tipo `OfflineSource`: lo que exporta una feature para tener datos offline |
 | `offline-files.ts` | `downloadOfflineFiles`, `getOfflineFileUri`, `pruneOfflineFiles`, `clearOfflineFiles`, `offlineFileName` (archivos en `Paths.document/offline-files/<carpeta>/`); `storeLocalFile` / `removeLocalFile` para copiar y borrar archivos propios del dispositivo (fotos de la cola de reportes, SCRUM-70) |
 | `network-state.ts` | `toNetworkStatus`: regla de conectividad de ADR-0015 |
-| `online-manager.ts` | `connectOnlineManager`: TanStack Query pausa las queries sin red confirmada |
+| `online-manager.ts` | `connectOnlineManager`: TanStack Query pausa las queries sin red confirmada; informa la red a `connectivity` y la relee al volver a primer plano |
+| `connectivity.ts` | Conectividad efectiva para la interfaz (HU-21): red del dispositivo + si el backend responde (`reportBackendReachable` / `reportBackendUnreachable`). `getConnectivity`, `subscribeConnectivity` |
+| `offline-sync-status.ts` | Estado de la sincronización offline (fase, progreso de fotos, `lastSuccessAt` guardado en el kv-store, `filesVersion`) y `requestOfflineSync` / `setOfflineSyncRunner` |
 | `index.ts` | API pública |
 | `__tests__/` | Pruebas (el kv-store se sustituye por `jest/kv-store-mock.js`) |
 

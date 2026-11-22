@@ -8,7 +8,7 @@ las features.
 | Archivo | Contenido |
 |---|---|
 | `query-client.ts` | Instancia con valores por defecto: `staleTime`, reintentos (sin reintentar `4xx`), manejo de errores global |
-| `focus-manager.ts` | _Pendiente:_ integración con `AppState` y conectividad para refrescar al volver a la app |
+| `focus-manager.ts` | `connectFocusManager()`: conecta el `focusManager` con `AppState`; al volver la app al primer plano se refrescan las queries activas vencidas. La red se vuelve a leer en `connectOnlineManager` (`../offline/`) |
 | `index.ts` | API pública |
 
 ## Reglas

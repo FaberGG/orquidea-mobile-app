@@ -77,6 +77,21 @@ describe('archivos offline (fotos)', () => {
     expect(offlineFileName('https://r2.example/sin-extension')).toMatch(/\.bin$/);
   });
 
+  it('informa el avance tras cada archivo: descargados, omitidos y fallidos', async () => {
+    await downloadOfflineFiles([FOTO_A]);
+    const onProgress = jest.fn();
+
+    const summary = await downloadOfflineFiles([FOTO_A, FOTO_B, 'https://r2.example/falla.jpg'], {
+      concurrency: 1,
+      onProgress,
+    });
+
+    expect(summary).toEqual({ downloaded: 1, skipped: 1, failed: 1 });
+    expect(onProgress).toHaveBeenCalledTimes(3);
+    // Se pasa el mismo resumen acumulado: al final refleja los tres archivos.
+    expect(onProgress).toHaveBeenLastCalledWith({ downloaded: 1, skipped: 1, failed: 1 });
+  });
+
   it('descarga solo lo que falta, cuenta fallos y devuelve la URI local', async () => {
     expect(getOfflineFileUri(FOTO_A)).toBeNull();
 
