@@ -1,26 +1,28 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
-import { getSpecies, listSpecies } from '../api';
+import { getSpecies } from '../api';
 import { type CategoryFilter, speciesKeys } from '../constants';
-import { type Species } from '../types';
+import { type SpeciesCatalog } from '../types';
+import { getLegacySpeciesCatalog, speciesCatalogQueryOptions } from './species-offline';
+import { filterSpeciesByCategory } from '../utils/species-catalog';
 
 /**
  * HU-10: listado por categoría. Con `all` no se filtra.
  *
- * HU-21: las fichas se guardan en el dispositivo (`speciesOfflineSource`). Si la categoría elegida aún no
- * está en caché (p. ej. sin conexión), se muestra provisionalmente el listado completo guardado filtrado por
- * esa categoría hasta que llegue la respuesta de la API.
+ * HU-21: se lee siempre de la copia local de fichas (`speciesKeys.catalog()`), en línea y sin conexión, y la
+ * categoría se filtra en el dispositivo. Al montarse sincroniza solo lo que cambió desde la última vez.
  */
 export function useSpeciesList(category: CategoryFilter) {
   const queryClient = useQueryClient();
+  const select = useCallback(
+    (catalog: SpeciesCatalog) => filterSpeciesByCategory(catalog.species, category),
+    [category],
+  );
   return useQuery({
-    queryKey: speciesKeys.list(category),
-    queryFn: () => listSpecies(category),
-    placeholderData: () => {
-      if (category === 'all') return undefined;
-      const all = queryClient.getQueryData<Species[]>(speciesKeys.list('all'));
-      return all?.filter((item) => item.category === category);
-    },
+    ...speciesCatalogQueryOptions(queryClient),
+    select,
+    placeholderData: () => getLegacySpeciesCatalog(queryClient),
   });
 }
 

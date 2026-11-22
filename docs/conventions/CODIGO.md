@@ -98,7 +98,7 @@ que explique por qué**. Desactivar reglas para un archivo completo requiere apr
 
 - Ningún componente llama a `fetch` o al cliente HTTP: siempre `api/` → `hooks/` → componente.
 - Mapear DTO → modelo de dominio en `api/`. El resto de la app no conoce la forma del JSON.
-- Claves de caché centralizadas por feature (`speciesKeys.list(category)`), nunca strings sueltos.
+- Claves de caché centralizadas por feature (`speciesKeys.detail(id)`), nunca strings sueltos.
 - Tras una mutación, invalidar las queries afectadas (p. ej. crear ficha → invalidar listado de su categoría).
 - Ver la tabla de estado en [ARQUITECTURA.md §6](../architecture/ARQUITECTURA.md#6-estado).
 

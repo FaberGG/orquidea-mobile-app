@@ -4,7 +4,7 @@ export {
   deleteSpeciesPhoto,
   getSpecies,
   getSpeciesQr,
-  listSpecies,
+  syncSpecies,
   updateSpecies,
   type CreateSpeciesResult,
   type SaveSpeciesProgress,

@@ -4,7 +4,7 @@
 
 | Hook | Uso |
 |---|---|
-| `prefetchStationsForOffline` / `stationsOfflineSource` | HU-21: descarga estaciones, siembra detalles y devuelve las URLs de fotos (estaciones y fichas asociadas). Lo registra `features/offline` |
+| `prefetchStationsForOffline` / `stationsOfflineSource` | HU-21: descarga estaciones, siembra detalles y devuelve las URLs de fotos (foto y miniatura de cada estación y miniaturas de sus fichas). Lo registra `features/offline` |
 | `useStations()` | Listado |
 | `useStation(id)` | Detalle |
 | `useCreateStation()` | Crear; invalida `stationKeys.all` |

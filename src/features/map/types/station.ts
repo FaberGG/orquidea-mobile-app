@@ -7,6 +7,11 @@ export type StationSpecies = {
   id: string;
   vernacularName: string;
   photoUrl: string | null;
+  /**
+   * Miniatura de la foto principal (o la foto si la API no la envía). Puede faltar en copias offline guardadas
+   * antes de las miniaturas: usar `thumbnailUrl ?? photoUrl`.
+   */
+  thumbnailUrl: string | null;
 };
 
 /** Estación del sendero (HU-13): punto del recorrido con su foto y las especies que se observan. */
@@ -15,6 +20,8 @@ export type Station = {
   name: string;
   description: string;
   photoUrl: string | null;
+  /** Miniatura de la foto para los listados; misma salvedad que en `StationSpecies`. */
+  thumbnailUrl: string | null;
   location: Coordinates;
   species: StationSpecies[];
 };

@@ -6,6 +6,8 @@
 |---|---|
 | `SpeciesCategory` | `'bird' \| 'plant' \| 'insect' \| 'mammal' \| 'reptile' \| 'amphibian' \| 'fungus'` (API: `AVE`, `PLANTA`, `INSECTO`, `MAMIFERO`, `REPTIL`, `ANFIBIO`, `HONGO`) |
 | `ConservationStatus` | Códigos UICN de `CONSERVATION_CODES` (`EX`, `EW`, `CR`, `EN`, `VU`, `NT`, `LC`, `DD`, `NE`); etiquetas y colores en `../constants.ts` |
-| `Species` | Modelo de una ficha para la app; `photoUrl` es la principal y `photos` todas, en orden |
+| `Species` | Modelo de una ficha para la app; `photoUrl` es la principal, `thumbnailUrl` su miniatura para el listado y `photos` todas, en orden |
+| `SpeciesSync` | Respuesta de la sincronización (HU-21): `syncedAt` (cursor), `complete`, `species`, `deletedIds` |
+| `SpeciesCatalog` | Copia local de todas las fichas con su cursor (`syncedAt`), ordenadas por nombre común |
 | `SpeciesPhotoItem` | Foto guardada: `id` (`null` si la API aún no envía `fotos`) y `url` |
 | `SpeciesInput` | Cuerpo de crear y editar: campos de texto, `newPhotos` y `removedPhotoIds` |

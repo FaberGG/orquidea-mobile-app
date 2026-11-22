@@ -17,7 +17,7 @@ import { SpeciesCard } from './species-card';
 
 /**
  * Pestaña "Inicio": listado de fichas taxonómicas por categoría (HU-10). Sin búsqueda hasta que la
- * API la implemente. Los chips filtran en el servidor (`?categoria=`).
+ * API la implemente. Los chips filtran la copia local de fichas (HU-21).
  */
 export function SpeciesListScreen() {
   const theme = useTheme();

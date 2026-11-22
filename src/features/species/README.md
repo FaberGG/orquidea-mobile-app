@@ -39,7 +39,7 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 
 | Carpeta / archivo | Contenido |
 |---|---|
-| [`api/`](api/README.md) | `listSpecies`, `getSpecies`, mapeo DTO → `Species` |
+| [`api/`](api/README.md) | `syncSpecies`, `getSpecies`, mapeo DTO → `Species` |
 | [`components/`](components/README.md) | Listado, detalle, lector QR, tarjeta, chips y estados de conservación |
 | [`hooks/`](hooks/README.md) | `useSpeciesList`, `useSpecies`, resolución aislada de QR |
 | [`schemas/`](schemas/README.md) | Validación de `TaxonDto` |
@@ -69,13 +69,22 @@ El rol en el humedal se muestra **solo como texto**: la API aún no clasifica el
 
 ## Modo sin conexión (HU-21, ADR-0017)
 
-- `speciesOfflineSource` (exportada en `index.ts`) guarda en el dispositivo el listado completo, el detalle de
-  cada ficha y sus fotos; la sincroniza `features/offline` al abrir la app y al reconectar.
-- Sin conexión, el listado y el detalle muestran la copia guardada; los chips de categoría filtran el listado
-  completo guardado. Si no hay copia, se muestra el mensaje del CA2.
+- La app guarda una **copia local de todas las fichas** (`speciesKeys.catalog()`, tipo `SpeciesCatalog`) junto
+  con el cursor de `GET /api/fichas-taxonomicas/sincronizacion`. La primera vez la descarga entera; después
+  solo pide lo que cambió (`modificadoDesde`), guarda por `id` y quita los `idsEliminados`. Un `400` por cursor
+  inválido repite la descarga completa.
+- El listado se lee **siempre** de esa copia, en línea y sin conexión: los chips filtran en el dispositivo y el
+  orden es el de la API (nombre común sin distinguir mayúsculas ni tildes). La app no usa el listado paginado
+  `GET /api/fichas-taxonomicas`. Al montarse, el listado pide los cambios; las mutaciones invalidan
+  `speciesKeys.all` y con eso también.
+- `speciesOfflineSource` (exportada en `index.ts`) sincroniza la copia, siembra el detalle de cada ficha y
+  devuelve las fotos a descargar (miniatura del listado y todas las fotos del detalle); la llama
+  `features/offline` al abrir la app y al reconectar.
+- Sin conexión y sin copia, el listado y el detalle muestran el mensaje del CA2. La copia del formato anterior
+  (`LEGACY_SPECIES_LIST_KEY`) se muestra mientras no haya sincronizado la nueva y se borra después.
 - El escáner QR, con desconexión confirmada, abre la ficha guardada si existe (HU-11 CA3).
 - Las fotos de la API se muestran con `OfflineImage` (archivo local si ya se descargó).
-- Cuando SCRUM-64 entregue el endpoint de sincronización, solo cambia `hooks/species-offline.ts`.
+- SCRUM-61 (modelo Darwin Core) cambiará `TaxonDto`: ajustar el mapper y subir `OFFLINE_CACHE_BUSTER`.
 # Fichas taxonómicas
 
 Feature de listado, detalle y administración de fichas taxonómicas. El flujo HU-11 vive en

@@ -1,6 +1,6 @@
 import { type SpeciesCategoryCode } from '../constants';
-import { taxonDtoSchema, taxonListDtoSchema } from '../schemas/species-dto.schema';
-import { type Species, type SpeciesCategory, type SpeciesInput } from '../types';
+import { taxonDtoSchema, taxonSyncDtoSchema } from '../schemas/species-dto.schema';
+import { type Species, type SpeciesCategory, type SpeciesInput, type SpeciesSync } from '../types';
 
 const CATEGORY_FROM_API: Record<SpeciesCategoryCode, SpeciesCategory> = {
   AVE: 'bird',
@@ -15,6 +15,7 @@ const CATEGORY_FROM_API: Record<SpeciesCategoryCode, SpeciesCategory> = {
 /** Valida y traduce un `TaxonDto` a `Species`. Lanza si la respuesta no cumple el contrato. */
 export function toSpecies(dto: unknown): Species {
   const parsed = taxonDtoSchema.parse(dto);
+  const principal = parsed.fotos?.[0]?.url || parsed.urlFoto || null;
   return {
     id: parsed.id,
     category: CATEGORY_FROM_API[parsed.categoria],
@@ -26,7 +27,8 @@ export function toSpecies(dto: unknown): Species {
     diet: parsed.alimentacion || null,
     wetlandRole: parsed.rolEnHumedal || null,
     conservationStatus: parsed.estadoConservacion,
-    photoUrl: parsed.fotos?.[0]?.url || parsed.urlFoto || null,
+    photoUrl: principal,
+    thumbnailUrl: parsed.fotos?.[0]?.urlMiniatura || parsed.urlMiniatura || principal,
     photos: toSpeciesPhotos(parsed.fotos, parsed.urlFoto),
   };
 }
@@ -43,9 +45,15 @@ function toSpeciesPhotos(
   return principalUrl ? [{ id: null, url: principalUrl }] : [];
 }
 
-/** Valida y traduce la lista de `GET /api/fichas-taxonomicas`. */
-export function toSpeciesList(dto: unknown): Species[] {
-  return taxonListDtoSchema.parse(dto).map(toSpecies);
+/** Valida y traduce la respuesta de `GET /api/fichas-taxonomicas/sincronizacion` (HU-21). */
+export function toSpeciesSync(dto: unknown): SpeciesSync {
+  const parsed = taxonSyncDtoSchema.parse(dto);
+  return {
+    syncedAt: parsed.fechaSincronizacion,
+    complete: parsed.completa,
+    species: parsed.fichas.map(toSpecies),
+    deletedIds: parsed.idsEliminados ?? [],
+  };
 }
 
 const CATEGORY_TO_API: Record<SpeciesCategory, SpeciesCategoryCode> = {

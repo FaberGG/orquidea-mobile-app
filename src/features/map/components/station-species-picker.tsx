@@ -15,8 +15,8 @@ export type StationSpeciesPickerProps = {
 };
 
 /**
- * Selector múltiple de fichas taxonómicas (HU-13 CA4). Lista todas las fichas publicadas
- * (`GET /api/fichas-taxonomicas`, sin categoría) con una casilla por ficha.
+ * Selector múltiple de fichas taxonómicas (HU-13 CA4). Lista todas las fichas publicadas (copia local
+ * sincronizada de `useSpeciesList('all')`) con una casilla por ficha.
  */
 export function StationSpeciesPicker({ value, onChange }: StationSpeciesPickerProps) {
   const { data, isPending, isError, refetch } = useSpeciesList('all');

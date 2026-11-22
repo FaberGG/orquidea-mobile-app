@@ -101,8 +101,8 @@ demás usuarios; el backend necesita un contrato de escritura para eso. Los mapa
 Apple/Google; pueden conservarse como una capa opcional, mientras que la descarga propia funciona sin esa capa.
 El alojamiento de la API y la distribución de la app siguen siendo servicios distintos que pueden tener costes.
 
-**Modo sin conexión (HU-21):** `stationsOfflineSource` (en `index.ts`) guarda las estaciones y las fotos de
-las estaciones y de sus fichas; las pantallas de estaciones muestran la copia guardada o el mensaje del CA2.
+**Modo sin conexión (HU-21):** `stationsOfflineSource` (en `index.ts`) guarda las estaciones, su foto y miniatura
+y las miniaturas de sus fichas (las fotos completas de las fichas las guarda `speciesOfflineSource`); las pantallas de estaciones muestran la copia guardada o el mensaje del CA2.
 Los paquetes de recorrido de esta entrega se guardan desde `/offline-downloads` de forma independiente;
 integrarlos como otra fuente del gestor general de HU-21 sigue pendiente según
 [docs/architecture/OFFLINE.md](../../../docs/architecture/OFFLINE.md).

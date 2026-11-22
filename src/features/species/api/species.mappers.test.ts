@@ -1,5 +1,5 @@
 import { CONSERVATION_CODES, CONSERVATION_STATUSES } from '../constants';
-import { toSpecies, toSpeciesList } from './species.mappers';
+import { toSpecies, toSpeciesSync } from './species.mappers';
 
 const DTO = {
   id: '5b0c7f0e-2f5d-4a8e-9a57-0c7d3c1b6e21',
@@ -29,6 +29,7 @@ describe('species mappers', () => {
       wetlandRole: 'Dispersor de semillas',
       conservationStatus: 'LC',
       photoUrl: DTO.urlFoto,
+      thumbnailUrl: DTO.urlFoto,
       photos: [{ id: null, url: DTO.urlFoto }],
     });
   });
@@ -43,10 +44,32 @@ describe('species mappers', () => {
     expect(species.photoUrl).toBe(fotos[0].url);
   });
 
+  it('usa la miniatura de la foto principal para el listado y la ignora en `photos`', () => {
+    const fotos = [
+      {
+        id: 'f1',
+        url: 'http://localhost:9000/f1.jpg',
+        urlMiniatura: 'http://localhost:9000/m/f1.jpg',
+      },
+      {
+        id: 'f2',
+        url: 'http://localhost:9000/f2.jpg',
+        urlMiniatura: 'http://localhost:9000/m/f2.jpg',
+      },
+    ];
+    const species = toSpecies({ ...DTO, urlFoto: fotos[0].url, urlMiniatura: 'otra', fotos });
+    expect(species.thumbnailUrl).toBe('http://localhost:9000/m/f1.jpg');
+    expect(species.photos).toEqual([
+      { id: 'f1', url: 'http://localhost:9000/f1.jpg' },
+      { id: 'f2', url: 'http://localhost:9000/f2.jpg' },
+    ]);
+  });
+
   it('sin fotos deja la lista vacía y sin principal', () => {
     const species = toSpecies({ ...DTO, urlFoto: null, fotos: [] });
     expect(species.photos).toEqual([]);
     expect(species.photoUrl).toBeNull();
+    expect(species.thumbnailUrl).toBeNull();
   });
 
   it('mapea PLANTA e INSECTO y deja null los campos opcionales vacíos', () => {
@@ -83,9 +106,33 @@ describe('species mappers', () => {
     expect(() => toSpecies({ ...DTO, estadoConservacion: 'XX' })).toThrow();
   });
 
-  it('traduce un listado vacío y uno con elementos', () => {
-    expect(toSpeciesList([])).toEqual([]);
-    expect(toSpeciesList([DTO, { ...DTO, id: 'otro' }])).toHaveLength(2);
+  it('traduce la respuesta de sincronización (HU-21)', () => {
+    expect(
+      toSpeciesSync({
+        fechaSincronizacion: '2026-11-10T15:30:00.123456Z',
+        completa: false,
+        fichas: [DTO],
+        idsEliminados: ['borrada'],
+      }),
+    ).toEqual({
+      syncedAt: '2026-11-10T15:30:00.123456Z',
+      complete: false,
+      species: [toSpecies(DTO)],
+      deletedIds: ['borrada'],
+    });
+    expect(
+      toSpeciesSync({ fechaSincronizacion: 'x', completa: true, fichas: [] }).deletedIds,
+    ).toEqual([]);
+  });
+
+  it('rechaza una sincronización con una ficha que no cumple el contrato', () => {
+    expect(() =>
+      toSpeciesSync({
+        fechaSincronizacion: 'x',
+        completa: true,
+        fichas: [{ ...DTO, categoria: 'PEZ' }],
+      }),
+    ).toThrow();
   });
 });
 

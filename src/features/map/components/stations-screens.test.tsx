@@ -45,8 +45,9 @@ const MIRADOR: Station = {
   name: 'Mirador de la laguna',
   description: 'Desde aquí se observan garzas y patos.',
   photoUrl: 'http://localhost:9000/estaciones/e-1.jpg',
+  thumbnailUrl: 'http://localhost:9000/estaciones/miniaturas/e-1.jpg',
   location: { latitude: 2.4598, longitude: -76.6115 },
-  species: [{ id: 'ave-1', vernacularName: 'Garza real', photoUrl: null }],
+  species: [{ id: 'ave-1', vernacularName: 'Garza real', photoUrl: null, thumbnailUrl: null }],
 };
 
 const SPECIES = [

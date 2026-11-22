@@ -33,8 +33,13 @@ export type Species = {
   /** Texto libre: la API aún no clasifica el rol en el humedal (se muestra solo como texto). */
   wetlandRole: string | null;
   conservationStatus: ConservationStatus;
-  /** Foto principal (la primera de `photos`); la usa el listado (HU-10). */
+  /** Foto principal (la primera de `photos`). */
   photoUrl: string | null;
+  /**
+   * Miniatura de la foto principal, para el listado (HU-10). Si la API no la envía es la propia foto. Puede
+   * faltar en copias offline guardadas antes de las miniaturas: usar `thumbnailUrl ?? photoUrl`.
+   */
+  thumbnailUrl: string | null;
   /** Todas las fotos en orden (HU-7 v2.0). */
   photos: SpeciesPhotoItem[];
 };
@@ -54,4 +59,27 @@ export type SpeciesInput = {
   newPhotos: SpeciesPhoto[];
   /** Al editar: ids de las fotos guardadas que se quitan. */
   removedPhotoIds: string[];
+};
+
+/** Respuesta de `GET /api/fichas-taxonomicas/sincronizacion` (HU-21), ya traducida. */
+export type SpeciesSync = {
+  /** Cursor del servidor; se envía tal cual como `modificadoDesde` en la próxima sincronización. */
+  syncedAt: string;
+  /** `true`: `species` trae todas las fichas y la copia local se reemplaza entera. */
+  complete: boolean;
+  /** Fichas creadas o modificadas (todas si `complete`). Puede repetir fichas ya recibidas. */
+  species: Species[];
+  /** Fichas eliminadas desde el cursor anterior. */
+  deletedIds: string[];
+};
+
+/**
+ * Copia local de todas las fichas (HU-21). El cursor y las fichas se guardan juntos en una sola entrada: si la
+ * copia se pierde, también se pierde el cursor y la siguiente sincronización vuelve a ser completa.
+ */
+export type SpeciesCatalog = {
+  /** `null` si la copia no salió de una sincronización (p. ej. migrada del formato anterior). */
+  syncedAt: string | null;
+  /** Ordenadas por nombre común como la API (sin distinguir mayúsculas ni tildes). */
+  species: Species[];
 };

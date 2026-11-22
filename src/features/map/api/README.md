@@ -18,8 +18,9 @@ El contrato está integrado en el backend compartido `dev` y se mantiene documen
 |---|---|
 | `nombre`, `descripcion` | `name`, `description` |
 | `urlFoto` | `photoUrl` |
+| `urlMiniatura` (480 px; si falta, la foto) | `thumbnailUrl` (listado de estaciones) |
 | `decimalLatitude`, `decimalLongitude` | `location: { latitude, longitude }` |
-| `fichas: [{ id, vernacularName, urlFoto }]` | `species: [{ id, vernacularName, photoUrl }]` |
+| `fichas: [{ id, vernacularName, urlFoto, urlMiniatura }]` | `species: [{ id, vernacularName, photoUrl, thumbnailUrl }]` |
 
 Al enviar, `fichaIds` va como **un solo campo separado por comas** (`id1,id2`), porque la subida nativa no
 permite repetir un campo. Sin fichas no se envía.

@@ -38,7 +38,8 @@ Para explorarlo de forma visual: abrirlo en <https://editor.swagger.io> o usar l
 | `GET /api/administradores` | Superadmin | HU-5 (listado, incluye inhabilitados) | 200 `AdministratorDto[]` · 401 · 403 |
 | `PUT /api/administradores/{id}` | Superadmin | HU-5 (editar / inhabilitar con `habilitado`) | 200 `AdministratorDto` · 400 · 401 · 403 · 404 · 409 |
 | `POST /api/administradores/{id}/revocar-acceso` | Superadmin | HU-5 (revocar) | 200 `AdministratorDto` · 401 · 403 · 404 · 409 |
-| `GET /api/fichas-taxonomicas?categoria=` | — | HU-10 | 200 `TaxonDto[]` (sin paginación) · 400 |
+| `GET /api/fichas-taxonomicas?categoria=&pagina=&tamano=` | — | HU-10 (paginado, máx. 50; la app no lo usa: lee la copia sincronizada) | 200 `PageResponse<TaxonDto>` · 400 |
+| `GET /api/fichas-taxonomicas/sincronizacion?modificadoDesde=` | — | HU-21 (copia offline: todo sin parámetro, solo cambios con él) | 200 `TaxonSyncResponse` · 400 |
 | `GET /api/fichas-taxonomicas/{id}` | — | HU-10 (detalle) | 200 `TaxonDto` · 404 |
 | `POST /api/fichas-taxonomicas` | Admin | HU-7 (`multipart/form-data`) | 201 `TaxonDto` · 400 · 401 · 403 · 409 · 413 |
 | `PUT /api/fichas-taxonomicas/{id}` | Admin | HU-8 (`multipart/form-data`, foto opcional) | 200 `TaxonDto` · 400 · 401 · 403 · 404 · 409 · 413 |
