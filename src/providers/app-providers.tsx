@@ -5,17 +5,25 @@ import { useColorScheme } from 'react-native';
 
 import { ToastProvider } from '@/components/feedback/toast';
 import { SessionProvider, useSession } from '@/features/auth';
-import { configureOfflineQueries, OfflineSync } from '@/features/offline';
+import {
+  configureOfflineQueries,
+  ConnectivityNotice,
+  OfflineSync,
+  watchBackendReachability,
+} from '@/features/offline';
 import { SightingQueueSync } from '@/features/sightings';
 import { connectOnlineManager, queryPersistOptions } from '@/lib/offline';
-import { queryClient } from '@/lib/query';
+import { connectFocusManager, queryClient } from '@/lib/query';
 import { RoleProvider } from '@/permissions';
 
 import { darkNavigationTheme, lightNavigationTheme } from './navigation-theme';
 
 // HU-21 (ADR-0017): las queries sin red quedan en pausa y las fuentes offline se guardan en el dispositivo.
 connectOnlineManager();
+connectFocusManager();
 configureOfflineQueries(queryClient);
+// HU-21: un fallo por red o tiempo agotado cuenta como "sin conexión" en la interfaz aunque haya red.
+watchBackendReachability(queryClient);
 
 type AppProvidersProps = {
   children: ReactNode;
@@ -35,6 +43,8 @@ export function AppProviders({ children }: AppProvidersProps) {
     <PersistQueryClientProvider client={queryClient} persistOptions={queryPersistOptions}>
       <ToastProvider>
         <OfflineSync />
+        {/* HU-21: avisos generales "Sin conexión" / "Conexión restablecida" / "Contenido actualizado". */}
+        <ConnectivityNotice />
         <SessionProvider>
           {/* HU-22: envía los reportes guardados sin conexión al volver la señal (necesita la sesión). */}
           <SightingQueueSync />
