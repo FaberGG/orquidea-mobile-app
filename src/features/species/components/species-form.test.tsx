@@ -42,6 +42,7 @@ const AZULEJO: Species = {
   wetlandRole: 'Dispersor de semillas',
   conservationStatus: 'LC',
   photoUrl: null,
+  thumbnailUrl: null,
   photos: [],
 };
 

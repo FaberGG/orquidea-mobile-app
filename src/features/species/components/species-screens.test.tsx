@@ -1,18 +1,26 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { type ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { RoleProvider, type Role } from '@/permissions';
 
-import { getSpecies, listSpecies } from '../api';
+import { getSpecies, syncSpecies } from '../api';
 import { type Species } from '../types';
 import { SpeciesDetailScreen } from './species-detail-screen';
 import { SpeciesListScreen } from './species-list-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn() } }));
-jest.mock('../api', () => ({ listSpecies: jest.fn(), getSpecies: jest.fn() }));
+jest.mock('../api', () => ({ syncSpecies: jest.fn(), getSpecies: jest.fn() }));
+
+/** Respuesta de una sincronización completa con estas fichas. */
+const fullSync = (species: Species[]) => ({
+  syncedAt: '2026-11-10T15:30:00Z',
+  complete: true,
+  species,
+  deletedIds: [],
+});
 
 const SAFE_AREA_METRICS = {
   frame: { x: 0, y: 0, width: 390, height: 844 },
@@ -31,6 +39,7 @@ const AZULEJO: Species = {
   wetlandRole: 'Dispersor de semillas',
   conservationStatus: 'LC',
   photoUrl: null,
+  thumbnailUrl: null,
   photos: [],
 };
 
@@ -66,7 +75,7 @@ afterEach(() => {
 
 describe('SpeciesListScreen (HU-10)', () => {
   it('muestra las fichas y lleva al detalle al tocar una', async () => {
-    jest.mocked(listSpecies).mockResolvedValue([AZULEJO, CARACOL]);
+    jest.mocked(syncSpecies).mockResolvedValue(fullSync([AZULEJO, CARACOL]));
     await render(<SpeciesListScreen />, {
       wrapper: (props) => <Providers role="visitor" {...props} />,
     });
@@ -82,44 +91,59 @@ describe('SpeciesListScreen (HU-10)', () => {
     });
   });
 
-  it('filtra por categoría con cada chip y muestra el mensaje de HU-10 si está vacía', async () => {
-    jest.mocked(listSpecies).mockResolvedValueOnce([AZULEJO, CARACOL]).mockResolvedValueOnce([]);
+  it('filtra por categoría con cada chip sin volver a pedir la API (HU-21)', async () => {
+    jest.mocked(syncSpecies).mockResolvedValue(fullSync([AZULEJO, CARACOL]));
     await render(<SpeciesListScreen />, {
       wrapper: (props) => <Providers role="visitor" {...props} />,
     });
     await screen.findByText('Azulejo');
 
-    expect(listSpecies).toHaveBeenLastCalledWith('all');
-    fireEvent.press(screen.getByRole('tab', { name: 'Aves' }));
+    fireEvent.press(screen.getByRole('tab', { name: 'Plantas' }));
+    expect(await screen.findByText('Helecho')).toBeTruthy();
+    expect(screen.queryByText('Azulejo')).toBeNull();
+    expect(syncSpecies).toHaveBeenCalledTimes(1);
+  });
 
-    await waitFor(() => expect(listSpecies).toHaveBeenLastCalledWith('bird'));
-    expect(
-      await screen.findByText('Aún no hay especies registradas en esta categoría.'),
-    ).toBeTruthy();
+  it('ordena por nombre común sin distinguir mayúsculas ni tildes', async () => {
+    jest.mocked(syncSpecies).mockResolvedValue(
+      fullSync([
+        { ...AZULEJO, id: 'a', vernacularName: 'Ñandú' },
+        { ...AZULEJO, id: 'b', vernacularName: 'Águila' },
+        { ...AZULEJO, id: 'c', vernacularName: 'nutria' },
+      ]),
+    );
+    await render(<SpeciesListScreen />, {
+      wrapper: (props) => <Providers role="visitor" {...props} />,
+    });
+    await screen.findByText('Águila');
+
+    fireEvent.press(screen.getByRole('button', { name: 'Águila' }));
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: '/species/[id]',
+      params: { id: 'b', ids: 'b,c,a' },
+    });
   });
 
   it.each([
-    ['Mamíferos', 'mammal'],
-    ['Reptiles', 'reptile'],
-    ['Anfibios', 'amphibian'],
-    ['Hongos', 'fungus'],
-  ])('filtra por la categoría nueva %s (v2.0)', async (label, category) => {
-    jest.mocked(listSpecies).mockResolvedValueOnce([AZULEJO]).mockResolvedValueOnce([]);
+    ['Aves', 'Aún no hay especies registradas en esta categoría.'],
+    ['Mamíferos', 'Aún no hay especies registradas en esta categoría.'],
+    ['Reptiles', 'Aún no hay especies registradas en esta categoría.'],
+    ['Anfibios', 'Aún no hay especies registradas en esta categoría.'],
+    ['Hongos', 'Aún no hay especies registradas en esta categoría.'],
+  ])('muestra el mensaje de HU-10 si %s está vacía', async (label, message) => {
+    jest.mocked(syncSpecies).mockResolvedValue(fullSync([CARACOL]));
     await render(<SpeciesListScreen />, {
       wrapper: (props) => <Providers role="visitor" {...props} />,
     });
-    await screen.findByText('Azulejo');
+    await screen.findByText('Helecho');
 
     fireEvent.press(screen.getByRole('tab', { name: label }));
 
-    await waitFor(() => expect(listSpecies).toHaveBeenLastCalledWith(category));
-    expect(
-      await screen.findByText('Aún no hay especies registradas en esta categoría.'),
-    ).toBeTruthy();
+    expect(await screen.findByText(message)).toBeTruthy();
   });
 
   it('no incluye búsqueda mientras la API no la tenga', async () => {
-    jest.mocked(listSpecies).mockResolvedValue([]);
+    jest.mocked(syncSpecies).mockResolvedValue(fullSync([]));
     await render(<SpeciesListScreen />, {
       wrapper: (props) => <Providers role="visitor" {...props} />,
     });

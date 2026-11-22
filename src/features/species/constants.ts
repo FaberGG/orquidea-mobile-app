@@ -95,7 +95,10 @@ export const SPECIES_CATEGORY_CODES = [
 
 export type SpeciesCategoryCode = (typeof SPECIES_CATEGORY_CODES)[number];
 
-/** Chips de categoría. `apiValue` es el valor de `categoria` en la API; `Todos` no filtra. */
+/**
+ * Chips de categoría. Filtran la copia local (HU-21); `apiValue` es el valor equivalente de `categoria` en la
+ * API. `Todos` no filtra.
+ */
 export const SPECIES_CATEGORY_FILTERS = [
   { id: 'all', label: 'Todos', icon: 'categoryAll' },
   { id: 'bird', apiValue: 'AVE', label: 'Aves', icon: 'bird' },
@@ -155,9 +158,16 @@ export const CONSERVATION_STATUSES: Record<ConservationStatus, ConservationStyle
 /** Claves de caché de la feature. */
 export const speciesKeys = {
   all: ['species'] as const,
-  list: (category: CategoryFilter) => [...speciesKeys.all, 'list', category] as const,
+  /** HU-21: copia local de todas las fichas con su cursor de sincronización (`SpeciesCatalog`). */
+  catalog: () => [...speciesKeys.all, 'catalog'] as const,
   detail: (id: string) => [...speciesKeys.all, 'detail', id] as const,
 };
+
+/**
+ * Clave del listado completo antes de la sincronización por cambios (guardaba `Species[]`). Solo se lee para
+ * no perder la copia offline al actualizar la app sin conexión; se borra tras la primera sincronización.
+ */
+export const LEGACY_SPECIES_LIST_KEY = [...speciesKeys.all, 'list', 'all'] as const;
 
 /** Categorías que se pueden elegir al crear o editar (todas las de la API). */
 export const SPECIES_FORM_CATEGORIES = [

@@ -12,6 +12,8 @@ import { CONSERVATION_CODES, SPECIES_CATEGORY_CODES } from '../constants';
 export const taxonPhotoDtoSchema = z.object({
   id: z.string().min(1),
   url: z.string().min(1),
+  /** Miniatura de 480 px para los listados; igual a `url` en fotos antiguas aún sin reprocesar. */
+  urlMiniatura: z.string().nullish(),
 });
 
 export const taxonDtoSchema = z.object({
@@ -26,8 +28,19 @@ export const taxonDtoSchema = z.object({
   rolEnHumedal: z.string().nullish(),
   estadoConservacion: z.enum(CONSERVATION_CODES),
   urlFoto: z.string().nullish(),
+  /** Miniatura de la foto principal (igual a `fotos[0].urlMiniatura`). */
+  urlMiniatura: z.string().nullish(),
   /** En orden; la primera es la principal. Ausente en la API anterior a v2.0. */
   fotos: z.array(taxonPhotoDtoSchema).nullish(),
 });
 
-export const taxonListDtoSchema = z.array(taxonDtoSchema);
+/**
+ * `TaxonSyncResponse` de `GET /api/fichas-taxonomicas/sincronizacion` (HU-21). Las fichas se validan una a una
+ * con `toSpecies`, así que aquí quedan como `unknown`.
+ */
+export const taxonSyncDtoSchema = z.object({
+  fechaSincronizacion: z.string().min(1),
+  completa: z.boolean(),
+  fichas: z.array(z.unknown()),
+  idsEliminados: z.array(z.string()).nullish(),
+});

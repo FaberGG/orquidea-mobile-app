@@ -1,24 +1,24 @@
 import { apiClient, uploadMultipart } from '@/lib/api';
 
-import { SPECIES_CATEGORY_FILTERS, type CategoryFilter } from '../constants';
 import { type SpeciesPhoto } from '../schemas/species-form.schema';
-import { type Species, type SpeciesInput } from '../types';
-import { toSpecies, toSpeciesFields, toSpeciesFormData, toSpeciesList } from './species.mappers';
+import { type Species, type SpeciesInput, type SpeciesSync } from '../types';
+import { toSpecies, toSpeciesFields, toSpeciesFormData, toSpeciesSync } from './species.mappers';
 
 const SPECIES_PATH = '/api/fichas-taxonomicas';
 
 /**
- * HU-10: `GET /api/fichas-taxonomicas?categoria=`. Público (sin token) y sin paginación.
- * Sin categoría (`all`) no envía el parámetro.
+ * HU-21: `GET /api/fichas-taxonomicas/sincronizacion?modificadoDesde=`. Público (sin token).
+ *
+ * Sin `modifiedSince` trae todas las fichas (`complete`); con el `syncedAt` de la respuesta anterior, solo las
+ * creadas o modificadas y los ids eliminados. La app lee siempre de esta copia, también en línea, así que no
+ * usa el listado paginado `GET /api/fichas-taxonomicas`. `400` = cursor inválido.
  */
-export async function listSpecies(category: CategoryFilter): Promise<Species[]> {
-  const filter = SPECIES_CATEGORY_FILTERS.find((item) => item.id === category);
-  const apiValue = filter && 'apiValue' in filter ? filter.apiValue : undefined;
-  const response = await apiClient.get<unknown>('/api/fichas-taxonomicas', {
-    query: { categoria: apiValue },
+export async function syncSpecies(modifiedSince?: string | null): Promise<SpeciesSync> {
+  const response = await apiClient.get<unknown>(`${SPECIES_PATH}/sincronizacion`, {
+    query: { modificadoDesde: modifiedSince ?? undefined },
     authenticated: false,
   });
-  return toSpeciesList(response);
+  return toSpeciesSync(response);
 }
 
 /** HU-10 (detalle): `GET /api/fichas-taxonomicas/{id}`. `404` = la ficha no existe. */

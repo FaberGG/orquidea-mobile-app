@@ -3,18 +3,19 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { type ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { ApiError } from '@/lib/api';
 import { registerOfflineQueries } from '@/lib/offline';
 import { RoleProvider } from '@/permissions';
 
-import { getSpecies, listSpecies } from '../api';
-import { SPECIES_LABELS, speciesKeys } from '../constants';
+import { getSpecies, syncSpecies } from '../api';
+import { LEGACY_SPECIES_LIST_KEY, SPECIES_LABELS, speciesKeys } from '../constants';
 import { prefetchSpeciesForOffline } from '../hooks';
-import { type Species } from '../types';
+import { type Species, type SpeciesCatalog, type SpeciesSync } from '../types';
 import { SpeciesDetailScreen } from './species-detail-screen';
 import { SpeciesListScreen } from './species-list-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn() } }));
-jest.mock('../api', () => ({ listSpecies: jest.fn(), getSpecies: jest.fn() }));
+jest.mock('../api', () => ({ syncSpecies: jest.fn(), getSpecies: jest.fn() }));
 
 const SAFE_AREA_METRICS = {
   frame: { x: 0, y: 0, width: 390, height: 844 },
@@ -33,6 +34,7 @@ const AZULEJO: Species = {
   wetlandRole: 'Dispersor de semillas',
   conservationStatus: 'LC',
   photoUrl: 'https://r2.example/azulejo-1.jpg',
+  thumbnailUrl: 'https://r2.example/miniaturas/azulejo-1.jpg',
   photos: [
     { id: 'f1', url: 'https://r2.example/azulejo-1.jpg' },
     { id: 'f2', url: 'https://r2.example/azulejo-2.jpg' },
@@ -46,8 +48,19 @@ const HELECHO: Species = {
   vernacularName: 'Helecho',
   scientificName: 'Azolla filiculoides',
   photoUrl: null,
+  thumbnailUrl: null,
   photos: [],
 };
+
+const sync = (overrides: Partial<SpeciesSync>): SpeciesSync => ({
+  syncedAt: 'T1',
+  complete: true,
+  species: [],
+  deletedIds: [],
+  ...overrides,
+});
+
+const catalog = () => queryClient.getQueryData<SpeciesCatalog>(speciesKeys.catalog());
 
 let queryClient: QueryClient;
 
@@ -73,34 +86,102 @@ afterEach(() => {
 });
 
 describe('prefetchSpeciesForOffline (HU-21)', () => {
-  it('descarga el listado, siembra el detalle de cada ficha y devuelve sus fotos', async () => {
-    jest.mocked(listSpecies).mockResolvedValue([AZULEJO, HELECHO]);
+  it('primera descarga: guarda la copia con su cursor, siembra el detalle y devuelve las fotos', async () => {
+    jest.mocked(syncSpecies).mockResolvedValue(sync({ species: [HELECHO, AZULEJO] }));
 
     const urls = await prefetchSpeciesForOffline(queryClient);
 
-    expect(listSpecies).toHaveBeenCalledWith('all');
-    expect(urls).toEqual(['https://r2.example/azulejo-1.jpg', 'https://r2.example/azulejo-2.jpg']);
+    expect(syncSpecies).toHaveBeenCalledWith(null);
+    expect(urls).toEqual([
+      'https://r2.example/miniaturas/azulejo-1.jpg',
+      'https://r2.example/azulejo-1.jpg',
+      'https://r2.example/azulejo-2.jpg',
+    ]);
+    expect(catalog()).toEqual({ syncedAt: 'T1', species: [AZULEJO, HELECHO] });
     expect(queryClient.getQueryData(speciesKeys.detail('planta-1'))).toEqual(HELECHO);
     const detail = queryClient.getQueryCache().find({ queryKey: speciesKeys.detail('ave-1') });
     expect(detail?.meta?.persist).toBe(true);
+    const saved = queryClient.getQueryCache().find({ queryKey: speciesKeys.catalog() });
+    expect(saved?.meta?.persist).toBe(true);
   });
-});
 
-describe('prefetchSpeciesForOffline: fichas eliminadas', () => {
-  it('quita la copia guardada de las fichas que ya no existen en el servidor', async () => {
-    queryClient.setQueryData(speciesKeys.detail('borrada'), { ...HELECHO, id: 'borrada' });
-    jest.mocked(listSpecies).mockResolvedValue([AZULEJO]);
+  it('por cambios: envía el cursor, reemplaza las fichas repetidas y quita las eliminadas', async () => {
+    const editado = { ...AZULEJO, vernacularName: 'Azulejo común' };
+    const nueva = { ...HELECHO, id: 'planta-2', vernacularName: 'Buchón' };
+    jest
+      .mocked(syncSpecies)
+      .mockResolvedValueOnce(sync({ species: [AZULEJO, HELECHO] }))
+      .mockResolvedValueOnce(
+        sync({
+          syncedAt: 'T2',
+          complete: false,
+          species: [editado, nueva],
+          deletedIds: ['planta-1', 'nunca-descargada'],
+        }),
+      );
+
+    await prefetchSpeciesForOffline(queryClient);
+    const urls = await prefetchSpeciesForOffline(queryClient);
+
+    expect(syncSpecies).toHaveBeenLastCalledWith('T1');
+    expect(catalog()).toEqual({ syncedAt: 'T2', species: [editado, nueva] });
+    expect(queryClient.getQueryData(speciesKeys.detail('ave-1'))).toEqual(editado);
+    expect(queryClient.getQueryData(speciesKeys.detail('planta-1'))).toBeUndefined();
+    expect(urls).toContain('https://r2.example/azulejo-2.jpg');
+  });
+
+  it('una sincronización completa quita las fichas y detalles que no vengan', async () => {
+    queryClient.setQueryData(speciesKeys.catalog(), {
+      syncedAt: 'T1',
+      species: [AZULEJO, HELECHO],
+    });
+    queryClient.setQueryData(speciesKeys.detail('planta-1'), HELECHO);
+    jest.mocked(syncSpecies).mockResolvedValue(sync({ syncedAt: 'T2', species: [AZULEJO] }));
 
     await prefetchSpeciesForOffline(queryClient);
 
-    expect(queryClient.getQueryData(speciesKeys.detail('borrada'))).toBeUndefined();
-    expect(queryClient.getQueryData(speciesKeys.detail('ave-1'))).toEqual(AZULEJO);
+    expect(syncSpecies).toHaveBeenCalledWith('T1');
+    expect(catalog()?.species).toEqual([AZULEJO]);
+    expect(queryClient.getQueryData(speciesKeys.detail('planta-1'))).toBeUndefined();
+  });
+
+  it('si el servidor rechaza el cursor (400), descarga todo de nuevo', async () => {
+    queryClient.setQueryData(speciesKeys.catalog(), { syncedAt: 'roto', species: [HELECHO] });
+    jest
+      .mocked(syncSpecies)
+      .mockRejectedValueOnce(new ApiError({ status: 400, kind: 'http', path: '/sincronizacion' }))
+      .mockResolvedValueOnce(sync({ syncedAt: 'T2', species: [AZULEJO] }));
+
+    await prefetchSpeciesForOffline(queryClient);
+
+    expect(jest.mocked(syncSpecies).mock.calls).toEqual([['roto'], [null]]);
+    expect(catalog()).toEqual({ syncedAt: 'T2', species: [AZULEJO] });
+  });
+
+  it('si falla la red conserva la copia guardada', async () => {
+    queryClient.setQueryData(speciesKeys.catalog(), { syncedAt: 'T1', species: [AZULEJO] });
+    jest.mocked(syncSpecies).mockRejectedValue(new Error('sin red'));
+
+    await expect(prefetchSpeciesForOffline(queryClient)).rejects.toThrow('sin red');
+    expect(catalog()).toEqual({ syncedAt: 'T1', species: [AZULEJO] });
+  });
+
+  it('borra la copia del formato anterior tras sincronizar', async () => {
+    queryClient.setQueryData(LEGACY_SPECIES_LIST_KEY, [AZULEJO]);
+    jest.mocked(syncSpecies).mockResolvedValue(sync({ species: [AZULEJO] }));
+
+    await prefetchSpeciesForOffline(queryClient);
+
+    expect(queryClient.getQueryData(LEGACY_SPECIES_LIST_KEY)).toBeUndefined();
   });
 });
 
 describe('fichas sin conexión (HU-21)', () => {
   it('CA1: muestra el listado guardado y filtra por categoría sin pedirlo a la API', async () => {
-    queryClient.setQueryData(speciesKeys.list('all'), [AZULEJO, HELECHO]);
+    queryClient.setQueryData(speciesKeys.catalog(), {
+      syncedAt: 'T1',
+      species: [AZULEJO, HELECHO],
+    });
     onlineManager.setOnline(false);
     await render(<SpeciesListScreen />, { wrapper: Providers });
 
@@ -109,7 +190,7 @@ describe('fichas sin conexión (HU-21)', () => {
 
     expect(await screen.findByText('Helecho')).toBeTruthy();
     expect(screen.queryByText('Azulejo')).toBeNull();
-    expect(listSpecies).not.toHaveBeenCalled();
+    expect(syncSpecies).not.toHaveBeenCalled();
   });
 
   it('CA2: sin copia guardada muestra el mensaje de información no disponible', async () => {
@@ -117,7 +198,17 @@ describe('fichas sin conexión (HU-21)', () => {
     await render(<SpeciesListScreen />, { wrapper: Providers });
 
     expect(await screen.findByText(SPECIES_LABELS.offlineUnavailable)).toBeTruthy();
-    expect(listSpecies).not.toHaveBeenCalled();
+    expect(syncSpecies).not.toHaveBeenCalled();
+  });
+
+  it('CA1: tras actualizar la app sin conexión muestra la copia del formato anterior', async () => {
+    queryClient.setQueryData(LEGACY_SPECIES_LIST_KEY, [HELECHO, AZULEJO]);
+    onlineManager.setOnline(false);
+    await render(<SpeciesListScreen />, { wrapper: Providers });
+
+    expect(await screen.findByText('Azulejo')).toBeTruthy();
+    expect(screen.getByText('Helecho')).toBeTruthy();
+    expect(syncSpecies).not.toHaveBeenCalled();
   });
 
   it('CA1: abre el detalle guardado de una ficha', async () => {

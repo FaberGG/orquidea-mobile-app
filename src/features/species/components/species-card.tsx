@@ -21,6 +21,8 @@ export type SpeciesCardProps = {
 /** Tarjeta del listado (Figma: "card-…"): foto, nombre común, código UICN, nombre científico y chips. */
 export function SpeciesCard({ species, onPress }: SpeciesCardProps) {
   const theme = useTheme();
+  // Miniatura de la API para el listado; las copias offline antiguas no la tienen.
+  const thumbnailUrl = species.thumbnailUrl ?? species.photoUrl;
   return (
     <Pressable
       accessibilityRole="button"
@@ -31,8 +33,8 @@ export function SpeciesCard({ species, onPress }: SpeciesCardProps) {
         { backgroundColor: theme.background, shadowColor: theme.text },
         pressed && styles.pressed,
       ]}>
-      {species.photoUrl ? (
-        <OfflineImage uri={species.photoUrl} style={styles.photo} contentFit="cover" />
+      {thumbnailUrl ? (
+        <OfflineImage uri={thumbnailUrl} style={styles.photo} contentFit="cover" />
       ) : (
         <View
           style={[styles.photo, styles.placeholder, { backgroundColor: theme.backgroundSelected }]}>

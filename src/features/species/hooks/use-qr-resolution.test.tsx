@@ -21,6 +21,7 @@ const SPECIES: Species = {
   wetlandRole: 'Dispersor',
   conservationStatus: 'LC',
   photoUrl: null,
+  thumbnailUrl: null,
   photos: [],
 };
 
