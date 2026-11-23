@@ -10,6 +10,7 @@ Documentación del proyecto. Todo lo que no es código pero define **qué** se c
 | [`conventions/`](conventions/README.md) | Reglas obligatorias de código y de Git |
 | [`decisions/`](decisions/README.md) | Registro de decisiones de arquitectura (ADR) |
 | [`sprints/`](sprints/README.md) | Alcance y plan técnico de cada sprint |
+| [`build/`](build/README.md) | Compilación Android: build de desarrollo y APK standalone |
 
 Regla: si un PR cambia una convención, una ruta, un permiso o agrega una dependencia relevante,
 actualiza aquí el documento correspondiente en el mismo PR.
