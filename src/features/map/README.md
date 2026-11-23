@@ -66,19 +66,9 @@ Back.
 
 ## Descargas sin conexión
 
-Desde el menú, **Descargas sin conexión** consulta los tramos publicados en `GET /api/mapa`. Cada tramo se
-guarda por separado con sus puntos, las estaciones a 250 metros o menos y copias compactas de las fotos de
-estación disponibles en el servidor del proyecto. El visor dibuja el esquema con SVG, muestra las fotos locales
-e informa cuántas se descargaron; las estaciones sin foto local quedan identificadas. Permite abrir las
-descargas aunque el servidor no responda. Funciona con el mismo código en Android e iOS, incluido Expo Go.
-El GPS consulta manualmente la ubicación; no hace seguimiento continuo y puede no obtener una posición si no hay
-señal suficiente. El trazado privado guardado desde el editor también aparece entre los recorridos disponibles
-para copiar al paquete sin conexión. No incluye un fondo satelital.
-
-Se retiró la integración de Mapbox, su dependencia nativa y su variable de entorno. Las descargas anteriores
-siguen recuperando el recorrido y las estaciones; se ignora su antigua referencia a imágenes del proveedor.
-La eliminación de una descarga borra su JSON local. Las aplicaciones ya compiladas necesitan una nueva
-compilación para dejar de incluir el SDK retirado.
+La descarga manual de recorridos (`/offline-downloads`, esquema SVG del sendero) se retiró en HU-21: esa ruta es
+ahora **Contenido sin conexión** (`features/offline`). El mapa sin conexión llegará con la migración a MapLibre
+(SCRUM-68/69), con su propio mecanismo de descarga.
 
 ## Mejoras del trazado y descargas
 
@@ -103,8 +93,8 @@ El alojamiento de la API y la distribución de la app siguen siendo servicios di
 
 **Modo sin conexión (HU-21):** `stationsOfflineSource` (en `index.ts`) guarda las estaciones, su foto y miniatura
 y las miniaturas de sus fichas (las fotos completas de las fichas las guarda `speciesOfflineSource`); las pantallas de estaciones muestran la copia guardada o el mensaje del CA2.
-Los paquetes de recorrido de esta entrega se guardan desde `/offline-downloads` de forma independiente;
-integrarlos como otra fuente del gestor general de HU-21 sigue pendiente según
+`useStationsOfflineCount` (en `index.ts`) da el número de estaciones guardadas a la pantalla "Contenido sin
+conexión". El mapa offline se agregará como otra fuente según
 [docs/architecture/OFFLINE.md](../../../docs/architecture/OFFLINE.md).
 
 **Dependencias:** usa `useSpeciesList` del barrel de `@/features/species` para el selector de fichas, y

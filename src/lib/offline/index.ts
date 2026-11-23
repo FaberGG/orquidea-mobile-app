@@ -1,4 +1,14 @@
 // API pública de la infraestructura offline (HE-08, ADR-0017). Guía de uso: docs/architecture/OFFLINE.md.
+export {
+  getConnectivity,
+  isBackendUnreachable,
+  reportBackendReachable,
+  reportBackendUnreachable,
+  resetConnectivity,
+  setNetworkStatus,
+  subscribeConnectivity,
+  type Connectivity,
+} from './connectivity';
 export { type NetworkStatus, toNetworkStatus } from './network-state';
 export { connectOnlineManager } from './online-manager';
 export {
@@ -31,3 +41,16 @@ export {
   type OfflineDownloadSummary,
 } from './offline-files';
 export { type OfflineSource } from './offline-source';
+export {
+  bumpOfflineFilesVersion,
+  getOfflineSyncStatus,
+  loadOfflineSyncSuccess,
+  requestOfflineSync,
+  resetOfflineSyncStatus,
+  saveOfflineSyncSuccess,
+  setOfflineSyncRunner,
+  subscribeOfflineSyncStatus,
+  updateOfflineSyncStatus,
+  type OfflineSyncPhase,
+  type OfflineSyncStatus,
+} from './offline-sync-status';

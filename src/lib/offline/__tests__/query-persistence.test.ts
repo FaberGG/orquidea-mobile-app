@@ -1,6 +1,11 @@
-import { QueryClient } from '@tanstack/react-query';
+import { dehydrate, hydrate, QueryClient } from '@tanstack/react-query';
 
-import { isPersistedQuery, registerOfflineQueries, shouldPersistQuery } from '../query-persistence';
+import {
+  clearRefreshErrors,
+  isPersistedQuery,
+  registerOfflineQueries,
+  shouldPersistQuery,
+} from '../query-persistence';
 
 describe('persistencia de la caché (ADR-0017)', () => {
   let queryClient: QueryClient;
@@ -43,5 +48,35 @@ describe('persistencia de la caché (ADR-0017)', () => {
     expect(persists(['species', 'list', 'all'])).toBe(true);
     expect(persists(['species', 'detail', 'x'])).toBe(false);
     expect(persists(['admins', 'list'])).toBe(false);
+  });
+
+  it('conserva la copia aunque el último refresco haya fallado (sin backend) y la restaura sin el error', async () => {
+    registerOfflineQueries(queryClient, ['species']);
+    queryClient.setQueryData(['species', 'catalog'], { species: ['azulejo'] });
+    await queryClient
+      .fetchQuery({
+        queryKey: ['species', 'catalog'],
+        queryFn: () => Promise.reject(new Error('tiempo agotado')),
+        retry: false,
+        staleTime: 0,
+      })
+      .catch(() => undefined);
+    const query = queryClient.getQueryCache().find({ queryKey: ['species', 'catalog'] });
+    expect(query?.state.status).toBe('error');
+    expect(query && shouldPersistQuery(query)).toBe(true);
+
+    const persisted = clearRefreshErrors({
+      timestamp: Date.now(),
+      buster: 'x',
+      clientState: dehydrate(queryClient, { shouldDehydrateQuery: shouldPersistQuery }),
+    });
+    // Simula el viaje por el almacenamiento (JSON) y un arranque nuevo de la app.
+    const restored = new QueryClient();
+    hydrate(restored, JSON.parse(JSON.stringify(persisted.clientState)));
+
+    const restoredQuery = restored.getQueryCache().find({ queryKey: ['species', 'catalog'] });
+    expect(restoredQuery?.state.status).toBe('success');
+    expect(restoredQuery?.state.data).toEqual({ species: ['azulejo'] });
+    restored.clear();
   });
 });

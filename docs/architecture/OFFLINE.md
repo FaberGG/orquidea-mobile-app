@@ -13,9 +13,15 @@ Pensada para quien implemente el mapa offline (SCRUM-68), el mapa base (SCRUM-69
 | `OfflineSource` | `@/lib/offline` | Contrato de una feature que quiere datos offline |
 | `OFFLINE_SOURCES`, `configureOfflineQueries`, `OfflineSync`, `syncOfflineSources` | `@/features/offline` | Registro y sincronización de las fuentes |
 | `downloadOfflineFiles`, `getOfflineFileUri`, `pruneOfflineFiles`, `clearOfflineFiles` | `@/lib/offline` | Archivos (fotos, tiles, GeoJSON) en `Paths.document/offline-files/<carpeta>/` |
-| `OfflineImage` / `useOfflineFileUri` | `@/components/ui/offline-image`, `@/hooks/use-offline-file-uri` | Mostrar una foto de la API desde disco si ya se descargó |
-| `connectOnlineManager`, `toNetworkStatus` | `@/lib/offline` | TanStack Query pausa las queries sin red confirmada |
-| `useNetworkStatus` | `@/hooks/use-network-status` | Estado `online` / `offline` / `unknown` en un componente |
+| `OfflineImage` (`unavailableFallback`) / `useOfflineFileUri` / `useLocalOfflineFileUri` | `@/components/ui/offline-image`, `@/hooks/use-offline-file-uri` | Mostrar una foto de la API desde disco si ya se descargó; sin conexión (o si falla la carga) mostrar un aviso en su lugar |
+| `connectOnlineManager`, `toNetworkStatus` | `@/lib/offline` | TanStack Query pausa las queries sin red confirmada; relee la red al volver a primer plano |
+| `connectFocusManager` | `@/lib/query` | Refresca las queries activas vencidas al volver a primer plano (`AppState`) |
+| `useNetworkStatus` | `@/hooks/use-network-status` | Estado de la **red** `online` / `offline` / `unknown` en un componente |
+| `connectivity` (`getConnectivity`, `reportBackendReachable/Unreachable`) + `useConnectivity` | `@/lib/offline`, `@/hooks/use-connectivity` | Conectividad **efectiva** para la interfaz: sin red **o** backend que no responde = `offline` |
+| `watchBackendReachability` | `@/features/offline` | Observa queries y mutaciones: un fallo `network`/`timeout` marca el backend como inalcanzable; una respuesta lo restablece |
+| `offline-sync-status` + `useOfflineSyncStatus` / `useOfflineFilesVersion` | `@/lib/offline`, `@/hooks/use-offline-sync-status` | Fase y progreso de la sincronización, última actualización, versión de los archivos en disco; `requestOfflineSync()` |
+| `ConnectivityNotice` | `@/features/offline` | Toasts "Sin conexión" / "Conexión restablecida…" / "Contenido actualizado…" |
+| `OfflineContentScreen` (`/offline-downloads`) | `@/features/offline` | "Contenido sin conexión" del menú lateral: qué está guardado y "Actualizar ahora" |
 
 Fuentes registradas hoy: `speciesOfflineSource` (copia local de todas las fichas, sincronizada por cambios, con
 sus miniaturas y fotos) y `stationsOfflineSource` (estaciones con su foto y miniatura, y las miniaturas de sus
@@ -106,10 +112,43 @@ con `setOfflineJson` y enviarlo en `If-None-Match`; con `304` devolver los datos
 - Implementado en SCRUM-70: ver `src/features/sightings/README.md` (sección *Reportes sin conexión*).
   `storeLocalFile` / `removeLocalFile` de `@/lib/offline` copian y borran la foto.
 
-## 6. Reglas
+## 6. Estado visible al usuario (HU-21)
+
+- **Ficha descargada** = texto guardado **y** todas sus fotos (miniatura + fotos del detalle) en disco
+  (`getSpeciesOfflineState` en `features/species/utils/species-catalog.ts`). Sin conexión, las fichas
+  incompletas se siguen mostrando con la etiqueta *"Fotos no disponibles sin conexión"* y, en el detalle, cada
+  foto que falta se reemplaza por un aviso.
+- **Descarga en curso:** `syncOfflineSources` publica el progreso (solo cuentan las fotos que faltaban). El
+  listado de fichas muestra *"Descargando fichas para usar sin conexión… x/y"*.
+- **Avisos generales:** `ConnectivityNotice` (montado en `AppProviders`). No avisa al abrir la app conectada
+  ni con estado desconocido; espera `OFFLINE_RECONNECT_SETTLE_MS` con el estado estable.
+- Los textos que no vienen de los criterios de aceptación están marcados *"Respaldo local, pendiente de aprobar
+  en HU-21"* en los `constants.ts`.
+
+## 7. Detección de conexión
+
+- **Red ≠ backend.** `expo-network` solo dice si hay red. Un fallo `network`/`timeout` (`ApiError.kind`) también
+  es "sin conexión" para la interfaz (`watchBackendReachability`, `syncOfflineSources`, la cola de reportes).
+  Pero **no** pausa las queries: el `onlineManager` solo lo mueve `expo-network`.
+- **No usar `isInternetReachable`:** en Android depende de la comprobación de Google y en una red local sin
+  internet daría "sin conexión" aunque el backend responda.
+- **Primer plano:** `connectOnlineManager` relee la red, `connectFocusManager` refresca queries y `OfflineSync`
+  vuelve a sincronizar si la última sincronización buena tiene más de `OFFLINE_RESYNC_INTERVAL_MS` o el backend
+  no respondía.
+- **Parpadeos:** `OfflineSync` espera `OFFLINE_RECONNECT_SETTLE_MS` antes de sincronizar al reconectar, cancela
+  la corrida en curso (`AbortController`) al perder la red y nunca solapa dos corridas.
+- **Estado inicial `unknown`:** no bloquea la interfaz ni muestra avisos.
+- **Pruebas:** `onlineManager.setOnline(false)` + simular `expo-network` / `getOfflineFileUri`, como en
+  `species-offline.test.tsx`. No reemplazan la prueba en un teléfono real (modo avión, Wi-Fi sin backend,
+  red local sin internet).
+
+## 8. Reglas
 
 - Persistir solo datos **públicos** o del propio dispositivo. Lo que depende del rol no se marca `persist`.
 - Iniciar o cerrar sesión no borra las queries persistidas (`isSessionDependentQuery` en `features/auth`).
+- Abrir la app sin conexión mantiene la sesión iniciada con el último usuario confirmado, mientras el token siga
+  vigente; al volver la red se confirma con `GET /yo` (ver [`features/auth`](../../src/features/auth/README.md#sesión)).
+  La query de sesión usa `networkMode: 'always'` para no quedar pausada (y la splash visible) sin red.
 - Si cambia la forma de un modelo persistido, subir `OFFLINE_CACHE_BUSTER` en
   `src/lib/offline/query-persistence.ts`. Ojo: eso borra toda la copia, y una actualización puede abrirse por
   primera vez sin red. Si el cambio lo permite, es mejor usar una clave nueva y mostrar la anterior hasta la

@@ -19,6 +19,8 @@ export const SIGHTINGS_LABELS = {
   unknownClassification: 'Especie sin identificar',
   // Visor de foto
   closePhoto: 'Cerrar foto',
+  // HU-21. Respaldo local, pendiente de aprobar en HU-21.
+  photoUnavailableOffline: 'Foto no disponible sin conexión',
   photoHint: 'Pellizca o toca dos veces para acercar',
   // Moderación (HU-19)
   pendingStatus: 'Pendiente de revisión',

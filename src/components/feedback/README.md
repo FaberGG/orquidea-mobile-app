@@ -9,6 +9,6 @@ Toda pantalla con datos remotos debe usar estos componentes para **cargando**, *
 | `EmptyState` ✅ (`empty-state.tsx`) | Ícono en círculo de marca, título y descripción (p. ej. `Aún no hay especies registradas en esta categoría.`); acepta una acción como `children` |
 | `ErrorState` | Error con opción de reintentar |
 | `FormMessage` ✅ (`form-message.tsx`) | Mensaje bajo un formulario, variantes `error` (se anuncia como `alert`) y `success` |
-| `Toast` ✅ (`toast.tsx`) | Aviso breve que no bloquea la pantalla: `ToastProvider` (en `AppProviders`) y `useToast().show(mensaje, 'success' \| 'error')`; aparece arriba y se cierra solo o al tocarlo |
+| `Toast` ✅ (`toast.tsx`) | Aviso breve que no bloquea la pantalla: `ToastProvider` (en `AppProviders`) y `useToast().show(mensaje, 'success' \| 'error' \| 'info', { durationMs? })`; aparece arriba con margen y se cierra solo o con su botón X. `info` es neutro (avisos de conexión). Se anuncia a lectores de pantalla (`accessibilityLiveRegion` en Android, `announceForAccessibility` en iOS) |
 
 El texto lo recibe por props: estos componentes no contienen mensajes de dominio.

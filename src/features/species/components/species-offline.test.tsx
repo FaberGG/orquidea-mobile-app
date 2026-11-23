@@ -4,11 +4,16 @@ import { type ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ApiError } from '@/lib/api';
-import { registerOfflineQueries } from '@/lib/offline';
+import { getOfflineFileUri, registerOfflineQueries } from '@/lib/offline';
 import { RoleProvider } from '@/permissions';
 
 import { getSpecies, syncSpecies } from '../api';
-import { LEGACY_SPECIES_LIST_KEY, SPECIES_LABELS, speciesKeys } from '../constants';
+import {
+  LEGACY_SPECIES_LIST_KEY,
+  SPECIES_LABELS,
+  SPECIES_OFFLINE_LABELS,
+  speciesKeys,
+} from '../constants';
 import { prefetchSpeciesForOffline } from '../hooks';
 import { type Species, type SpeciesCatalog, type SpeciesSync } from '../types';
 import { SpeciesDetailScreen } from './species-detail-screen';
@@ -16,6 +21,10 @@ import { SpeciesListScreen } from './species-list-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn() } }));
 jest.mock('../api', () => ({ syncSpecies: jest.fn(), getSpecies: jest.fn() }));
+jest.mock('@/lib/offline', () => ({
+  ...jest.requireActual('@/lib/offline'),
+  getOfflineFileUri: jest.fn(() => null),
+}));
 
 const SAFE_AREA_METRICS = {
   frame: { x: 0, y: 0, width: 390, height: 844 },
@@ -76,6 +85,7 @@ function Providers({ children }: { children: ReactNode }) {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  jest.mocked(getOfflineFileUri).mockImplementation(() => null);
   queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   registerOfflineQueries(queryClient, speciesKeys.all);
 });
@@ -229,5 +239,68 @@ describe('fichas sin conexión (HU-21)', () => {
         'Esta información no está disponible sin conexión. Conéctate a internet para descargarla.',
       ),
     ).toBeTruthy();
+  });
+
+  it('sin conexión marca las fichas a las que les faltan fotos en el dispositivo', async () => {
+    queryClient.setQueryData(speciesKeys.catalog(), {
+      syncedAt: 'T1',
+      species: [AZULEJO, HELECHO],
+    });
+    onlineManager.setOnline(false);
+    await render(<SpeciesListScreen />, { wrapper: Providers });
+
+    expect(await screen.findByText(SPECIES_OFFLINE_LABELS.showingDownloaded)).toBeTruthy();
+    // El Azulejo tiene fotos sin descargar; el Helecho no tiene fotos, así que está completo.
+    expect(screen.getAllByText(SPECIES_OFFLINE_LABELS.photosUnavailable)).toHaveLength(1);
+    expect(
+      screen.getByRole('button', {
+        name: `Azulejo. ${SPECIES_OFFLINE_LABELS.photosUnavailable}`,
+      }),
+    ).toBeTruthy();
+  });
+
+  it('sin conexión no marca las fichas con todas sus fotos descargadas', async () => {
+    jest.mocked(getOfflineFileUri).mockImplementation((url) => `file:///${url}`);
+    queryClient.setQueryData(speciesKeys.catalog(), { syncedAt: 'T1', species: [AZULEJO] });
+    onlineManager.setOnline(false);
+    await render(<SpeciesListScreen />, { wrapper: Providers });
+
+    expect(await screen.findByText('Azulejo')).toBeTruthy();
+    expect(screen.queryByText(SPECIES_OFFLINE_LABELS.photosUnavailable)).toBeNull();
+  });
+
+  it('en el detalle, sin conexión, una foto no descargada muestra el aviso en su lugar', async () => {
+    jest
+      .mocked(getOfflineFileUri)
+      .mockImplementation((url) => (url === AZULEJO.photos[0]?.url ? `file:///${url}` : null));
+    queryClient.setQueryData(speciesKeys.detail('ave-1'), AZULEJO);
+    onlineManager.setOnline(false);
+    await render(<SpeciesDetailScreen id="ave-1" />, { wrapper: Providers });
+
+    expect(await screen.findByText(SPECIES_OFFLINE_LABELS.photoUnavailable)).toBeTruthy();
+    expect(screen.getAllByText(SPECIES_OFFLINE_LABELS.photoUnavailable)).toHaveLength(1);
+  });
+
+  it('con conexión no muestra avisos de fotos aunque no estén descargadas', async () => {
+    queryClient.setQueryData(speciesKeys.detail('ave-1'), AZULEJO);
+    jest.mocked(getSpecies).mockResolvedValue(AZULEJO);
+    await render(<SpeciesDetailScreen id="ave-1" />, { wrapper: Providers });
+
+    expect(await screen.findByText('Frutos y néctar')).toBeTruthy();
+    expect(screen.queryByText(SPECIES_OFFLINE_LABELS.photoUnavailable)).toBeNull();
+  });
+
+  it('el aviso de fichas sin conexión se puede ocultar', async () => {
+    queryClient.setQueryData(speciesKeys.catalog(), { syncedAt: 'T1', species: [HELECHO] });
+    onlineManager.setOnline(false);
+    await render(<SpeciesListScreen />, { wrapper: Providers });
+
+    expect(await screen.findByText(SPECIES_OFFLINE_LABELS.showingDownloaded)).toBeTruthy();
+    await fireEvent.press(
+      screen.getByRole('button', { name: SPECIES_OFFLINE_LABELS.dismissStatus }),
+    );
+
+    expect(screen.queryByText(SPECIES_OFFLINE_LABELS.showingDownloaded)).toBeNull();
+    expect(screen.getByText('Helecho')).toBeTruthy();
   });
 });

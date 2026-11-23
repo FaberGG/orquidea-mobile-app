@@ -14,6 +14,7 @@ import { useSpeciesList } from '../hooks';
 import { type Species } from '../types';
 import { CategoryChips } from './category-chips';
 import { SpeciesCard } from './species-card';
+import { SpeciesOfflineStatus } from './species-offline-status';
 
 /**
  * Pestaña "Inicio": listado de fichas taxonómicas por categoría (HU-10). Sin búsqueda hasta que la
@@ -39,6 +40,9 @@ export function SpeciesListScreen() {
       <View style={styles.filters}>
         <CategoryChips value={category} onChange={setCategory} />
       </View>
+
+      {/* HU-21: progreso de la descarga o aviso de que se ven las fichas descargadas. */}
+      {data !== undefined && <SpeciesOfflineStatus />}
 
       {offlineWithoutData && (
         <EmptyState icon="wetland" title={SPECIES_LABELS.offlineUnavailable}>

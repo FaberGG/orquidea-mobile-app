@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 import type { ReactNode } from 'react';
-import { Animated, Pressable, StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -16,11 +16,17 @@ import { Icon } from '@/components/ui/icon';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-export type ToastVariant = 'success' | 'error';
+/** `info`: avisos neutros del estado de la app (p. ej. conexión). */
+export type ToastVariant = 'success' | 'error' | 'info';
+
+export type ToastOptions = {
+  /** Tiempo en pantalla antes de cerrarse solo. Por defecto 4 s. */
+  durationMs?: number;
+};
 
 type ToastContextValue = {
   /** Muestra un aviso breve arriba de la pantalla; uno nuevo reemplaza al anterior. */
-  show: (message: string, variant?: ToastVariant) => void;
+  show: (message: string, variant?: ToastVariant, options?: ToastOptions) => void;
 };
 
 /** Sin `ToastProvider` (p. ej. en pruebas de un componente suelto) mostrar un aviso no hace nada. */
@@ -34,11 +40,14 @@ const DURATION_MS = 4000;
 const ENTER_MS = 220;
 const EXIT_MS = 180;
 const SLIDE_DISTANCE = 24;
+const MAX_WIDTH = 420;
+const CLOSE_LABEL = 'Cerrar aviso';
 
 type ToastState = { id: number; message: string; variant: ToastVariant };
 
 /**
- * Avisos informativos que no bloquean la pantalla: aparecen arriba, se cierran solos o al tocarlos.
+ * Avisos informativos que no bloquean la pantalla: aparecen arriba, con margen respecto a los bordes, y se
+ * cierran solos o con su botón X.
  * Se monta una sola vez, en `AppProviders`.
  */
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -58,12 +67,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const show = useCallback(
-    (message: string, variant: ToastVariant = 'success') => {
+    (message: string, variant: ToastVariant = 'success', options: ToastOptions = {}) => {
       if (timer.current) clearTimeout(timer.current);
       nextId.current += 1;
       setLeaving(false);
       setToast({ id: nextId.current, message, variant });
-      timer.current = setTimeout(dismiss, DURATION_MS);
+      timer.current = setTimeout(dismiss, options.durationMs ?? DURATION_MS);
+      // Android lo anuncia con `accessibilityLiveRegion`; iOS necesita el anuncio explícito.
+      if (Platform.OS === 'ios') AccessibilityInfo.announceForAccessibility(message);
     },
     [dismiss],
   );
@@ -121,11 +132,14 @@ function ToastCard({
 
   const insets = useSafeAreaInsets();
   const isError = toast.variant === 'error';
+  const isInfo = toast.variant === 'info';
 
   return (
-    <View pointerEvents="box-none" style={[styles.overlay, { top: insets.top + Spacing.two }]}>
+    <View pointerEvents="box-none" style={[styles.overlay, { top: insets.top + Spacing.three }]}>
       <Animated.View
         style={{
+          width: '100%',
+          maxWidth: MAX_WIDTH,
           opacity: progress,
           transform: [
             {
@@ -136,11 +150,9 @@ function ToastCard({
             },
           ],
         }}>
-        <Pressable
+        <View
           accessibilityRole={isError ? 'alert' : 'summary'}
           accessibilityLiveRegion="polite"
-          accessibilityHint="Toca para cerrar"
-          onPress={onPress}
           style={[
             styles.card,
             {
@@ -152,18 +164,32 @@ function ToastCard({
           <View
             style={[
               styles.badge,
-              { backgroundColor: isError ? theme.dangerBackground : theme.successBackground },
+              {
+                backgroundColor: isError
+                  ? theme.dangerBackground
+                  : isInfo
+                    ? theme.backgroundSelected
+                    : theme.successBackground,
+              },
             ]}>
             <Icon
-              name={isError ? 'info' : 'check'}
+              name={isError || isInfo ? 'info' : 'check'}
               size={18}
-              color={isError ? 'danger' : 'success'}
+              color={isError ? 'danger' : isInfo ? 'textLabel' : 'success'}
             />
           </View>
           <ThemedText type="small" themeColor="textLabel" style={styles.message}>
             {toast.message}
           </ThemedText>
-        </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={CLOSE_LABEL}
+            onPress={onPress}
+            hitSlop={Spacing.two}
+            style={({ pressed }) => [styles.close, pressed && styles.closePressed]}>
+            <Icon name="close" size={18} color="textSecondary" />
+          </Pressable>
+        </View>
       </Animated.View>
     </View>
   );
@@ -175,20 +201,19 @@ const styles = StyleSheet.create({
   },
   overlay: {
     position: 'absolute',
-    left: Spacing.three,
-    right: Spacing.three,
+    left: Spacing.four,
+    right: Spacing.four,
     alignItems: 'center',
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
-    maxWidth: 420,
-    paddingVertical: Spacing.two,
-    paddingLeft: Spacing.two,
-    paddingRight: Spacing.three,
+    paddingVertical: Spacing.two + Spacing.one,
+    paddingLeft: Spacing.three,
+    paddingRight: Spacing.two,
     borderWidth: 1,
-    borderRadius: Radius.full,
+    borderRadius: Radius.pill,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
     shadowRadius: 14,
@@ -202,6 +227,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   message: {
-    flexShrink: 1,
+    flex: 1,
+  },
+  close: {
+    width: 32,
+    height: 32,
+    borderRadius: Radius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  closePressed: {
+    opacity: 0.6,
   },
 });

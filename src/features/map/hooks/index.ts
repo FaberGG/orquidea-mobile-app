@@ -1,4 +1,8 @@
-export { prefetchStationsForOffline, stationsOfflineSource } from './stations-offline';
+export {
+  prefetchStationsForOffline,
+  stationsOfflineSource,
+  useStationsOfflineCount,
+} from './stations-offline';
 export {
   getStationDeleteErrorMessage,
   getStationSaveErrorMessage,

@@ -1,1 +1,1 @@
-export { OfflineDownloadsScreen as default } from '@/features/map';
+export { OfflineContentScreen as default } from '@/features/offline';

@@ -6,4 +6,6 @@ canónico de HU11 y devuelve el UUID normalizado; sus casos de prueba se leen de
 
 `species-catalog.ts` mantiene la copia local de fichas (HU-21): `applySpeciesSync` aplica una sincronización
 completa o por cambios, `sortSpecies` ordena como la API, `filterSpeciesByCategory` filtra los chips y
-`speciesOfflinePhotoUrls` lista las fotos que se descargan.
+`speciesOfflinePhotoUrls` / `speciesPhotoUrls` listan las fotos que se descargan. `getSpeciesOfflineState` dice
+si una ficha está descargada (texto **y** todas sus fotos; sin fotos cuenta como completa) y
+`summarizeSpeciesOffline` cuenta las completas.

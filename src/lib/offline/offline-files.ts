@@ -15,6 +15,8 @@ export type OfflineDownloadOptions = {
   signal?: AbortSignal;
   /** Descargas simultáneas. Por defecto 3. */
   concurrency?: number;
+  /** Se llama tras procesar cada archivo (descargado, omitido o fallido) con el resumen acumulado. */
+  onProgress?: (summary: Readonly<OfflineDownloadSummary>) => void;
 };
 
 export type OfflineDownloadSummary = {
@@ -83,6 +85,7 @@ export async function downloadOfflineFiles(
     folder = DEFAULT_OFFLINE_FOLDER,
     signal,
     concurrency = DEFAULT_CONCURRENCY,
+    onProgress,
   }: OfflineDownloadOptions = {},
 ): Promise<OfflineDownloadSummary> {
   const summary: OfflineDownloadSummary = { downloaded: 0, skipped: 0, failed: 0 };
@@ -98,6 +101,7 @@ export async function downloadOfflineFiles(
       const file = fileFor(url, folder);
       if (file.exists) {
         summary.skipped += 1;
+        onProgress?.(summary);
         continue;
       }
       try {
@@ -112,6 +116,7 @@ export async function downloadOfflineFiles(
           // Se ignora: se reintentará en la siguiente sincronización.
         }
       }
+      onProgress?.(summary);
     }
   };
 

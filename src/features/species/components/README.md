@@ -4,7 +4,9 @@
 
 | Componente | Descripción | HU | Estado |
 |---|---|---|---|
-| `SpeciesListScreen` | Chips de categoría + listado de `SpeciesCard`; estados de carga, error y vacío | HU-10 | ✅ |
+| `SpeciesListScreen` | Chips de categoría + listado de `SpeciesCard`; estados de carga, error y vacío. Sobre la lista, `SpeciesOfflineStatus` (HU-21) | HU-10 | ✅ |
+| `SpeciesOfflineStatus` | Progreso "Descargando fichas… x/y" o aviso "Sin conexión: se muestran las fichas descargadas." | HU-21 | ✅ |
+| `PhotoUnavailable` | Ocupa el lugar de una foto que no está en el dispositivo cuando no hay conexión | HU-21 | ✅ |
 | `CreateSpeciesButton` | Botón **+** del encabezado del listado (lo ven admin y superadmin) | HU-7 | ✅ |
 | `ScanSpeciesQrButton` / `SpeciesQrScannerScreen` | Entrada universal desde Inicio y lector con permisos contextuales, validación y navegación a detalle | HU-11 | En implementación; pendiente probar dispositivo |
 | `SpeciesDetailScreen` | Hero con las fotos (`SpeciesPhotoCarousel`, contador `1/n`), insignia UICN, taxonomía, alimentación, rol en el humedal (texto) y acciones con `<Can>` | HU-10, HU-8, HU-9 | ✅ (eliminar deshabilitado) |
@@ -14,8 +16,9 @@
 | `SpeciesForm` | Formulario compartido: fotos (una o más), identificación, taxonomía, ecología y estado de conservación | HU-7, HU-8 | ✅ |
 | `pickSpeciesPhotos` | Abre la galería con selección múltiple y valida cada archivo (jpg/png, 10 MB, cupo restante) | HU-7 v2.0 | ✅ (contrato inferido) |
 | `SpeciesPhotosField` | Cuadrícula de fotos: la primera es la **Principal**; quitar, agregar y contador `n/10` | HU-7 v2.0 | ✅ (contrato inferido) |
-| `SpeciesPhotoCarousel` | Fotos del detalle, deslizables, con contador | HU-7 v2.0 | ✅ |
-| `SpeciesCard` / `CategoryChips` / `ChipButton` / `ConservationBadge` / `ConservationChip` | Piezas del listado y del detalle | HU-10 | ✅ |
+| `SpeciesPhotoCarousel` | Fotos del detalle, deslizables, con contador. Sin conexión, cada foto no descargada muestra `PhotoUnavailable` y no abre el visor (HU-21) | HU-7 v2.0 | ✅ |
+| `SpeciesCard` | Tarjeta del listado. Sin conexión, si a la ficha le faltan fotos en el dispositivo muestra "Fotos no disponibles sin conexión" (HU-21) | HU-10 | ✅ |
+| `CategoryChips` / `ChipButton` / `ConservationBadge` / `ConservationChip` | Piezas del listado y del detalle | HU-10 | ✅ |
 
 `ScanSpeciesQrButton` identifica el acceso al escáner desde Inicio con el ícono `qrCode`.
 

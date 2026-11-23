@@ -35,4 +35,4 @@ tiene esquinas derechas de 24 px, igual que la barra inferior.
 | Componentes del humedal | HU-14 | ✅ `/wetland`, visitante y todos los roles |
 | Estaciones del sendero | HU-13 | ✅ `/stations`, todos los roles. Provisional: cuando exista el mapa (HU-12) la entrada será el mapa |
 | Anuncios | HU-17 | ✅ `/announcements`, visitante y todos los roles |
-| Descargas sin conexión | HU-21 | `/offline-downloads`: tramos publicados y visualización esquemática local |
+| Contenido sin conexión | HU-21 | `/offline-downloads`: qué está guardado en el dispositivo (fichas con sus fotos, estaciones), estado de la última actualización y "Actualizar ahora"; el mapa figura como en desarrollo |

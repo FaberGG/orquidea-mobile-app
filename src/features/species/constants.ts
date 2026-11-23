@@ -30,6 +30,19 @@ export const SPECIES_LABELS = {
     `Foto ${position} de ${total} de ${name}`,
 } as const;
 
+/**
+ * HU-21: estado de la copia offline en las pantallas de fichas.
+ * Respaldo local, pendiente de aprobar en HU-21 (los criterios solo fijan `offlineUnavailable`).
+ */
+export const SPECIES_OFFLINE_LABELS = {
+  photosUnavailable: 'Fotos no disponibles sin conexión',
+  photoUnavailable: 'Foto no disponible sin conexión',
+  syncing: (done: number, total: number) =>
+    `Descargando fichas para usar sin conexión… ${done}/${total}`,
+  showingDownloaded: 'Sin conexión: se muestran las fichas descargadas.',
+  dismissStatus: 'Ocultar aviso',
+} as const;
+
 /** Textos de escaneo y acceso a fichas por QR (HU-11). */
 export const SPECIES_QR_LABELS = {
   title: 'Escanear código QR',
