@@ -40,6 +40,7 @@ export const SPECIES_OFFLINE_LABELS = {
   syncing: (done: number, total: number) =>
     `Descargando fichas para usar sin conexión… ${done}/${total}`,
   showingDownloaded: 'Sin conexión: se muestran las fichas descargadas.',
+  dismissStatus: 'Ocultar aviso',
 } as const;
 
 /** Textos de escaneo y acceso a fichas por QR (HU-11). */

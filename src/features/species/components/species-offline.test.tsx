@@ -289,4 +289,18 @@ describe('fichas sin conexión (HU-21)', () => {
     expect(await screen.findByText('Frutos y néctar')).toBeTruthy();
     expect(screen.queryByText(SPECIES_OFFLINE_LABELS.photoUnavailable)).toBeNull();
   });
+
+  it('el aviso de fichas sin conexión se puede ocultar', async () => {
+    queryClient.setQueryData(speciesKeys.catalog(), { syncedAt: 'T1', species: [HELECHO] });
+    onlineManager.setOnline(false);
+    await render(<SpeciesListScreen />, { wrapper: Providers });
+
+    expect(await screen.findByText(SPECIES_OFFLINE_LABELS.showingDownloaded)).toBeTruthy();
+    await fireEvent.press(
+      screen.getByRole('button', { name: SPECIES_OFFLINE_LABELS.dismissStatus }),
+    );
+
+    expect(screen.queryByText(SPECIES_OFFLINE_LABELS.showingDownloaded)).toBeNull();
+    expect(screen.getByText('Helecho')).toBeTruthy();
+  });
 });
