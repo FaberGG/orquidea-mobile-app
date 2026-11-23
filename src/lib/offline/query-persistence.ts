@@ -1,5 +1,6 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { type Query, type QueryClient, type QueryKey } from '@tanstack/react-query';
+import { type PersistedClient, type Persister } from '@tanstack/react-query-persist-client';
 
 import { keyValueStorage } from './offline-storage';
 
@@ -26,21 +27,57 @@ export const offlineQueryOptions = {
   gcTime: Infinity,
 } as const;
 
-/** Persister de TanStack Query sobre `keyValueStorage`. Guarda como mucho una vez por segundo. */
-export const queryPersister = createAsyncStoragePersister({
+const storagePersister = createAsyncStoragePersister({
   storage: keyValueStorage,
   key: QUERY_CACHE_KEY,
   throttleTime: 1000,
 });
+
+/**
+ * Una query con datos cuyo último refresco falló (p. ej. sin backend) se guarda como `success` con esos datos:
+ * el fallo es de esta sesión y no debe acompañar a la copia al reiniciar la app.
+ */
+export function clearRefreshErrors(client: PersistedClient): PersistedClient {
+  return {
+    ...client,
+    clientState: {
+      ...client.clientState,
+      queries: client.clientState.queries.map((query) =>
+        query.state.status === 'error' && query.state.data !== undefined
+          ? {
+              ...query,
+              state: {
+                ...query.state,
+                status: 'success',
+                error: null,
+                fetchFailureCount: 0,
+                fetchFailureReason: null,
+              },
+            }
+          : query,
+      ),
+    },
+  };
+}
+
+/** Persister de TanStack Query sobre `keyValueStorage`. Guarda como mucho una vez por segundo. */
+export const queryPersister: Persister = {
+  ...storagePersister,
+  persistClient: (client) => storagePersister.persistClient(clearRefreshErrors(client)),
+};
 
 /** `true` si la query está marcada para guardarse en el dispositivo (`meta.persist`). */
 export function isPersistedQuery(query: Pick<Query, 'meta'>): boolean {
   return query.meta?.persist === true;
 }
 
-/** Filtro de `dehydrateOptions`: solo queries marcadas y con datos válidos. */
+/**
+ * Filtro de `dehydrateOptions`: solo queries marcadas y con datos. También las que conservan datos aunque su
+ * último refresco haya fallado (sin backend, tiempo agotado): si no, la copia offline se perdería al cerrar la
+ * app tras un intento de sincronización fallido.
+ */
 export function shouldPersistQuery(query: Query): boolean {
-  return isPersistedQuery(query) && query.state.status === 'success';
+  return isPersistedQuery(query) && query.state.data !== undefined;
 }
 
 /**

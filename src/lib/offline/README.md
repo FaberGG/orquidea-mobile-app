@@ -27,3 +27,6 @@ uso para nuevas features: [docs/architecture/OFFLINE.md](../../../docs/architect
 - `gcTime` de las queries persistidas es `Infinity`: un valor finito mayor que ~24,8 días desborda
   `setTimeout` y TanStack Query borraría la entrada al instante.
 - Cambiar `OFFLINE_CACHE_BUSTER` cuando un modelo persistido cambie de forma incompatible.
+- Se guardan las queries marcadas **con datos**, aunque su último refresco haya fallado (sin backend, tiempo
+  agotado): `clearRefreshErrors` las guarda como `success`. Si solo se guardaran las `success`, un intento de
+  sincronización fallido al abrir la app borraría la copia offline al cerrarla.
