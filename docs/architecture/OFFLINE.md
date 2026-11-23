@@ -146,6 +146,9 @@ con `setOfflineJson` y enviarlo en `If-None-Match`; con `304` devolver los datos
 
 - Persistir solo datos **públicos** o del propio dispositivo. Lo que depende del rol no se marca `persist`.
 - Iniciar o cerrar sesión no borra las queries persistidas (`isSessionDependentQuery` en `features/auth`).
+- Abrir la app sin conexión mantiene la sesión iniciada con el último usuario confirmado, mientras el token siga
+  vigente; al volver la red se confirma con `GET /yo` (ver [`features/auth`](../../src/features/auth/README.md#sesión)).
+  La query de sesión usa `networkMode: 'always'` para no quedar pausada (y la splash visible) sin red.
 - Si cambia la forma de un modelo persistido, subir `OFFLINE_CACHE_BUSTER` en
   `src/lib/offline/query-persistence.ts`. Ojo: eso borra toda la copia, y una actualización puede abrirse por
   primera vez sin red. Si el cambio lo permite, es mejor usar una clave nueva y mostrar la anterior hasta la

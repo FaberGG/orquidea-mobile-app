@@ -17,6 +17,10 @@ patrón de autenticación de Expo Router (SDK 53+).
 
 - (+) Tokens cifrados por el sistema operativo.
 - (−) SecureStore tiene un límite de tamaño por valor: guardar solo el token y su vencimiento, no el perfil completo.
+- Actualización (HU-21, sesión sin conexión): además del token se guarda, en otra clave (`orquidea.session-user`),
+  el último usuario confirmado por la API con solo los campos de `User` (id, nombre, apellido, correo y rol; unos
+  cientos de bytes). Permite abrir la app sin conexión con la sesión iniciada mientras el token siga vigente; se
+  borra al cerrar sesión, con un `401` o al vencer el token. Ver `src/features/auth/utils/README.md`.
 
 ## Alternativas consideradas
 

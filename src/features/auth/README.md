@@ -33,6 +33,7 @@ enlace **¿Olvidaste tu contraseña?** (Figma: "Olvido su contraseña?"). Los te
 | [`hooks/`](hooks/README.md) | `useSession`, `useLogin`, `useRegister`, `useRequestPasswordReset`, `useResetPassword`, `useLogout` |
 | [`schemas/`](schemas/README.md) | `login.schema.ts`, `register.schema.ts`, `forgot-password.schema.ts`, `reset-password.schema.ts` |
 | [`types/`](types/README.md) | `User`, `Session`, `AuthToken`, DTO de la API |
+| [`utils/`](utils/README.md) | `session-user-storage.ts`: último usuario confirmado, para abrir la app sin conexión |
 | `constants.ts` | `AUTH_MESSAGES` con los textos exactos de los criterios de aceptación |
 | `index.ts` | Exporta pantallas, `SessionProvider` y `useSession` |
 
@@ -42,8 +43,13 @@ enlace **¿Olvidaste tu contraseña?** (Figma: "Olvido su contraseña?"). Los te
   `useSession()` agrega `isAuthenticated` y `role`. `applyConfirmedRole` solo se usa tras una respuesta de la API que confirma el nuevo rol.
 - El usuario vive en la caché de servidor bajo `authKeys.me()`: iniciar o cerrar sesión es actualizar esa entrada.
 - Al iniciar la app: lee el token de `@/lib/storage` → `getMe()` → resuelve el rol. Mientras tanto la splash sigue visible.
-  Si no hay red o la API falla con algo distinto de `401`, la sesión arranca como visitante pero el token se conserva
-  para reintentar en el siguiente arranque.
+  La query de sesión usa `networkMode: 'always'`: sin red no se pausa (si se pausara, la splash no se ocultaría nunca).
+- **Sesión sin conexión (HU-21):** cada usuario confirmado por la API (inicio de sesión, `GET /yo`, cambio de rol
+  confirmado) se guarda en el almacenamiento seguro (`utils/session-user-storage.ts`). Si al abrir la app no hay red,
+  hay tiempo agotado o la API responde `5xx`, la sesión arranca **iniciada** con ese usuario, siempre que el token
+  siga vigente. Al volver la red (`onlineManager`) se confirma con `GET /yo`: aplica el rol vigente o, con `401`,
+  cierra la sesión. Sin usuario guardado, arranca como visitante y conserva el token para el siguiente arranque.
+- El usuario guardado se borra al cerrar sesión, con un `401` y cuando el token vence o no existe.
 - La API entrega **un único JWT** sin renovación. Si vence (`401`), se borra y la sesión pasa a `guest`.
 - Si no hay sesión, el rol efectivo es `visitor`.
 - `useLogout` borra el token, limpia la caché de servidor y deja la sesión como `guest` (no hay endpoint de logout).
