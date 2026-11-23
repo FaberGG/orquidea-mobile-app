@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
@@ -15,6 +14,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
+import { OfflineImage } from '@/components/ui/offline-image';
 import { Colors, Radius, Spacing } from '@/constants/theme';
 
 import { SIGHTINGS_LABELS } from '../constants';
@@ -42,7 +42,8 @@ export type PhotoViewerScreenProps = {
 };
 
 /**
- * Foto de un reporte a pantalla completa, sin recorte. Se amplía pellizcando o tocando dos veces y,
+ * Foto de un reporte o de una ficha a pantalla completa, sin recorte. Usa la copia descargada para uso offline
+ * si existe (HU-21); sin conexión, una foto no descargada muestra un aviso en su lugar. Se amplía pellizcando o tocando dos veces y,
  * ampliada, se recorre arrastrando. Sin zoom, deslizarla hacia arriba o abajo cierra el visor y, si hay
  * varias fotos, deslizarla hacia los lados pasa a la anterior o siguiente.
  */
@@ -194,12 +195,21 @@ export function PhotoViewerScreen({ uri, uris }: PhotoViewerScreenProps) {
                     // El zoom es solo de la foto actual; las vecinas no se amplían.
                     position === index ? zoomStyle : neighborStyle,
                   ]}>
-                  <Image
-                    source={{ uri: photoUri }}
+                  {/* HU-21: si la foto se descargó para uso offline se abre desde el dispositivo. */}
+                  <OfflineImage
+                    uri={photoUri}
                     style={styles.flex}
                     contentFit="contain"
                     accessibilityIgnoresInvertColors
                     accessibilityLabel={position === index ? SIGHTINGS_LABELS.photoHint : undefined}
+                    unavailableFallback={
+                      <View style={styles.unavailable}>
+                        <Icon name="offline" size={40} fixedColor={Colors.dark.textSecondary} />
+                        <ThemedText type="small" style={styles.hintText}>
+                          {SIGHTINGS_LABELS.photoUnavailableOffline}
+                        </ThemedText>
+                      </View>
+                    }
                   />
                 </Animated.View>
               ),
@@ -235,6 +245,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     bottom: 0,
+  },
+  unavailable: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.two,
+    padding: Spacing.four,
   },
   backdrop: {
     backgroundColor: VIEWER_BACKGROUND,
