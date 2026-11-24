@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
-import { type MapType } from 'react-native-maps';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
@@ -13,52 +12,28 @@ import { type TrailStation } from '../types';
 type NearestStation = { station: TrailStation; distanceMeters: number } | null;
 
 type MapControlsProps = {
-  mapType: MapType;
   isLocating: boolean;
   nearest: NearestStation;
   canManageMap: boolean;
-  isDrawing: boolean;
-  onMapTypeChange: (mapType: MapType) => void;
   onLocate: () => void;
   onCreateStation: () => void;
-  onStartDrawing: () => void;
 };
 
-/** Controles flotantes para cambiar la capa del mapa y centrar la ubicación actual. */
+/** Controles flotantes: gestión del mapa (con permiso), centrar la ubicación y estación más cercana. */
 export function MapControls({
-  mapType,
   isLocating,
   nearest,
   canManageMap,
-  isDrawing,
-  onMapTypeChange,
   onLocate,
   onCreateStation,
-  onStartDrawing,
 }: MapControlsProps) {
   const theme = useTheme();
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
-  const nextMapType = mapType === 'satellite' ? 'standard' : 'satellite';
-  const nextMapTypeLabel = mapType === 'satellite' ? MAP_LABELS.standard : MAP_LABELS.satellite;
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={nextMapTypeLabel}
-          accessibilityState={{ selected: mapType === 'satellite' }}
-          onPress={() => onMapTypeChange(nextMapType)}
-          style={({ pressed }) => [
-            styles.layerButton,
-            { backgroundColor: theme.background, borderColor: theme.border },
-            pressed && styles.pressed,
-          ]}>
-          <ThemedText type="smallBold" themeColor="textLabel">
-            {nextMapTypeLabel}
-          </ThemedText>
-        </Pressable>
-        {canManageMap && !isDrawing && (
+        {canManageMap && (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={isAdminMenuOpen ? 'Cerrar gestión del mapa' : 'Gestionar mapa'}
@@ -75,28 +50,26 @@ export function MapControls({
             </ThemedText>
           </Pressable>
         )}
-        {!isDrawing && (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={MAP_LABELS.currentLocation}
-            accessibilityState={{ busy: isLocating }}
-            disabled={isLocating}
-            onPress={onLocate}
-            style={({ pressed }) => [
-              styles.locationButton,
-              { backgroundColor: theme.background, borderColor: theme.border },
-              pressed && styles.pressed,
-            ]}>
-            {isLocating ? (
-              <ActivityIndicator color={theme.primary} />
-            ) : (
-              <Icon name="locate" size={20} color="primary" />
-            )}
-            <ThemedText type="smallBold" themeColor="textLabel">
-              {MAP_LABELS.currentLocation}
-            </ThemedText>
-          </Pressable>
-        )}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={MAP_LABELS.currentLocation}
+          accessibilityState={{ busy: isLocating }}
+          disabled={isLocating}
+          onPress={onLocate}
+          style={({ pressed }) => [
+            styles.locationButton,
+            { backgroundColor: theme.background, borderColor: theme.border },
+            pressed && styles.pressed,
+          ]}>
+          {isLocating ? (
+            <ActivityIndicator color={theme.primary} />
+          ) : (
+            <Icon name="locate" size={20} color="primary" />
+          )}
+          <ThemedText type="smallBold" themeColor="textLabel">
+            {MAP_LABELS.currentLocation}
+          </ThemedText>
+        </Pressable>
         {nearest !== null && (
           <View style={[styles.nearest, { backgroundColor: theme.background }]}>
             <ThemedText type="captionBold" themeColor="textLabel">
@@ -105,7 +78,7 @@ export function MapControls({
           </View>
         )}
       </View>
-      {canManageMap && isAdminMenuOpen && !isDrawing && (
+      {canManageMap && isAdminMenuOpen && (
         <View
           style={[
             styles.adminMenu,
@@ -132,24 +105,6 @@ export function MapControls({
               </ThemedText>
             </View>
           </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Trazar sendero"
-            onPress={() => {
-              setIsAdminMenuOpen(false);
-              onStartDrawing();
-            }}
-            style={({ pressed }) => [styles.adminMenuAction, pressed && styles.pressed]}>
-            <Icon name="edit" size={20} color="primary" />
-            <View style={styles.adminMenuText}>
-              <ThemedText type="smallBold" themeColor="textLabel">
-                Trazar sendero
-              </ThemedText>
-              <ThemedText type="caption" themeColor="textSecondary">
-                Marcar el recorrido punto por punto
-              </ThemedText>
-            </View>
-          </Pressable>
         </View>
       )}
     </View>
@@ -165,14 +120,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: Spacing.two,
-  },
-  layerButton: {
-    minHeight: MinTouchSize,
-    justifyContent: 'center',
-    paddingHorizontal: Spacing.three,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Radius.pill,
-    elevation: 2,
   },
   locationButton: {
     minHeight: MinTouchSize,
