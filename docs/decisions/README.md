@@ -35,5 +35,6 @@ se reemplazan con uno nuevo.
 | [0015](0015-escaneo-qr-y-conectividad.md) | Escaneo QR de fichas y conectividad | Aceptado |
 | [0016](0016-exportar-qr-desde-la-app.md) | Obtener y compartir el PNG QR desde el detalle administrativo | Aceptado |
 | [0017](0017-persistencia-offline.md) | Persistencia offline: caché guardada, conectividad global y fotos en disco (reemplaza parcialmente 0015) | Aceptado |
+| [0018](0018-mapa-con-maplibre-y-openfreemap.md) | Mapa con MapLibre y OpenFreeMap (sin Google Maps) | Aceptado |
 
 Los ADR *Propuestos* se aceptan (o se modifican) al ejecutar la tarea del Sprint 1 que instala la dependencia.
