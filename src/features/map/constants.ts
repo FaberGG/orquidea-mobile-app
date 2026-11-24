@@ -22,12 +22,19 @@ export const MAP_LABELS = {
     meters < 1000
       ? `${Math.round(meters)} m`
       : `${(meters / 1000).toLocaleString('es-CO', { maximumFractionDigits: 1 })} km`,
-  satellite: 'Vista satelital',
-  standard: 'Vista de mapa',
   closeDetails: 'Cerrar detalles de estación',
   openStation: (name: string) => `Ver estación ${name}`,
   species: (name: string) => `Abrir ficha de ${name}`,
 } as const;
+
+/**
+ * Estilo del mapa base con conexión: OpenFreeMap (gratuito, sin API key, esquema OpenMapTiles). Es el estilo
+ * público "Liberty" mientras llega el estilo propio del proyecto (tarea 3 del plan del mapa).
+ */
+export const MAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
+
+/** Atribución obligatoria de los datos (ODbL) y del esquema de los mosaicos; debe verse sobre el mapa. */
+export const MAP_ATTRIBUTION = '© OpenStreetMap contributors · © OpenMapTiles';
 
 /**
  * Centro aproximado del Humedal La Orquídea (el mismo punto de ejemplo de docs/api/estaciones.md). Se

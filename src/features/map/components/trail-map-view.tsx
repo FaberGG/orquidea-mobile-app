@@ -1,67 +1,79 @@
-import { forwardRef } from 'react';
-import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
-import MapView, { Marker, Polyline, type MapType } from 'react-native-maps';
+import {
+  Camera,
+  type CameraRef,
+  Map as MapLibreMap,
+  Marker,
+  UserLocation,
+} from '@maplibre/maplibre-react-native';
+import { forwardRef, useState } from 'react';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { useTheme } from '@/hooks/use-theme';
 
+import { MAP_STYLE_URL } from '../constants';
 import { type Coordinates, type TrailMap, type TrailStation } from '../types';
-import { getInitialMapRegion } from '../utils/map-region';
+import { MapAttribution, MapPin, TrailSegmentsLayer } from './map-layers';
+import { getInitialViewState, toLngLat } from '../utils/map-camera';
 
 type TrailMapViewProps = {
   map: TrailMap;
-  mapType: MapType;
   location: Coordinates | null;
   nearestStationId: string | null;
   onStationPress: (station: TrailStation) => void;
   style?: StyleProp<ViewStyle>;
 };
 
-/** Dibuja los tramos y las estaciones usando el mapa nativo de iOS o Android. */
-export const TrailMapView = forwardRef<MapView, TrailMapViewProps>(function TrailMapView(
-  { map, mapType, location, nearestStationId, onStationPress, style },
+/**
+ * Dibuja los tramos y las estaciones sobre el mapa base de OpenFreeMap (MapLibre, sin API keys). La ref
+ * expone la cámara para centrar el mapa en la ubicación del visitante.
+ */
+export const TrailMapView = forwardRef<CameraRef, TrailMapViewProps>(function TrailMapView(
+  { map, location, nearestStationId, onStationPress, style },
   ref,
 ) {
   const theme = useTheme();
+  // La vista inicial se calcula una vez: si el recorrido se refresca, la cámara no salta.
+  const [initialViewState] = useState(() => getInitialViewState(map));
 
   return (
-    <MapView
-      ref={ref}
-      style={[styles.map, style]}
-      initialRegion={getInitialMapRegion(map)}
-      mapType={mapType}
-      showsUserLocation={location !== null}
-      showsMyLocationButton={false}
-      toolbarEnabled={false}
-      accessibilityLabel="Mapa del sendero con sus estaciones">
-      {map.segments.map((segment) => (
-        <Polyline
-          key={segment.id}
-          coordinates={segment.coordinates}
-          strokeColor={theme.primary}
-          strokeWidth={5}
-          lineCap="round"
-          lineJoin="round"
-        />
-      ))}
-      {map.stations.map((station) => {
-        const isNearest = station.id === nearestStationId;
-        return (
-          <Marker
-            key={station.id}
-            coordinate={station.coordinates}
-            title={station.name}
-            description={isNearest ? 'Estación más cercana' : (station.description ?? undefined)}
-            onPress={() => onStationPress(station)}
-            pinColor={isNearest ? theme.danger : theme.primary}
-            accessibilityLabel={`${station.name}${isNearest ? ', estación más cercana' : ''}`}
-          />
-        );
-      })}
-    </MapView>
+    <View style={[styles.container, style]}>
+      <MapLibreMap
+        style={styles.map}
+        mapStyle={MAP_STYLE_URL}
+        attribution={false}
+        logo={false}
+        compass={false}
+        accessibilityLabel="Mapa del sendero con sus estaciones">
+        <Camera ref={ref} initialViewState={initialViewState} />
+        <TrailSegmentsLayer id="trail" segments={map.segments} color={theme.primary} width={5} />
+        {map.stations.map((station) => {
+          const isNearest = station.id === nearestStationId;
+          return (
+            <Marker
+              key={station.id}
+              id={station.id}
+              lngLat={toLngLat(station.coordinates)}
+              onPress={() => onStationPress(station)}>
+              <View
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel={`${station.name}${isNearest ? ', estación más cercana' : ''}`}>
+                <MapPin color={isNearest ? theme.danger : theme.primary} />
+              </View>
+            </Marker>
+          );
+        })}
+        {location !== null && <UserLocation accuracy />}
+      </MapLibreMap>
+      <MapAttribution />
+    </View>
   );
 });
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   map: {
     flex: 1,
   },

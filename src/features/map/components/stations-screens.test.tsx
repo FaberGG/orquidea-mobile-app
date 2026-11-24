@@ -297,7 +297,7 @@ describe('Selector de ubicación en el mapa (SCRUM-72)', () => {
     expect(await screen.findByText(LOCATION_PICKER_LABELS.title)).toBeTruthy();
 
     await fireEvent(screen.getByLabelText(LOCATION_PICKER_LABELS.mapLabel), 'press', {
-      nativeEvent: { coordinate: { latitude: 2.4612345, longitude: -76.6123456 } },
+      nativeEvent: { lngLat: [-76.6123456, 2.4612345] },
     });
     expect(screen.getByText('2.461235, -76.612346')).toBeTruthy();
     await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.confirm));
@@ -311,11 +311,11 @@ describe('Selector de ubicación en el mapa (SCRUM-72)', () => {
     await renderAs('admin', <StationCreateScreen />);
     await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.open));
     await fireEvent(await screen.findByLabelText(LOCATION_PICKER_LABELS.mapLabel), 'press', {
-      nativeEvent: { coordinate: { latitude: 2.46, longitude: -76.61 } },
+      nativeEvent: { lngLat: [-76.61, 2.46] },
     });
 
     await fireEvent(screen.getByLabelText(LOCATION_PICKER_LABELS.selectedPoint), 'dragEnd', {
-      nativeEvent: { coordinate: { latitude: 2.47, longitude: -76.62 } },
+      nativeEvent: { lngLat: [-76.62, 2.47] },
     });
 
     expect(screen.getByText('2.470000, -76.620000')).toBeTruthy();
@@ -325,7 +325,7 @@ describe('Selector de ubicación en el mapa (SCRUM-72)', () => {
     await renderAs('admin', <StationCreateScreen />);
     await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.open));
     await fireEvent(await screen.findByLabelText(LOCATION_PICKER_LABELS.mapLabel), 'press', {
-      nativeEvent: { coordinate: { latitude: 2.46, longitude: -76.61 } },
+      nativeEvent: { lngLat: [-76.61, 2.46] },
     });
     await fireEvent.press(screen.getByText(LOCATION_PICKER_LABELS.cancel));
 

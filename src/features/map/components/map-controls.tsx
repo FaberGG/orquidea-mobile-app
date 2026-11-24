@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
-import { type MapType } from 'react-native-maps';
 
 import { ThemedText } from '@/components/themed-text';
 import { Icon } from '@/components/ui/icon';
@@ -13,47 +12,27 @@ import { type TrailStation } from '../types';
 type NearestStation = { station: TrailStation; distanceMeters: number } | null;
 
 type MapControlsProps = {
-  mapType: MapType;
   isLocating: boolean;
   nearest: NearestStation;
   canManageMap: boolean;
-  onMapTypeChange: (mapType: MapType) => void;
   onLocate: () => void;
   onCreateStation: () => void;
 };
 
-/** Controles flotantes para cambiar la capa del mapa y centrar la ubicación actual. */
+/** Controles flotantes: gestión del mapa (con permiso), centrar la ubicación y estación más cercana. */
 export function MapControls({
-  mapType,
   isLocating,
   nearest,
   canManageMap,
-  onMapTypeChange,
   onLocate,
   onCreateStation,
 }: MapControlsProps) {
   const theme = useTheme();
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
-  const nextMapType = mapType === 'satellite' ? 'standard' : 'satellite';
-  const nextMapTypeLabel = mapType === 'satellite' ? MAP_LABELS.standard : MAP_LABELS.satellite;
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={nextMapTypeLabel}
-          accessibilityState={{ selected: mapType === 'satellite' }}
-          onPress={() => onMapTypeChange(nextMapType)}
-          style={({ pressed }) => [
-            styles.layerButton,
-            { backgroundColor: theme.background, borderColor: theme.border },
-            pressed && styles.pressed,
-          ]}>
-          <ThemedText type="smallBold" themeColor="textLabel">
-            {nextMapTypeLabel}
-          </ThemedText>
-        </Pressable>
         {canManageMap && (
           <Pressable
             accessibilityRole="button"
@@ -141,14 +120,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: Spacing.two,
-  },
-  layerButton: {
-    minHeight: MinTouchSize,
-    justifyContent: 'center',
-    paddingHorizontal: Spacing.three,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Radius.pill,
-    elevation: 2,
   },
   locationButton: {
     minHeight: MinTouchSize,

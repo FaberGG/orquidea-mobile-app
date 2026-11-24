@@ -1,6 +1,12 @@
+import {
+  Camera,
+  type InitialViewState,
+  Map as MapLibreMap,
+  Marker,
+  ViewAnnotation,
+} from '@maplibre/maplibre-react-native';
 import { useState } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
-import MapView, { Marker, Polyline, type Region } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -8,10 +14,16 @@ import { Button } from '@/components/ui/button';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-import { LOCATION_PICKER_LABELS, WETLAND_CENTER } from '../constants';
+import { LOCATION_PICKER_LABELS, MAP_STYLE_URL, WETLAND_CENTER } from '../constants';
 import { useTrailMap } from '../hooks/use-trail-map';
 import { type Coordinates, type TrailMap } from '../types';
-import { getInitialMapRegion, getLocationMapRegion } from '../utils/map-region';
+import { MapAttribution, MapPin, TrailSegmentsLayer } from './map-layers';
+import {
+  fromLngLat,
+  getInitialViewState,
+  getLocationViewState,
+  toLngLat,
+} from '../utils/map-camera';
 
 export type MapLocationPickerProps = {
   visible: boolean;
@@ -21,13 +33,16 @@ export type MapLocationPickerProps = {
   onCancel: () => void;
 };
 
-/** Región inicial: el punto elegido; si no hay, el sendero; si tampoco carga, el humedal. */
-export function getPickerInitialRegion(value: Coordinates | null, map?: TrailMap): Region {
-  if (value) return getLocationMapRegion(value);
+/** Vista inicial: el punto elegido; si no hay, el sendero; si tampoco carga, el humedal. */
+export function getPickerInitialViewState(
+  value: Coordinates | null,
+  map?: TrailMap,
+): InitialViewState {
+  if (value) return getLocationViewState(value);
   if (map && (map.bounds || map.segments.length > 0 || map.stations.length > 0)) {
-    return getInitialMapRegion(map);
+    return getInitialViewState(map);
   }
-  return getLocationMapRegion(WETLAND_CENTER);
+  return getLocationViewState(WETLAND_CENTER);
 }
 
 /**
@@ -48,8 +63,8 @@ function PickerContent({ value, onConfirm, onCancel }: Omit<MapLocationPickerPro
   const theme = useTheme();
   const { data: map } = useTrailMap();
   const [point, setPoint] = useState<Coordinates | null>(value);
-  // La región se calcula una vez: si el sendero llega después, no se mueve el mapa bajo el dedo.
-  const [initialRegion] = useState(() => getPickerInitialRegion(value, map));
+  // La vista se calcula una vez: si el sendero llega después, no se mueve el mapa bajo el dedo.
+  const [initialViewState] = useState(() => getPickerInitialViewState(value, map));
 
   return (
     <SafeAreaView
@@ -64,39 +79,45 @@ function PickerContent({ value, onConfirm, onCancel }: Omit<MapLocationPickerPro
         </ThemedText>
       </View>
 
-      <MapView
-        style={styles.map}
-        initialRegion={initialRegion}
-        onPress={(event) => setPoint(event.nativeEvent.coordinate)}
-        toolbarEnabled={false}
-        accessibilityLabel={LOCATION_PICKER_LABELS.mapLabel}>
-        {map?.segments.map((segment) => (
-          <Polyline
-            key={segment.id}
-            coordinates={segment.coordinates}
-            strokeColor={theme.primary}
-            strokeWidth={4}
-          />
-        ))}
-        {map?.stations.map((station) => (
-          <Marker
-            key={station.id}
-            coordinate={station.coordinates}
-            title={station.name}
-            pinColor={theme.primary}
-            opacity={0.6}
-          />
-        ))}
-        {point && (
-          <Marker
-            coordinate={point}
-            draggable
-            onDragEnd={(event) => setPoint(event.nativeEvent.coordinate)}
-            pinColor={theme.danger}
-            accessibilityLabel={LOCATION_PICKER_LABELS.selectedPoint}
-          />
-        )}
-      </MapView>
+      <View style={styles.map}>
+        <MapLibreMap
+          style={styles.map}
+          mapStyle={MAP_STYLE_URL}
+          attribution={false}
+          logo={false}
+          compass={false}
+          onPress={(event) => setPoint(fromLngLat(event.nativeEvent.lngLat))}
+          accessibilityLabel={LOCATION_PICKER_LABELS.mapLabel}>
+          <Camera initialViewState={initialViewState} />
+          {map && (
+            <TrailSegmentsLayer
+              id="picker"
+              segments={map.segments}
+              color={theme.primary}
+              width={4}
+            />
+          )}
+          {map?.stations.map((station) => (
+            <Marker key={station.id} id={station.id} lngLat={toLngLat(station.coordinates)}>
+              <View accessible accessibilityLabel={station.name}>
+                <MapPin color={theme.primary} opacity={0.6} />
+              </View>
+            </Marker>
+          ))}
+          {point && (
+            <ViewAnnotation
+              id="selected-point"
+              lngLat={toLngLat(point)}
+              draggable
+              onDragEnd={(event) => setPoint(fromLngLat(event.nativeEvent.lngLat))}>
+              <View accessible accessibilityLabel={LOCATION_PICKER_LABELS.selectedPoint}>
+                <MapPin color={theme.danger} />
+              </View>
+            </ViewAnnotation>
+          )}
+        </MapLibreMap>
+        <MapAttribution />
+      </View>
 
       <View style={styles.footer}>
         <ThemedText

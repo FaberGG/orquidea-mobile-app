@@ -1,9 +1,8 @@
+import { type CameraRef } from '@maplibre/maplibre-react-native';
 import * as Location from 'expo-location';
 import { router, useFocusEffect, type Href } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import type MapView from 'react-native-maps';
-import { type MapType } from 'react-native-maps';
 
 import { EmptyState } from '@/components/feedback/empty-state';
 import { FormMessage } from '@/components/feedback/form-message';
@@ -20,17 +19,16 @@ import { type Coordinates, type TrailStation } from '../types';
 import { MapControls } from './map-controls';
 import { StationDetailsCard } from './station-details-card';
 import { TrailMapView } from './trail-map-view';
-import { getLocationMapRegion } from '../utils/map-region';
+import { getLocationViewState } from '../utils/map-camera';
 
 /** HU-12: mapa del recorrido, estaciones, geolocalización y ficha de cada estación. */
 export function MapScreen() {
   const theme = useTheme();
-  const mapRef = useRef<MapView>(null);
+  const cameraRef = useRef<CameraRef>(null);
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
   const followsNearestStation = useRef(false);
   const { data, isPending, isError, refetch } = useTrailMap();
   const canManageMap = usePermission('stations:manage');
-  const [mapType, setMapType] = useState<MapType>('standard');
   const [location, setLocation] = useState<Coordinates | null>(null);
   const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [isLocating, setIsLocating] = useState(false);
@@ -100,7 +98,7 @@ export function MapScreen() {
       const closest = getNearestStation(data.stations, coordinates);
       followsNearestStation.current = true;
       setSelectedStationId(closest?.station.id ?? null);
-      mapRef.current?.animateToRegion(getLocationMapRegion(coordinates), 500);
+      cameraRef.current?.flyTo({ ...getLocationViewState(coordinates), duration: 500 });
 
       if (locationSubscription.current === null) {
         try {
@@ -142,9 +140,8 @@ export function MapScreen() {
     <Screen>
       <View style={styles.container}>
         <TrailMapView
-          ref={mapRef}
+          ref={cameraRef}
           map={data}
-          mapType={mapType}
           location={location}
           nearestStationId={nearest?.station.id ?? null}
           onStationPress={(station: TrailStation) => {
@@ -154,11 +151,9 @@ export function MapScreen() {
         />
         <View style={styles.controls}>
           <MapControls
-            mapType={mapType}
             isLocating={isLocating}
             nearest={nearest}
             canManageMap={canManageMap}
-            onMapTypeChange={setMapType}
             onLocate={() => void locate()}
             onCreateStation={() => router.push('/stations/new' as Href)}
           />
