@@ -7,7 +7,6 @@ gestión de esas estaciones.
 |---|---|---|---|
 | HU-12 | Ver el mapa con las estaciones (y la más cercana con geolocalización) | Todos | ✅ Consumo público de `GET /api/mapa` |
 | HU-13 | Crear, editar y eliminar estaciones; "Ver estación" con sus fichas | Admin+ (gestión) · Todos (consulta) | ✅ Integrado con el contrato de `dev` |
-| Trazado GPX local | Dibujar un recorrido tocando mapa/estaciones y compartirlo como GPX | Admin+ | ✅ Exportación local; publicación desde la app requiere endpoint de Back |
 
 ## Flujo de estaciones de HU-13
 
@@ -34,8 +33,6 @@ la consulta directa y la gestión de estaciones.
 | `components/trail-map-view.tsx` | Dibuja la geometría y las estaciones en el mapa nativo |
 | `components/map-location-picker.tsx` | SCRUM-72: `MapLocationPicker`, selector de un punto en pantalla completa (tocar el mapa o arrastrar el marcador, CONFIRMAR). Muestra el sendero como referencia. Lo usan estaciones (HU-13) y avistamientos (HU-18, vía `@/features/map`); solo se ofrece con conexión |
 | `components/map-controls.tsx` | Cambia la capa del mapa y permite centrar en la ubicación |
-| `components/trail-drawing-panel.tsx` | Captura el nombre, los puntos y las acciones para exportar un GPX |
-| `utils/trail-gpx.ts` | Convierte puntos del mapa en un archivo GPX 1.1 |
 | `components/station-details-card.tsx` | Muestra detalles y abre fichas asociadas |
 | `api/`, `hooks/`, `schemas/`, `components/` de estaciones | CRUD de estaciones para HU-13, formularios, validación y pantallas administrativas |
 | `constants.ts` | Textos, claves de caché y mensajes de HU-12 |
@@ -52,17 +49,11 @@ recorrido GPX, `tramos` puede venir vacío y el mapa sigue mostrando las estacio
 **Permiso:** `stations:manage` (admin y superadmin) para **+**, **Editar estación** y **ELIMINAR**. Las rutas de
 crear y editar viven en `src/app/(admin)/stations/`.
 
-## Trazado de un recorrido
+## Recorrido de solo lectura
 
-Con `stations:manage`, el mapa muestra **Gestionar mapa** con dos acciones: **Crear estación**, que abre el
-formulario de HU-13, y **Trazar sendero**. Toca las estaciones en orden para añadir paradas conectadas; los
-marcadores muestran su número y no se puede añadir la misma estación dos veces. Toca el mapa para agregar
-puntos intermedios y arrástralos para ajustar el camino. El panel permite deshacer el último punto, limpiar el
-trazado, cancelar o exportar un GPX cuando hay al menos dos puntos. **Guardar en mapa** conserva el trazado en
-el almacenamiento privado del dispositivo y lo restaura al volver a abrir la app; **Exportar GPX** genera un
-archivo separado y abre la hoja de compartir. El backend actual solo ofrece `GET /api/mapa`, por lo que la app
-no puede publicar la ruta para los demás visitantes; para eso se necesita un endpoint protegido de escritura en
-Back.
+El recorrido (tramos y estaciones) lo define y administra el backend: la app solo lo lee con `GET /api/mapa` y
+no ofrece ninguna forma de trazarlo, guardarlo ni exportarlo. Con `stations:manage`, **Gestionar mapa** solo
+ofrece **Crear estación** (HU-13).
 
 ## Descargas sin conexión
 
@@ -70,14 +61,12 @@ La descarga manual de recorridos (`/offline-downloads`, esquema SVG del sendero)
 ahora **Contenido sin conexión** (`features/offline`). El mapa sin conexión llegará con la migración a MapLibre
 (SCRUM-68/69), con su propio mecanismo de descarga.
 
-## Mejoras del trazado y descargas
+## Mejoras de descargas
 
 El requisito acordado es evitar suscripciones obligatorias o cobros por uso para las funciones de senderos.
 Esto permite bibliotecas de código abierto y datos propios; no exige eliminar toda herramienta externa.
 No debe dependerse de que el nivel gratuito de un proveedor comercial permanezca disponible.
 
-- El trazado ya conecta estaciones según el orden elegido, admite puntos intermedios movibles y se puede copiar
-  a una descarga local. Los borradores continúan siendo privados del dispositivo; el servidor no ofrece escritura.
 - Los paquetes ya incluyen geometría, estaciones y fotos reducidas de estaciones. Falta añadir una imagen
   georreferenciada del sector con permiso de almacenamiento y redistribución. El visor no debe pedir mosaicos a
   un proveedor comercial.
@@ -86,8 +75,7 @@ No debe dependerse de que el nivel gratuito de un proveedor comercial permanezca
 - Permitir reconocer las estaciones por sus fotos cuando no se obtenga la ubicación, y abrir el paquete aunque
   fallen los mapas en línea. No se debe anunciar una descarga con imágenes si falta algún archivo requerido.
 
-Falta obtener la imagen del sector y sus derechos de reutilización. El editor aún no publica recorridos para los
-demás usuarios; el backend necesita un contrato de escritura para eso. Los mapas en línea actuales siguen usando
+Falta obtener la imagen del sector y sus derechos de reutilización. Los mapas en línea actuales siguen usando
 Apple/Google; pueden conservarse como una capa opcional, mientras que la descarga propia funciona sin esa capa.
 El alojamiento de la API y la distribución de la app siguen siendo servicios distintos que pueden tener costes.
 

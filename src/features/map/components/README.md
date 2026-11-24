@@ -7,7 +7,7 @@ diseño"): usan los tokens y la estructura de fichas y componentes del humedal.
 
 | Componente | Ruta | Descripción |
 |---|---|---|
-| `MapScreen` | `/map` (pestaña) | Recorrido publicado, estaciones, ubicación y trazado local con permiso administrativo |
+| `MapScreen` | `/map` (pestaña) | Recorrido publicado (solo lectura), estaciones, ubicación y **Crear estación** con `stations:manage` |
 | `StationsListScreen` | `/stations` | Listado público; **+** con `stations:manage` |
 | `StationDetailScreen` | `/stations/:id` | "Ver estación": foto, descripción, ubicación (abre la app de mapas) y enlaces a sus fichas (CA4). Editar y ELIMINAR con `stations:manage` |
 | `StationCreateScreen` | `/stations/new` | GUARDAR ESTACIÓN (CA1, CA4); al guardar abre el detalle |
@@ -27,6 +27,5 @@ diseño"): usan los tokens y la estructura de fichas y componentes del humedal.
 
 Pruebas: `stations-screens.test.tsx` (criterios de HU-13 por rol).
 
-El selector de ubicación y la consulta de estaciones desde el mapa ya están integrados. El trazado conecta en
-orden las estaciones tocadas y admite puntos intermedios movibles. Las descargas incluyen geometría, textos y
-fotos de estaciones comprimidas en el teléfono; falta el fondo propio georreferenciado del sector.
+El selector de ubicación y la consulta de estaciones desde el mapa ya están integrados. El recorrido es de solo
+lectura: lo administra el backend y la app no permite trazarlo ni exportarlo.
