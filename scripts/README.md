@@ -8,6 +8,7 @@ código, utilidades de desarrollo). No se incluyen en el bundle.
 | `reset-project.js` | De la plantilla de Expo. **No ejecutar**: mueve `src/` a `example/`. Se elimina en la tarea T0.1 del Sprint 1 |
 | `mock-he2-api.cjs` | API efímera para probar login, creación, edición, inhabilitación y revocación de HE-2 |
 | `start-he2-demo.cjs` | Inicia la API de prueba y Expo con `npm run demo:he2` |
+| `maps/build-offline-map.cjs` | Genera y verifica el mapa base sin conexión de Popayán con `npm run maps:build` (Docker). Ver [maps/README.md](maps/README.md) |
 
 Para revisar HE-2: ejecuta `npm run demo:he2`, abre `http://localhost:8081` (o pulsa `w` en Expo), inicia
 sesión con `superadmin@orquidea.test` / `Prueba123!`, abre el menú izquierdo y entra a **Gestionar cuentas**.
