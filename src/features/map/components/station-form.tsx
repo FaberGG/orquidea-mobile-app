@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { TextField } from '@/components/ui/text-field';
 import { FontFamily, Radius, Spacing } from '@/constants/theme';
-import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useTheme } from '@/hooks/use-theme';
 import { getCurrentLocation } from '@/lib/location';
 
@@ -68,7 +67,6 @@ export function StationForm({
   const [localError, setLocalError] = useState<string | undefined>(undefined);
   const [isLocating, setIsLocating] = useState(false);
   const [isPickingOnMap, setIsPickingOnMap] = useState(false);
-  const { status: networkStatus } = useNetworkStatus();
   const latitude = useWatch({ control, name: 'latitude' });
   const longitude = useWatch({ control, name: 'longitude' });
   const currentPoint = toCoordinates(latitude, longitude);
@@ -172,14 +170,12 @@ export function StationForm({
           onPress={() => void fillCurrentLocation()}
           isLoading={isLocating}
         />
-        {/* Sin red el mapa no carga: se queda el GPS (y escribirlas a mano), como antes. */}
-        {networkStatus !== 'offline' && (
-          <Button
-            label={currentPoint ? LOCATION_PICKER_LABELS.change : LOCATION_PICKER_LABELS.open}
-            variant="secondary"
-            onPress={() => setIsPickingOnMap(true)}
-          />
-        )}
+        {/* SCRUM-85: también sin red, con el mapa offline de Popayán incluido en la app. */}
+        <Button
+          label={currentPoint ? LOCATION_PICKER_LABELS.change : LOCATION_PICKER_LABELS.open}
+          variant="secondary"
+          onPress={() => setIsPickingOnMap(true)}
+        />
         <MapLocationPicker
           visible={isPickingOnMap}
           value={currentPoint}
