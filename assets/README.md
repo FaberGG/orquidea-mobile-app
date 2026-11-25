@@ -9,6 +9,7 @@
 | `images/tabIcons/` | Íconos de las pestañas (`@2x`, `@3x`) |
 | `expo.icon/` | Ícono de iOS (formato Icon Composer) |
 | `fonts/` | Previsto: tipografías propias si el diseño las define (cargar con `expo-font`) |
+| `maps/` | SCRUM-85: `popayan-z14.pmtiles`, mapa base offline de Popayán (~1,3 MB). No se edita a mano: se regenera con `npm run maps:build` (`scripts/maps/README.md`) y se reemplaza el archivo |
 
 ## Reglas
 
