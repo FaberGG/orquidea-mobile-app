@@ -111,7 +111,7 @@ export function OfflineContentScreen() {
 
       <Section icon="map" title={LABELS.mapTitle}>
         <ThemedText type="small" themeColor="textSecondary">
-          {LABELS.mapInDevelopment}
+          {LABELS.mapIncluded}
         </ThemedText>
       </Section>
     </FormScreen>

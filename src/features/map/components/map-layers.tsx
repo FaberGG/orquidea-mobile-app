@@ -1,4 +1,4 @@
-import { GeoJSONSource, Layer } from '@maplibre/maplibre-react-native';
+import { GeoJSONSource, ImageSource, Layer } from '@maplibre/maplibre-react-native';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-import { MAP_ATTRIBUTION } from '../constants';
+import { MAP_ATTRIBUTION, WETLAND_ILLUSTRATION } from '../constants';
 import { type TrailSegment } from '../types';
 import { toLngLat } from '../utils/map-camera';
 
@@ -44,6 +44,27 @@ export function TrailSegmentsLayer({ id, segments, color, width }: TrailSegments
         paint={{ 'line-color': color, 'line-width': width }}
       />
     </GeoJSONSource>
+  );
+}
+
+/**
+ * SCRUM-84: ilustración georreferenciada del humedal (SCRUM-83) sobre el mapa base y debajo del sendero y
+ * las estaciones. Es un asset de la app, así que se ve igual con OpenFreeMap y con el mapa offline. Aparece
+ * desde `WETLAND_ILLUSTRATION.minZoom`.
+ */
+export function WetlandIllustrationLayer() {
+  return (
+    <ImageSource
+      id="wetland-illustration"
+      url={require('@/assets/maps/humedal-ilustracion.png')}
+      coordinates={WETLAND_ILLUSTRATION.coordinates}>
+      <Layer
+        type="raster"
+        id="wetland-illustration-layer"
+        minzoom={WETLAND_ILLUSTRATION.minZoom}
+        paint={{ 'raster-fade-duration': 0 }}
+      />
+    </ImageSource>
   );
 }
 

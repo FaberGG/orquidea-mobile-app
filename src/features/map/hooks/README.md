@@ -11,6 +11,7 @@
 | `useUpdateStation(id)` | Editar; invalida `stationKeys.all` |
 | `useDeleteStation(id)` | Eliminar; quita el detalle de la caché e invalida el listado |
 | `getStationSaveErrorMessage` / `getStationDeleteErrorMessage` | Prefieren el `mensaje` del servidor (CODIGO §10) |
+| `useMapSource()` | SCRUM-84: mapa base según la conexión (`mode`, `mapStyle`, `onStyleLoaded`, `onLoadFailed`) y avisos del cambio |
 | `useOfflineTiles(enabled)` | SCRUM-85: URL `pmtiles://file:///…` del mapa base offline incluido en la app (`loading` / `ready` / `error`). La usan el selector de ubicación y el cambio automático de fuente del mapa (tarea 5) |
 
 El mapa de HU-12 usa la clave independiente de `useTrailMap`; las mutaciones de estaciones invalidan el

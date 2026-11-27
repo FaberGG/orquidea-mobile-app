@@ -1,3 +1,5 @@
+import { type LngLat } from '@maplibre/maplibre-react-native';
+
 /** Textos y claves de caché del mapa del sendero (HU-12). */
 export const MAP_LABELS = {
   loading: 'Cargando el mapa del sendero…',
@@ -51,6 +53,48 @@ export const OFFLINE_MAP_BOUNDS = {
   south: 2.401735,
   east: -76.535912,
   north: 2.521901,
+} as const;
+
+/**
+ * SCRUM-84: si OpenFreeMap no termina de cargar el estilo en este tiempo (con conexión), el mapa pasa al
+ * mapa offline incluido en la app.
+ */
+export const ONLINE_MAP_TIMEOUT_MS = 8_000;
+
+/**
+ * SCRUM-84: tiempo que un cambio de red debe mantenerse antes de cambiar la fuente del mapa. Igual a
+ * `OFFLINE_RECONNECT_SETTLE_MS` (`features/offline/constants.ts`); no se importa de allí porque esa feature
+ * ya depende de `features/map` y se formaría un ciclo. Si cambia uno, cambiar el otro.
+ */
+export const MAP_SOURCE_SETTLE_MS = 2_000;
+
+/**
+ * SCRUM-83 / SCRUM-84: ilustración del humedal (`assets/maps/humedal-ilustracion.png`, 480 × 480 px,
+ * fondo transparente) y sus esquinas en `[longitud, latitud]`, en el orden que pide MapLibre: superior
+ * izquierda, superior derecha, inferior derecha e inferior izquierda. Valores de `referencia.json` de la
+ * entrega de SCRUM-83 (27/11/2026). **Provisionales:** falta validar la alineación con el recorrido y las
+ * estaciones reales en QGIS.
+ */
+export const WETLAND_ILLUSTRATION: {
+  coordinates: [topLeft: LngLat, topRight: LngLat, bottomRight: LngLat, bottomLeft: LngLat];
+  minZoom: number;
+} = {
+  coordinates: [
+    [-76.63229896509098, 2.457778512731378],
+    [-76.63117786761639, 2.457778512731378],
+    [-76.63117786761639, 2.4566584460916596],
+    [-76.63229896509098, 2.4566584460916596],
+  ],
+  minZoom: 15,
+};
+
+/** SCRUM-84: avisos del cambio automático de fuente del mapa (textos literales de la tarea). */
+export const MAP_SOURCE_MESSAGES = {
+  offline: 'Usar mapa offline',
+  online: 'Usando mapa con conexión',
+  // Respaldo local, pendiente de aprobar en HU-21.
+  outsideOfflineArea:
+    'Sin conexión, el mapa solo cubre Popayán y tu ubicación está fuera de esa zona.',
 } as const;
 
 /** SCRUM-72: selector de ubicación en el mapa (estaciones y avistamientos). Sin textos en las HU. */

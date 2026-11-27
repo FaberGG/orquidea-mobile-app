@@ -54,6 +54,8 @@ export const OFFLINE_CONTENT_LABELS = {
   stationsEmpty: 'Aún no hay estaciones descargadas.',
   stationsOpen: 'Ver estaciones',
   mapTitle: 'Mapa del sendero',
-  mapInDevelopment: 'En desarrollo: el mapa sin conexión llegará con la nueva versión del mapa.',
+  // SCRUM-84. Respaldo local, pendiente de aprobar en HU-21.
+  mapIncluded:
+    'El mapa base de Popayán viene incluido en la app: sin conexión el mapa lo usa automáticamente.',
   back: 'Volver',
 } as const;

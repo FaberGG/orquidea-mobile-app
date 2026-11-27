@@ -10,9 +10,9 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { useTheme } from '@/hooks/use-theme';
 
-import { MAP_STYLE_URL } from '../constants';
+import { type MapSource } from '../hooks/use-map-source';
 import { type Coordinates, type TrailMap, type TrailStation } from '../types';
-import { MapAttribution, MapPin, TrailSegmentsLayer } from './map-layers';
+import { MapAttribution, MapPin, TrailSegmentsLayer, WetlandIllustrationLayer } from './map-layers';
 import { getInitialViewState, toLngLat } from '../utils/map-camera';
 
 type TrailMapViewProps = {
@@ -20,15 +20,18 @@ type TrailMapViewProps = {
   location: Coordinates | null;
   nearestStationId: string | null;
   onStationPress: (station: TrailStation) => void;
+  /** SCRUM-84: fuente del mapa base (OpenFreeMap o PMTiles offline), de `useMapSource`. */
+  source: Pick<MapSource, 'mapStyle' | 'onStyleLoaded' | 'onLoadFailed'>;
   style?: StyleProp<ViewStyle>;
 };
 
 /**
- * Dibuja los tramos y las estaciones sobre el mapa base de OpenFreeMap (MapLibre, sin API keys). La ref
- * expone la cámara para centrar el mapa en la ubicación del visitante.
+ * Dibuja, de abajo arriba: el mapa base (OpenFreeMap o el PMTiles offline, SCRUM-84), la ilustración del
+ * humedal (desde ~zoom 15), los tramos y las estaciones. La ref expone la cámara para centrar el mapa en la
+ * ubicación del visitante.
  */
 export const TrailMapView = forwardRef<CameraRef, TrailMapViewProps>(function TrailMapView(
-  { map, location, nearestStationId, onStationPress, style },
+  { map, location, nearestStationId, onStationPress, source, style },
   ref,
 ) {
   const theme = useTheme();
@@ -39,12 +42,15 @@ export const TrailMapView = forwardRef<CameraRef, TrailMapViewProps>(function Tr
     <View style={[styles.container, style]}>
       <MapLibreMap
         style={styles.map}
-        mapStyle={MAP_STYLE_URL}
+        mapStyle={source.mapStyle}
         attribution={false}
         logo={false}
         compass={false}
+        onDidFinishLoadingStyle={source.onStyleLoaded}
+        onDidFailLoadingMap={source.onLoadFailed}
         accessibilityLabel="Mapa del sendero con sus estaciones">
         <Camera ref={ref} initialViewState={initialViewState} />
+        <WetlandIllustrationLayer />
         <TrailSegmentsLayer id="trail" segments={map.segments} color={theme.primary} width={5} />
         {map.stations.map((station) => {
           const isNearest = station.id === nearestStationId;

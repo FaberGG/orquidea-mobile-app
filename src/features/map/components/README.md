@@ -19,8 +19,8 @@ diseño"): usan los tokens y la estructura de fichas y componentes del humedal.
 |---|---|
 | `station-form.tsx` | Formulario compartido (React Hook Form + Zod): foto, nombre, descripción, latitud/longitud con "Usar mi ubicación actual" y, con conexión, "Elegir en el mapa" (SCRUM-72), y fichas asociadas |
 | `map-location-picker.tsx` | SCRUM-72: selector de ubicación en el mapa (marcador movible y CONFIRMAR) |
-| `trail-map-view.tsx` | Mapa MapLibre del recorrido (OpenFreeMap, tramos, estaciones, ubicación) |
-| `map-layers.tsx` | Tramos como capa GeoJSON, pin de estación y atribución de OpenStreetMap/OpenMapTiles |
+| `trail-map-view.tsx` | Mapa MapLibre del recorrido. Capas de abajo arriba: mapa base (OpenFreeMap o PMTiles offline según `source`, SCRUM-84), ilustración del humedal, tramos, estaciones y ubicación |
+| `map-layers.tsx` | Tramos como capa GeoJSON, ilustración del humedal (`WetlandIllustrationLayer`, desde zoom 15), pin de estación y atribución de OpenStreetMap/OpenMapTiles |
 | `station-species-picker.tsx` | Selector múltiple de fichas (casillas) con `useSpeciesList('all')` |
 | `delete-station-dialog.tsx` | Confirmación de ELIMINAR con CONFIRMAR / CANCELAR (CA5) |
 | `station-screen-header.tsx` | Encabezado con volver, título y acción opcional |

@@ -52,13 +52,13 @@ beforeEach(() => {
 afterEach(() => onlineManager.setOnline(true));
 
 describe('Contenido sin conexión (HU-21)', () => {
-  it('resume las fichas y estaciones guardadas y el mapa en desarrollo', async () => {
+  it('resume las fichas y estaciones guardadas y el mapa incluido', async () => {
     updateOfflineSyncStatus({ phase: 'done', lastSuccessAt: Date.UTC(2026, 10, 22, 15, 0) });
     await render(<OfflineContentScreen />, { wrapper: Providers });
 
     expect(screen.getByText(LABELS.speciesSummary(9, 12))).toBeTruthy();
     expect(screen.getByText(LABELS.stationsSummary(4))).toBeTruthy();
-    expect(screen.getByText(LABELS.mapInDevelopment)).toBeTruthy();
+    expect(screen.getByText(LABELS.mapIncluded)).toBeTruthy();
     expect(screen.getByText(/^Actualizado el /)).toBeTruthy();
   });
 

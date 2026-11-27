@@ -30,8 +30,9 @@ la consulta directa y la gestión de estaciones.
 | `schemas/map.schema.ts` | Valida la respuesta completa de backend |
 | `types/` | Modelo de recorrido, estaciones y fichas asociadas |
 | `components/map-screen.tsx` | Estados de carga/error/vacío, ubicación actual y coordinación de la pantalla |
-| `components/trail-map-view.tsx` | Mapa MapLibre: mapa base de OpenFreeMap, tramos, estaciones y ubicación; su ref expone la cámara |
-| `components/map-layers.tsx` | Piezas compartidas del mapa: `TrailSegmentsLayer` (tramos GeoJSON), `MapPin` y `MapAttribution` |
+| `components/trail-map-view.tsx` | Mapa MapLibre: mapa base (OpenFreeMap o PMTiles offline, SCRUM-84), ilustración del humedal, tramos, estaciones y ubicación; su ref expone la cámara |
+| `components/map-layers.tsx` | Piezas compartidas del mapa: `TrailSegmentsLayer` (tramos GeoJSON), `WetlandIllustrationLayer` (SCRUM-84), `MapPin` y `MapAttribution` |
+| `hooks/use-map-source.ts` | SCRUM-84: elige el mapa base según la conexión (OpenFreeMap / PMTiles), con asentamiento, respaldo si OpenFreeMap falla o tarda y los avisos "Usar mapa offline" / "Usando mapa con conexión" |
 | `components/map-location-picker.tsx` | SCRUM-72: `MapLocationPicker`, selector de un punto en pantalla completa (tocar el mapa o arrastrar el marcador, CONFIRMAR). Muestra el sendero como referencia. Lo usan estaciones (HU-13) y avistamientos (HU-18, vía `@/features/map`). SCRUM-85: también sin conexión, con el PMTiles de Popayán; fuera de esa área avisa y ofrece el GPS |
 | `components/map-controls.tsx` | **Gestionar mapa** (con permiso), centrar en la ubicación y estación más cercana |
 | `components/station-details-card.tsx` | Muestra detalles y abre fichas asociadas |
@@ -84,10 +85,25 @@ OpenFreeMap con conexión y ese archivo sin ella.
   Si el punto queda fuera de `OFFLINE_MAP_BOUNDS`, lo avisa. Con estado de red desconocido se comporta como con
   conexión.
 
-**Pendiente:** el cambio automático de fuente en el mapa principal, la ilustración y los mensajes "Usar mapa
-offline" / "Usando mapa con conexión" (tarea 5, SCRUM-84), y el estilo propio con etiquetas (SCRUM-82). Hoy,
-sin conexión, el mapa principal aún no carga su mapa base; el recorrido y las estaciones sí, desde la caché
-offline. Falta probar en dispositivo que MapLibre abre `pmtiles://file://…` (spike de
+**SCRUM-84 (hecho):**
+
+- `useMapSource()` elige el mapa base del mapa principal: OpenFreeMap con conexión; el PMTiles sin conexión,
+  o si OpenFreeMap falla (`onDidFailLoadingMap`) o no carga en `ONLINE_MAP_TIMEOUT_MS` (8 s). Los cambios de
+  red esperan `MAP_SOURCE_SETTLE_MS` (igual a `OFFLINE_RECONNECT_SETTLE_MS`) para que una red que parpadea no
+  haga saltar el mapa; al volver la red se reintenta OpenFreeMap.
+- Avisos con el toast, una vez por cambio: **"Usar mapa offline"** y **"Usando mapa con conexión"** (este
+  último cuando OpenFreeMap vuelve a cargar). El cambio es automático, sin botón. Si no hay red y la
+  ubicación del visitante queda fuera de Popayán, el mapa lo avisa.
+- Capas, de abajo arriba: mapa base, ilustración del humedal (`assets/maps/humedal-ilustracion.png`,
+  SCRUM-83, desde zoom 15, esquinas en `WETLAND_ILLUSTRATION`), sendero y estaciones. La ilustración es un
+  asset: se ve igual con y sin conexión.
+- Hoy cambia el estilo completo (el de OpenFreeMap por URL o el provisional offline); ningún estilo trae
+  `center` ni `zoom`, así que la cámara no se mueve. Con el estilo propio empaquetado (SCRUM-82) solo
+  cambiará la URL de la fuente `openmaptiles`.
+
+**Pendiente:** el estilo propio con etiquetas e íconos (SCRUM-82) y validar en QGIS la ubicación de la
+ilustración: sus esquinas (centro ≈ 2.4572, −76.6317) quedan ~2 km al oeste de `WETLAND_CENTER`
+(2.4598, −76.6115); hay que confirmar cuál es la ubicación real con el recorrido de `/api/mapa`. Falta probar en dispositivo que MapLibre abre `pmtiles://file://…` (spike de
 [ADR-0018](../../../docs/decisions/0018-mapa-con-maplibre-y-openfreemap.md)); plan B: `mbtiles://`.
 
 **Modo sin conexión (HU-21):** `stationsOfflineSource` (en `index.ts`) guarda las estaciones, su foto y miniatura
