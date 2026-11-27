@@ -11,7 +11,7 @@
       "icon": "./assets/expo.icon"
     },
     "android": {
-      "package": "com.adme0408.terraviadev",
+      "package": "com.humedalorquidea.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -76,9 +76,9 @@
         }
       },
       "eas": {
-        "projectId": "fede42f0-465e-4808-a83d-046e083681f7"
+        "projectId": "d14d2582-7baf-4008-b501-f78162fecb14"
       }
     },
-    "owner": "adme0408"
+    "owner": "humedal-orquidea"
   }
 }
