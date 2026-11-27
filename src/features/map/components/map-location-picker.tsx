@@ -1,20 +1,24 @@
 import {
   Camera,
+  type CameraRef,
   type InitialViewState,
   Map as MapLibreMap,
   Marker,
   ViewAnnotation,
 } from '@maplibre/maplibre-react-native';
-import { useState } from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, Modal, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { Spacing } from '@/constants/theme';
+import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useTheme } from '@/hooks/use-theme';
+import { getCurrentLocation } from '@/lib/location';
 
 import { LOCATION_PICKER_LABELS, MAP_STYLE_URL, WETLAND_CENTER } from '../constants';
+import { useOfflineTiles } from '../hooks/use-offline-tiles';
 import { useTrailMap } from '../hooks/use-trail-map';
 import { type Coordinates, type TrailMap } from '../types';
 import { MapAttribution, MapPin, TrailSegmentsLayer } from './map-layers';
@@ -22,8 +26,11 @@ import {
   fromLngLat,
   getInitialViewState,
   getLocationViewState,
+  LOCATION_ZOOM,
   toLngLat,
 } from '../utils/map-camera';
+import { createOfflineMapStyle } from '../utils/offline-map-style';
+import { isInsideOfflineArea } from '../utils/offline-tiles';
 
 export type MapLocationPickerProps = {
   visible: boolean;
@@ -47,9 +54,11 @@ export function getPickerInitialViewState(
 
 /**
  * SCRUM-72: elegir un punto tocando el mapa. Se abre en pantalla completa; tocar el mapa pone el
- * marcador ahí y también se puede arrastrar. CONFIRMAR UBICACIÓN devuelve las coordenadas. Muestra el
- * sendero y sus estaciones como referencia si ya se cargaron. Solo se ofrece con conexión: quien lo
- * abre decide con `useNetworkStatus` (sin red, el mapa no carga sus mosaicos).
+ * marcador ahí y también se puede arrastrar. CONFIRMAR devuelve las coordenadas. Muestra el sendero y sus
+ * estaciones como referencia si ya se cargaron (con o sin conexión, desde la caché de HU-21).
+ *
+ * SCRUM-85: sin conexión usa el mapa base offline de Popayán incluido en la app (PMTiles) y ofrece elegir
+ * el punto por GPS; si el punto queda fuera de Popayán, lo avisa.
  */
 export function MapLocationPicker({ visible, value, onConfirm, onCancel }: MapLocationPickerProps) {
   return (
@@ -62,9 +71,46 @@ export function MapLocationPicker({ visible, value, onConfirm, onCancel }: MapLo
 function PickerContent({ value, onConfirm, onCancel }: Omit<MapLocationPickerProps, 'visible'>) {
   const theme = useTheme();
   const { data: map } = useTrailMap();
+  const { status: networkStatus } = useNetworkStatus();
+  // Estado desconocido = como con conexión (no bloquea, igual que en el resto de la app).
+  const isOffline = networkStatus === 'offline';
+  const offlineTiles = useOfflineTiles(isOffline);
+  const cameraRef = useRef<CameraRef>(null);
   const [point, setPoint] = useState<Coordinates | null>(value);
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   // La vista se calcula una vez: si el sendero llega después, no se mueve el mapa bajo el dedo.
   const [initialViewState] = useState(() => getPickerInitialViewState(value, map));
+
+  const offlineTilesUrl = offlineTiles.status === 'ready' ? offlineTiles.url : null;
+  const offlineStyle = useMemo(
+    () => (offlineTilesUrl ? createOfflineMapStyle(offlineTilesUrl) : null),
+    [offlineTilesUrl],
+  );
+  const mapStyle = isOffline ? offlineStyle : MAP_STYLE_URL;
+  const isOutsideOfflineArea = isOffline && point !== null && !isInsideOfflineArea(point);
+
+  const choosePoint = (coordinates: Coordinates) => {
+    setLocationError(null);
+    setPoint(coordinates);
+  };
+
+  const locate = async () => {
+    setIsLocating(true);
+    setLocationError(null);
+    const result = await getCurrentLocation();
+    setIsLocating(false);
+    if (result.status === 'located') {
+      setPoint(result.coordinates);
+      cameraRef.current?.flyTo({
+        center: toLngLat(result.coordinates),
+        zoom: LOCATION_ZOOM,
+        duration: 600,
+      });
+    }
+    if (result.status === 'denied') setLocationError(LOCATION_PICKER_LABELS.locationDenied);
+    if (result.status === 'error') setLocationError(LOCATION_PICKER_LABELS.locationError);
+  };
 
   return (
     <SafeAreaView
@@ -77,46 +123,70 @@ function PickerContent({ value, onConfirm, onCancel }: Omit<MapLocationPickerPro
         <ThemedText type="small" themeColor="textSecondary">
           {LOCATION_PICKER_LABELS.hint}
         </ThemedText>
+        {isOffline && (
+          <ThemedText type="small" themeColor="warning">
+            {LOCATION_PICKER_LABELS.offlineHint}
+          </ThemedText>
+        )}
       </View>
 
       <View style={styles.map}>
-        <MapLibreMap
-          style={styles.map}
-          mapStyle={MAP_STYLE_URL}
-          attribution={false}
-          logo={false}
-          compass={false}
-          onPress={(event) => setPoint(fromLngLat(event.nativeEvent.lngLat))}
-          accessibilityLabel={LOCATION_PICKER_LABELS.mapLabel}>
-          <Camera initialViewState={initialViewState} />
-          {map && (
-            <TrailSegmentsLayer
-              id="picker"
-              segments={map.segments}
-              color={theme.primary}
-              width={4}
-            />
-          )}
-          {map?.stations.map((station) => (
-            <Marker key={station.id} id={station.id} lngLat={toLngLat(station.coordinates)}>
-              <View accessible accessibilityLabel={station.name}>
-                <MapPin color={theme.primary} opacity={0.6} />
-              </View>
-            </Marker>
-          ))}
-          {point && (
-            <ViewAnnotation
-              id="selected-point"
-              lngLat={toLngLat(point)}
-              draggable
-              onDragEnd={(event) => setPoint(fromLngLat(event.nativeEvent.lngLat))}>
-              <View accessible accessibilityLabel={LOCATION_PICKER_LABELS.selectedPoint}>
-                <MapPin color={theme.danger} />
-              </View>
-            </ViewAnnotation>
-          )}
-        </MapLibreMap>
-        <MapAttribution />
+        {mapStyle ? (
+          <>
+            <MapLibreMap
+              style={styles.map}
+              mapStyle={mapStyle}
+              attribution={false}
+              logo={false}
+              compass={false}
+              onPress={(event) => choosePoint(fromLngLat(event.nativeEvent.lngLat))}
+              accessibilityLabel={LOCATION_PICKER_LABELS.mapLabel}>
+              <Camera ref={cameraRef} initialViewState={initialViewState} />
+              {map && (
+                <TrailSegmentsLayer
+                  id="picker"
+                  segments={map.segments}
+                  color={theme.primary}
+                  width={4}
+                />
+              )}
+              {map?.stations.map((station) => (
+                <Marker key={station.id} id={station.id} lngLat={toLngLat(station.coordinates)}>
+                  <View accessible accessibilityLabel={station.name}>
+                    <MapPin color={theme.primary} opacity={0.6} />
+                  </View>
+                </Marker>
+              ))}
+              {point && (
+                <ViewAnnotation
+                  id="selected-point"
+                  lngLat={toLngLat(point)}
+                  draggable
+                  onDragEnd={(event) => choosePoint(fromLngLat(event.nativeEvent.lngLat))}>
+                  <View accessible accessibilityLabel={LOCATION_PICKER_LABELS.selectedPoint}>
+                    <MapPin color={theme.danger} />
+                  </View>
+                </ViewAnnotation>
+              )}
+            </MapLibreMap>
+            <MapAttribution />
+          </>
+        ) : (
+          <View style={styles.mapPlaceholder}>
+            {offlineTiles.status === 'error' ? (
+              <ThemedText type="small" themeColor="textSecondary" accessibilityRole="alert">
+                {LOCATION_PICKER_LABELS.offlineMapUnavailable}
+              </ThemedText>
+            ) : (
+              <>
+                <ActivityIndicator color={theme.primary} />
+                <ThemedText type="small" themeColor="textSecondary">
+                  {LOCATION_PICKER_LABELS.offlineMapLoading}
+                </ThemedText>
+              </>
+            )}
+          </View>
+        )}
       </View>
 
       <View style={styles.footer}>
@@ -126,6 +196,24 @@ function PickerContent({ value, onConfirm, onCancel }: Omit<MapLocationPickerPro
           accessibilityLiveRegion="polite">
           {point ? LOCATION_PICKER_LABELS.coordinates(point) : LOCATION_PICKER_LABELS.noPoint}
         </ThemedText>
+        {isOutsideOfflineArea && (
+          <ThemedText type="small" themeColor="warning" accessibilityRole="alert">
+            {LOCATION_PICKER_LABELS.outsideOfflineArea}
+          </ThemedText>
+        )}
+        {locationError && (
+          <ThemedText type="small" themeColor="danger" accessibilityRole="alert">
+            {locationError}
+          </ThemedText>
+        )}
+        {isOffline && (
+          <Button
+            label={isLocating ? LOCATION_PICKER_LABELS.locating : LOCATION_PICKER_LABELS.useGps}
+            variant="secondary"
+            disabled={isLocating}
+            onPress={() => void locate()}
+          />
+        )}
         <View style={styles.actions}>
           <View style={styles.action}>
             <Button label={LOCATION_PICKER_LABELS.cancel} variant="secondary" onPress={onCancel} />
@@ -154,6 +242,13 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  mapPlaceholder: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.two,
+    paddingHorizontal: Spacing.four,
   },
   footer: {
     gap: Spacing.two,

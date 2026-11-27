@@ -332,11 +332,11 @@ describe('Selector de ubicación en el mapa (SCRUM-72)', () => {
     expect(screen.getByLabelText('Latitud').props.value).toBe('');
   });
 
-  it('sin conexión no ofrece el mapa y se mantiene el GPS', async () => {
+  it('sin conexión también ofrece el mapa (SCRUM-85) y mantiene el GPS', async () => {
     jest.mocked(useNetworkStatus).mockReturnValue({ status: 'offline', refresh: jest.fn() });
     await renderAs('admin', <StationCreateScreen />);
 
-    expect(screen.queryByText(LOCATION_PICKER_LABELS.open)).toBeNull();
+    expect(screen.getByText(LOCATION_PICKER_LABELS.open)).toBeTruthy();
     expect(screen.getByText(STATION_LABELS.useCurrentLocation)).toBeTruthy();
   });
 });

@@ -300,10 +300,10 @@ describe('Ubicación del avistamiento en el mapa (SCRUM-72)', () => {
     expect(screen.getByRole('button', { name: 'Usar mi ubicación actual' })).toBeTruthy();
   });
 
-  it('sin conexión no muestra el mapa', async () => {
+  it('sin conexión también ofrece el mapa offline (SCRUM-85)', async () => {
     jest.mocked(useNetworkStatus).mockReturnValue({ status: 'offline', refresh: jest.fn() });
     await renderAs('user', <NewSightingScreen />);
-    expect(screen.queryByRole('button', { name: 'Elegir en el mapa' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Elegir en el mapa' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Usar mi ubicación actual' })).toBeTruthy();
   });
 });
