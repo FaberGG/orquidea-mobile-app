@@ -132,12 +132,12 @@ Notas:
   `.\gradlew.bat app:assembleRelease -PreactNativeArchitectures=arm64-v8a`
   (no funciona en emuladores x86_64).
 - Si aparece `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, ya hay instalada una versión firmada con otra clave:
-  desinstálala primero (`adb uninstall com.adme0408.terraviadev`).
+  desinstálala primero (`adb uninstall com.humedalorquidea.app`).
 
 ### 4.3 Opción B: compilar en la nube (EAS Build)
 
 EAS compila en servidores Linux, así que no aplica el límite de rutas de Windows ni hace falta el SDK local.
-Requiere una cuenta de Expo con acceso al proyecto (`owner: adme0408` en `app.json`).
+Requiere una cuenta de Expo que sea miembro de la organización `humedal-orquidea` (`owner` en `app.json`); pide una invitación a un administrador de la organización.
 
 ```powershell
 npx eas-cli@latest login
