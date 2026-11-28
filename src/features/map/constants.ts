@@ -1,3 +1,5 @@
+import { type LngLat } from '@maplibre/maplibre-react-native';
+
 /** Textos y claves de caché del mapa del sendero (HU-12). */
 export const MAP_LABELS = {
   loading: 'Cargando el mapa del sendero…',
@@ -42,6 +44,59 @@ export const MAP_ATTRIBUTION = '© OpenStreetMap contributors · © OpenMapTiles
  */
 export const WETLAND_CENTER = { latitude: 2.4598, longitude: -76.6115 } as const;
 
+/**
+ * Área que cubre el mapa base offline incluido en la app (`assets/maps/popayan-z14.pmtiles`): el recuadro
+ * urbano de Popayán con el humedal. Mismos valores que `scripts/maps/build-offline-map.cjs`.
+ */
+export const OFFLINE_MAP_BOUNDS = {
+  west: -76.706028,
+  south: 2.401735,
+  east: -76.535912,
+  north: 2.521901,
+} as const;
+
+/**
+ * SCRUM-84: si OpenFreeMap no termina de cargar el estilo en este tiempo (con conexión), el mapa pasa al
+ * mapa offline incluido en la app.
+ */
+export const ONLINE_MAP_TIMEOUT_MS = 8_000;
+
+/**
+ * SCRUM-84: tiempo que un cambio de red debe mantenerse antes de cambiar la fuente del mapa. Igual a
+ * `OFFLINE_RECONNECT_SETTLE_MS` (`features/offline/constants.ts`); no se importa de allí porque esa feature
+ * ya depende de `features/map` y se formaría un ciclo. Si cambia uno, cambiar el otro.
+ */
+export const MAP_SOURCE_SETTLE_MS = 2_000;
+
+/**
+ * SCRUM-83 / SCRUM-84: ilustración del humedal (`assets/maps/humedal-ilustracion.png`, 480 × 480 px,
+ * fondo transparente) y sus esquinas en `[longitud, latitud]`, en el orden que pide MapLibre: superior
+ * izquierda, superior derecha, inferior derecha e inferior izquierda. Valores de `referencia.json` de la
+ * entrega de SCRUM-83 (27/11/2026). **Provisionales:** falta validar la alineación con el recorrido y las
+ * estaciones reales en QGIS.
+ */
+export const WETLAND_ILLUSTRATION: {
+  coordinates: [topLeft: LngLat, topRight: LngLat, bottomRight: LngLat, bottomLeft: LngLat];
+  minZoom: number;
+} = {
+  coordinates: [
+    [-76.63229896509098, 2.457778512731378],
+    [-76.63117786761639, 2.457778512731378],
+    [-76.63117786761639, 2.4566584460916596],
+    [-76.63229896509098, 2.4566584460916596],
+  ],
+  minZoom: 15,
+};
+
+/** SCRUM-84: avisos del cambio automático de fuente del mapa (textos literales de la tarea). */
+export const MAP_SOURCE_MESSAGES = {
+  offline: 'Usar mapa offline',
+  online: 'Usando mapa con conexión',
+  // Respaldo local, pendiente de aprobar en HU-21.
+  outsideOfflineArea:
+    'Sin conexión, el mapa solo cubre Popayán y tu ubicación está fuera de esa zona.',
+} as const;
+
 /** SCRUM-72: selector de ubicación en el mapa (estaciones y avistamientos). Sin textos en las HU. */
 export const LOCATION_PICKER_LABELS = {
   open: 'Elegir en el mapa',
@@ -55,6 +110,18 @@ export const LOCATION_PICKER_LABELS = {
     `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
   cancel: 'CANCELAR',
   confirm: 'CONFIRMAR',
+  // SCRUM-85: selector sin conexión. Respaldo local, pendiente de aprobar en HU-21.
+  offlineHint:
+    'Sin conexión: el mapa muestra Popayán. Fuera de esa zona, usa tu ubicación por GPS.',
+  outsideOfflineArea:
+    'Ese punto está fuera del mapa sin conexión de Popayán. Revisa que sea correcto o usa tu ubicación por GPS.',
+  offlineMapLoading: 'Preparando el mapa sin conexión…',
+  offlineMapUnavailable:
+    'No pudimos abrir el mapa sin conexión. Usa tu ubicación por GPS o inténtalo con conexión.',
+  useGps: 'USAR MI UBICACIÓN (GPS)',
+  locating: 'Obteniendo ubicación…',
+  locationDenied: 'Activa el permiso de ubicación para usar tu posición actual.',
+  locationError: 'No pudimos obtener tu ubicación. Comprueba que el GPS esté activo.',
 } as const;
 
 /** Mensajes de HU-13 (copiados de los criterios de aceptación) y respaldos locales. */

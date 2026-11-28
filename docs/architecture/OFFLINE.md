@@ -96,7 +96,11 @@ con `setOfflineJson` y enviarlo en `If-None-Match`; con `304` devolver los datos
 - Descargarlos con `downloadOfflineFiles(urls, { folder: 'map-tiles' })` (o devolverlos desde una fuente con
   `folder: 'map-tiles'`). La extensión de la URL se conserva (`png`, `jpg`, `webp`, `json`, `geojson`, `pbf`).
 - Leer la ruta local con `getOfflineFileUri(url, 'map-tiles')`.
-- Si se incluyen en la app (assets) no hace falta esta capa.
+- Si se incluyen en la app (assets) no hace falta esta capa. Es el caso del **mapa base offline** (SCRUM-85):
+  `assets/maps/popayan-z14.pmtiles`, copiado a `documents/bundled-maps/` por `getOfflineTilesUri()` y leído
+  con `useOfflineTiles()` (`pmtiles://file:///…`). El mapa principal cambia solo entre OpenFreeMap y ese
+  archivo con `useMapSource()` (SCRUM-84). Ver `src/features/map/README.md`, sección *Mapa sin
+  conexión*.
 
 ## 5. Cola de envíos pendientes (HU-22, SCRUM-70)
 

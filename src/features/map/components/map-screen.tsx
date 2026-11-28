@@ -7,19 +7,22 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { EmptyState } from '@/components/feedback/empty-state';
 import { FormMessage } from '@/components/feedback/form-message';
 import { Screen } from '@/components/layout/screen';
+import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
-import { Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { usePermission } from '@/permissions';
 
 import { getNearestStation } from '../api';
-import { MAP_LABELS } from '../constants';
+import { MAP_LABELS, MAP_SOURCE_MESSAGES } from '../constants';
 import { useTrailMap } from '../hooks';
+import { useMapSource } from '../hooks/use-map-source';
 import { type Coordinates, type TrailStation } from '../types';
 import { MapControls } from './map-controls';
 import { StationDetailsCard } from './station-details-card';
 import { TrailMapView } from './trail-map-view';
 import { getLocationViewState } from '../utils/map-camera';
+import { isInsideOfflineArea } from '../utils/offline-tiles';
 
 /** HU-12: mapa del recorrido, estaciones, geolocalización y ficha de cada estación. */
 export function MapScreen() {
@@ -28,6 +31,7 @@ export function MapScreen() {
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
   const followsNearestStation = useRef(false);
   const { data, isPending, isError, refetch } = useTrailMap();
+  const mapSource = useMapSource();
   const canManageMap = usePermission('stations:manage');
   const [location, setLocation] = useState<Coordinates | null>(null);
   const [locationMessage, setLocationMessage] = useState<string | null>(null);
@@ -79,6 +83,8 @@ export function MapScreen() {
 
   const nearest = location ? getNearestStation(data.stations, location) : null;
   const selectedStation = data.stations.find((station) => station.id === selectedStationId) ?? null;
+  const isOutsideOfflineArea =
+    mapSource.mode === 'offline' && location !== null && !isInsideOfflineArea(location);
 
   const locate = async () => {
     setIsLocating(true);
@@ -143,6 +149,7 @@ export function MapScreen() {
           ref={cameraRef}
           map={data}
           location={location}
+          source={mapSource}
           nearestStationId={nearest?.station.id ?? null}
           onStationPress={(station: TrailStation) => {
             followsNearestStation.current = false;
@@ -158,6 +165,13 @@ export function MapScreen() {
             onCreateStation={() => router.push('/stations/new' as Href)}
           />
           {locationMessage !== null && <FormMessage message={locationMessage} />}
+          {isOutsideOfflineArea && (
+            <View style={[styles.notice, { backgroundColor: theme.background }]}>
+              <ThemedText type="small" themeColor="warning" accessibilityRole="alert">
+                {MAP_SOURCE_MESSAGES.outsideOfflineArea}
+              </ThemedText>
+            </View>
+          )}
         </View>
         {selectedStation !== null && (
           <StationDetailsCard
@@ -179,6 +193,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  notice: {
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    borderRadius: Radius.medium,
   },
   controls: {
     position: 'absolute',
